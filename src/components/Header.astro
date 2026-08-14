@@ -1,6 +1,4 @@
 ---
-import Button from './Button.astro';
-
 /**
  * NAV APPROACH — deliberate, worth reading before "adding a hamburger".
  *
@@ -16,17 +14,14 @@ import Button from './Button.astro';
  * If the nav grows past ~6 items, revisit — that is the point where a
  * disclosure earns its complexity.
  *
- * PLACEHOLDER: these items mirror the current site's structure. Real
- * information architecture is the content conversation.
+ * EMPTY ON PURPOSE. The previous items mirrored the old site's structure and
+ * were removed with their pages; the information architecture is being decided
+ * from scratch. The rendering below is kept and handles the empty case, so
+ * adding a section back means adding one entry here and nothing else.
  */
-const links = [
-  { label: 'Initiatives', href: '/initiatives' },
-  { label: 'Trailblazers', href: '/trailblazers' },
-  { label: 'Press', href: '/press' },
-  { label: 'Contact', href: '/contact' },
-];
+const links: { label: string; href: string }[] = [];
 
-// Normalized so '/press' and '/press/' both mark the nav item as current.
+// Normalized so '/x' and '/x/' both mark the nav item as current.
 const here = Astro.url.pathname.replace(/\/+$/, '') || '/';
 ---
 
@@ -41,6 +36,9 @@ const here = Astro.url.pathname.replace(/\/+$/, '') || '/';
       Share Meals
     </a>
 
+    {/* Rendered only when there is something in it — an empty landmark is
+        noise for screen reader users, not a neutral placeholder. */}
+    {links.length > 0 && (
     <nav aria-label="Main" class="order-3 w-full sm:order-2 sm:w-auto">
       <ul class="flex flex-wrap gap-x-6 gap-y-2 p-0 m-0 list-none">
         {
@@ -65,9 +63,6 @@ const here = Astro.url.pathname.replace(/\/+$/, '') || '/';
         }
       </ul>
     </nav>
-
-    <div class="order-2 ml-auto sm:order-3">
-      <Button href="/donate" class="px-5 py-2 text-sm">Donate</Button>
-    </div>
+    )}
   </div>
 </header>
