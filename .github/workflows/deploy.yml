@@ -44,13 +44,25 @@ jobs:
       - name: Install
         run: yarn install --immutable
 
-      # Accessibility and type gate. A contrast regression or a type error
+      # Token contrast and type gate. A palette regression or a type error
       # fails the deploy here rather than reaching production.
       - name: Checks
         run: yarn check
 
       - name: Build
         run: yarn build
+
+      # The WCAG gate runs against the built output, so it has to come after
+      # the build. Only Chromium is installed, and `--with-deps` pulls the
+      # system libraries the headless browser needs on a bare runner.
+      - name: Install Chromium for the accessibility gate
+        run: yarn playwright install --with-deps chromium
+
+      # Fails the deploy on any WCAG 2.2 AA violation. This is the enforcement
+      # behind the accessibility requirement in AGENTS.md — without it, the
+      # commitment depends on someone remembering to audit by hand.
+      - name: Accessibility gate
+        run: yarn check:a11y
 
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5

@@ -12,7 +12,9 @@
     "preview": "astro preview",
     "astro": "astro",
     "check:contrast": "node scripts/check-contrast.mjs",
-    "check": "yarn check:contrast && astro check"
+    "check": "yarn check:contrast && astro check",
+    "check:a11y": "node scripts/check-a11y.mjs",
+    "check:all": "yarn check && astro build && yarn check:a11y"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",
@@ -22,6 +24,10 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "@axe-core/playwright": "^4.13.0",
+    "axe-core": "^4.13.0",
+    "playwright": "^1.62.1",
+    "playwright-core": "^1.62.1",
     "typescript": "^5"
   }
 }
