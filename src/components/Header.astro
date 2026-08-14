@@ -29,10 +29,24 @@ const here = Astro.url.pathname.replace(/\/+$/, '') || '/';
   <div
     class="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-6 gap-y-3 px-5 py-4 sm:px-8"
   >
+    {/* Logomark plus wordmark in one link, so there is a single target rather
+        than two adjacent links to the same place.
+
+        The image is alt="" on purpose. The link already reads "Share Meals"
+        from its text, and giving the mark its own alt would make a screen
+        reader announce the name twice. The mark is decorative *here*
+        specifically because the text is next to it. */}
     <a
       href="/"
-      class="text-xl font-extrabold tracking-tight text-[var(--color-brand-700)] no-underline"
+      class="flex items-center gap-2.5 text-xl font-extrabold tracking-tight text-[var(--color-brand-700)] no-underline"
     >
+      <img
+        src="/logomark.svg"
+        alt=""
+        width="40"
+        height="40"
+        class="h-10 w-10 shrink-0"
+      />
       Share Meals
     </a>
 
