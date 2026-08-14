@@ -31,8 +31,9 @@ Non-negotiables, each of which has already been built or fixed here:
 ### The gate
 
 `yarn check:a11y` runs axe-core in real Chromium against every built page and
-exits non-zero on any violation. It is wired into the deploy workflow after the
-build, so a violation fails the deploy rather than reaching production.
+exits non-zero on any violation. It runs in CI on every pull request and every
+push to `main`, and again in the deploy workflow — so a violation fails review
+first and, failing that, fails the deploy rather than reaching production.
 
 ```
 yarn check:all     # types + token contrast + build + WCAG gate

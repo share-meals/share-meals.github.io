@@ -1,0 +1,58 @@
+name: CI
+
+# Runs the same gates the deploy runs, but on every pull request and on every
+# push to `main` — so a type error, a contrast regression or a WCAG violation
+# surfaces while the change is being reviewed rather than at publish time.
+#
+# The deploy workflow deliberately repeats these checks rather than trusting
+# this one. `live` can be pushed directly and the deploy can be dispatched by
+# hand, so it has to be self-gating; this workflow only moves the discovery
+# earlier, it does not replace that.
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+# A superseded run tells you nothing. Unlike the deploy — which queues, so a
+# publish is never silently dropped — a stale CI run is safe to cancel.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # Before setup-node, so its yarn cache resolution sees Yarn 4 rather than
+      # the Yarn 1 shim. The `packageManager` field in package.json pins it.
+      - name: Enable corepack
+        run: corepack enable
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: yarn
+
+      - name: Install
+        run: yarn install --immutable
+
+      - name: Types and token contrast
+        run: yarn check
+
+      - name: Build
+        run: yarn build
+
+      # The WCAG gate drives a real browser against the built output, so both
+      # the build and the browser have to come first. `--with-deps` pulls the
+      # system libraries the headless shell needs on a bare runner.
+      - name: Install Chromium
+        run: yarn playwright install --with-deps chromium
+
+      - name: Accessibility gate
+        run: yarn check:a11y
