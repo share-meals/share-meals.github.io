@@ -16,6 +16,26 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props as { post: CollectionEntry<'news'> };
 const { Content } = await render(post);
+
+/**
+ * Format in UTC, deliberately.
+ *
+ * A date-only frontmatter value like `2026-08-13` is coerced to midnight UTC.
+ * Formatting that with the build machine's timezone renders the previous day
+ * anywhere west of UTC — so a post authored as the 13th shipped as "August 12"
+ * while its own datetime attribute still said the 13th. That contradiction
+ * between the visible text and the programmatically determinable value is a
+ * WCAG 1.3.1 failure on top of simply being wrong.
+ *
+ * Formatting in UTC pins the output to the authored date on every machine.
+ */
+const isoDate = post.data.date.toISOString().slice(0, 10);
+const displayDate = post.data.date.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  timeZone: 'UTC',
+});
 ---
 
 <BaseLayout title={post.data.title} description={post.data.description}>
@@ -23,15 +43,9 @@ const { Content } = await render(post);
     <article>
       <time
         class="text-sm font-semibold tracking-wide uppercase text-[var(--color-text-muted)]"
-        datetime={post.data.date.toISOString()}
+        datetime={isoDate}
       >
-        {
-          post.data.date.toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          })
-        }
+        {displayDate}
       </time>
 
       <h1 class="text-display mt-3 font-extrabold text-balance">{post.data.title}</h1>

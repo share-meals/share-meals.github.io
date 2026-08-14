@@ -27,7 +27,15 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" href="/favicon.svg" />
+    {/* SVG first — modern browsers prefer it and it stays sharp at any size.
+        The .ico is the fallback, and it is not optional: browsers request
+        /favicon.ico on their own regardless of what is declared here, so
+        leaving a wrong one in place means serving a wrong icon. */}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    {/* iOS composites the home-screen icon onto black wherever the PNG is
+        transparent, so this one is deliberately opaque rather than the SVG. */}
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
     {/* Onest is the only font and sets every word on the page, so it is worth
         fetching before the CSS has been parsed. `crossorigin` is required even
