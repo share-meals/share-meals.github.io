@@ -1,17 +1,43 @@
 @import 'tailwindcss';
 
 /* =============================================================================
+   Onest — the brand typeface. Self-hosted, no third-party request.
+
+   One variable file covers 100–900, so display and text come from the same
+   family and there is nothing to keep in sync. Latin subset, ~32KB.
+   SIL Open Font License 1.1.
+
+   Chosen over Libre Franklin, Schibsted Grotesk, Lexend, Work Sans, Inter,
+   Commissioner and Rethink Sans against three criteria: a circular period
+   rather than a squared one, a plain lowercase d, and a high enough x-height
+   to stay dense at display size without widening the set. Onest was the only
+   candidate that held the hero headline to two lines while keeping the taller
+   lowercase.
+
+   NOTE: Onest ships no true italic. Anything italic will be a synthesised
+   oblique. If real italics become necessary, that is a reason to revisit this.
+   ========================================================================== */
+@font-face {
+  font-family: 'Onest';
+  src: url('/fonts/onest.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* =============================================================================
    Share Meals design tokens
 
    READ THIS BEFORE CHANGING COLORS OR TYPE.
 
-   This file is the token ARCHITECTURE, not the finished design. Typeface and
-   the full palette are deliberately open decisions. What is committed here is
-   the *shape* of the system — named slots, a ramp structure, a type scale — so
-   the design conversation fills in values without restructuring anything.
+   This file is the token ARCHITECTURE, not the finished design. The palette is
+   still a deliberately open decision. What is committed here is the *shape* of
+   the system — named slots, a ramp structure, a type scale — so the design
+   conversation fills in values without restructuring anything.
 
    FIXED    #106535 brand green. Confirmed from the live site. Do not change.
-   OPEN     accent, neutrals, typeface. Marked PLACEHOLDER below.
+   FIXED    Onest, the typeface. Chosen deliberately; see the note above.
+   OPEN     accent, neutrals. Marked PLACEHOLDER below.
 
    Accessibility rule: WCAG 2.1 AA is a constraint on choosing values, not an
    audit run afterward. Legal pairings are listed at the bottom of this file and
@@ -79,15 +105,14 @@
   --color-border: var(--color-ink-200);
 
   /* ---------------------------------------------------------------------------
-     Typography — PLACEHOLDER
-     System stack until the typeface is chosen. In a typographic design the
-     typeface IS the design, so this is a real decision made deliberately, not a
-     footnote to scaffolding. When chosen it gets self-hosted as woff2 with
-     font-display: swap — no third-party request, no external dependency.
+     Typography — DECIDED
+     Onest, declared above. The stack behind it only covers the swap window and
+     the case where the woff2 fails to load; it is not a design fallback, so
+     nothing should be tuned to how it looks.
      ------------------------------------------------------------------------ */
   --font-sans:
-    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica,
-    Arial, sans-serif;
+    'Onest', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
+    Helvetica, Arial, sans-serif;
 
   /* Deliberately wide scale. The design direction leans on oversized type to do
      the work photography would otherwise do, so the top end is generous and the

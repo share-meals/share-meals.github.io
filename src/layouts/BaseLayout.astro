@@ -29,6 +29,18 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.svg" />
 
+    {/* Onest is the only font and sets every word on the page, so it is worth
+        fetching before the CSS has been parsed. `crossorigin` is required even
+        though this is same-origin — fonts are always fetched in CORS mode, and
+        without it the browser downloads the file twice. */}
+    <link
+      rel="preload"
+      href="/fonts/onest.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Share Meals" />
     <meta property="og:title" content={fullTitle} />
