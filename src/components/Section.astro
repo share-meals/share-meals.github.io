@@ -13,6 +13,9 @@ interface Props {
   class?: string;
   /** Rendered element. Use `div` when the section is not a landmark. */
   as?: 'section' | 'div' | 'header' | 'footer';
+  id?: string;
+  /** Hide the whole band. For content a script reveals once it has data. */
+  hidden?: boolean;
 }
 
 // Explicitly annotated: the dynamic `as: Tag` destructure defeats Astro's
@@ -23,6 +26,8 @@ const {
   size = 'default',
   class: className = '',
   as: Tag = 'section',
+  id,
+  hidden = false,
 }: Props = Astro.props;
 
 // Only AA-cleared pairings — see the legal set at the bottom of global.css.
@@ -39,7 +44,7 @@ const sizes = {
 };
 ---
 
-<Tag class={`${tones[tone]} ${sizes[size]} ${className}`}>
+<Tag id={id} hidden={hidden} class={`${tones[tone]} ${sizes[size]} ${className}`}>
   <div class="mx-auto w-full max-w-6xl px-5 sm:px-8">
     <slot />
   </div>

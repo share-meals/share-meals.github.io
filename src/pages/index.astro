@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '~/layouts/BaseLayout.astro';
 import Section from '~/components/Section.astro';
+import ImpactStats from '~/components/ImpactStats.astro';
 
 /**
  * HOME PAGE.
@@ -21,8 +22,9 @@ import Section from '~/components/Section.astro';
  * and the mission is framed as ensuring food security rather than against
  * insecurity.
  *
- * Still placeholder: the figures in the last band. Real numbers are a content
- * decision and are deliberately not invented here — see the note there.
+ * The closing band of figures comes from the backend at runtime and disappears
+ * entirely if the numbers cannot be fetched — see ImpactStats.astro. Nothing
+ * on this page should be written to depend on it being there.
  *
  * There are no call-to-action buttons because there are no pages to point them
  * at yet. A button that goes nowhere is worse than no button.
@@ -63,30 +65,5 @@ import Section from '~/components/Section.astro';
     </p>
   </Section>
 
-  <Section tone="muted">
-    {/* TODO(content): replace with real, sourced figures before launch, and
-        keep the labels honest about what each one counts. Zeros are here on
-        purpose — an invented number on a page about a right is a bad trade,
-        and the band's layout is what is being proven, not the values. */}
-    <h2 class="text-display font-extrabold m-0">The work, in numbers</h2>
-    <dl class="mt-12 grid gap-10 sm:grid-cols-3">
-      {
-        [
-          ['000,000', 'Meals shared'],
-          ['00', 'Campuses'],
-          ['0,000', 'Students reached'],
-        ].map(([figure, label]) => (
-          <div>
-            <dt class="sr-only">{label}</dt>
-            <dd class="m-0">
-              <span class="text-display-xl block font-extrabold text-[var(--color-brand-700)]">
-                {figure}
-              </span>
-              <span class="mt-2 block text-lg font-semibold">{label}</span>
-            </dd>
-          </div>
-        ))
-      }
-    </dl>
-  </Section>
+  <ImpactStats />
 </BaseLayout>

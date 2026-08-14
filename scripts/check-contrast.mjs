@@ -26,6 +26,8 @@ const CLEARED = [
   ['brand-700', 'white', 'normal', 'brand-700 on surface'],
   ['white', 'brand-700', 'normal', 'text-inverse on surface-inverse'],
   ['ink-900', 'ink-50', 'normal', 'text on surface-muted'],
+  ['ink-600', 'ink-50', 'normal', 'text-muted on surface-muted'],
+  ['brand-700', 'ink-50', 'normal', 'brand-700 on surface-muted'],
 ];
 
 /** Pairings documented as unusable for body text. Asserted to actually fail,
