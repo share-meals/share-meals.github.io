@@ -1,0 +1,59 @@
+---
+import { url } from '~/lib/url';
+
+/**
+ * Renders an <a> when given `href`, otherwise a <button>. Internal paths are
+ * routed through url() so they survive the GitHub Pages base path.
+ */
+interface Props {
+  href?: string;
+  variant?: 'primary' | 'secondary' | 'inverse';
+  /** Set for absolute URLs to other sites — skips base-path rewriting. */
+  external?: boolean;
+  class?: string;
+  type?: 'button' | 'submit';
+}
+
+const {
+  href,
+  variant = 'primary',
+  external = false,
+  class: className = '',
+  type = 'button',
+} = Astro.props;
+
+const base =
+  'inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 ' +
+  'font-semibold no-underline transition-colors duration-150';
+
+const variants = {
+  // white on brand-700 — 7.16:1
+  primary:
+    'bg-[var(--color-brand-700)] text-[var(--color-text-inverse)] hover:bg-[var(--color-brand-800)]',
+  // brand-700 on white — 7.16:1
+  secondary:
+    'border-2 border-[var(--color-brand-700)] text-[var(--color-brand-700)] hover:bg-[var(--color-brand-50)]',
+  // for use on an inverse band
+  inverse:
+    'bg-[var(--color-surface)] text-[var(--color-brand-700)] hover:bg-[var(--color-brand-50)]',
+};
+
+const classes = `${base} ${variants[variant]} ${className}`;
+const resolved = href && !external ? url(href) : href;
+---
+
+{
+  resolved ? (
+    <a
+      href={resolved}
+      class={classes}
+      {...external ? { rel: 'noopener noreferrer' } : {}}
+    >
+      <slot />
+    </a>
+  ) : (
+    <button type={type} class={classes}>
+      <slot />
+    </button>
+  )
+}

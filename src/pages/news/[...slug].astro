@@ -1,0 +1,46 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import Section from '~/components/Section.astro';
+
+/**
+ * PLACEHOLDER detail route. Proves markdown bodies render and that drafts are
+ * excluded from production builds.
+ */
+export async function getStaticPaths() {
+  const posts = await getCollection('news', ({ data }) =>
+    import.meta.env.PROD ? !data.draft : true,
+  );
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props as { post: CollectionEntry<'news'> };
+const { Content } = await render(post);
+---
+
+<BaseLayout title={post.data.title} description={post.data.description}>
+  <Section size="tight">
+    <article>
+      <time
+        class="text-sm font-semibold tracking-wide uppercase text-[var(--color-text-muted)]"
+        datetime={post.data.date.toISOString()}
+      >
+        {
+          post.data.date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          })
+        }
+      </time>
+
+      <h1 class="text-display mt-3 font-extrabold text-balance">{post.data.title}</h1>
+
+      {/* Unstyled on purpose: prose styling is a design decision, not a
+          scaffolding one. Markdown renders semantically until then. */}
+      <div class="mt-10 max-w-2xl space-y-4">
+        <Content />
+      </div>
+    </article>
+  </Section>
+</BaseLayout>

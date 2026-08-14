@@ -1,0 +1,75 @@
+---
+import { url } from '~/lib/url';
+import Button from './Button.astro';
+
+/**
+ * NAV APPROACH — deliberate, worth reading before "adding a hamburger".
+ *
+ * The links are always visible and wrap onto a second row on small screens.
+ * There is no toggle, which means no JavaScript, no focus trapping, no ARIA
+ * expanded state, and nothing to break. For a handful of short links this is
+ * also better UX than hiding them behind a tap.
+ *
+ * The no-JS `<details>` disclosure pattern was considered and rejected: closed
+ * `<details>` content is hidden by the UA in a way CSS cannot reliably override
+ * at desktop widths, so it forces either duplicated nav markup or JavaScript.
+ *
+ * If the nav grows past ~6 items, revisit — that is the point where a
+ * disclosure earns its complexity.
+ *
+ * PLACEHOLDER: these items mirror the current site's structure. Real
+ * information architecture is the content conversation.
+ */
+const links = [
+  { label: 'Initiatives', href: '/initiatives' },
+  { label: 'Trailblazers', href: '/trailblazers' },
+  { label: 'Press', href: '/press' },
+  { label: 'Contact', href: '/contact' },
+];
+
+// Astro.url.pathname includes the base path; url() lets these compare directly.
+const here = Astro.url.pathname.replace(/\/$/, '');
+---
+
+<header class="border-b border-[var(--color-border)] bg-[var(--color-surface)]">
+  <div
+    class="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-6 gap-y-3 px-5 py-4 sm:px-8"
+  >
+    <a
+      href={url('/')}
+      class="text-xl font-extrabold tracking-tight text-[var(--color-brand-700)] no-underline"
+    >
+      Share Meals
+    </a>
+
+    <nav aria-label="Main" class="order-3 w-full sm:order-2 sm:w-auto">
+      <ul class="flex flex-wrap gap-x-6 gap-y-2 p-0 m-0 list-none">
+        {
+          links.map((link) => {
+            const target = url(link.href);
+            const isCurrent = here === target.replace(/\/$/, '');
+            return (
+              <li>
+                <a
+                  href={target}
+                  aria-current={isCurrent ? 'page' : undefined}
+                  class:list={[
+                    'text-[var(--color-text)] no-underline hover:text-[var(--color-brand-700)]',
+                    isCurrent &&
+                      'font-semibold text-[var(--color-brand-700)] underline underline-offset-4',
+                  ]}
+                >
+                  {link.label}
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </nav>
+
+    <div class="order-2 ml-auto sm:order-3">
+      <Button href="/donate" class="px-5 py-2 text-sm">Donate</Button>
+    </div>
+  </div>
+</header>

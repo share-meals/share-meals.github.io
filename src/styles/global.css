@@ -1,0 +1,161 @@
+@import 'tailwindcss';
+
+/* =============================================================================
+   Share Meals design tokens
+
+   READ THIS BEFORE CHANGING COLORS OR TYPE.
+
+   This file is the token ARCHITECTURE, not the finished design. Typeface and
+   the full palette are deliberately open decisions. What is committed here is
+   the *shape* of the system — named slots, a ramp structure, a type scale — so
+   the design conversation fills in values without restructuring anything.
+
+   FIXED    #106535 brand green. Confirmed from the live site. Do not change.
+   OPEN     accent, neutrals, typeface. Marked PLACEHOLDER below.
+
+   Accessibility rule: WCAG 2.1 AA is a constraint on choosing values, not an
+   audit run afterward. Legal pairings are listed at the bottom of this file and
+   verified by `yarn check:contrast`. If a pairing is not on that list, it has
+   not been cleared for use.
+   ========================================================================== */
+
+@theme {
+  /* ---------------------------------------------------------------------------
+     Brand green — FIXED
+     #106535 sits at 700. The ramp around it is derived, and tints may be
+     adjusted during the design pass, but 700 itself is the brand and is fixed.
+     ------------------------------------------------------------------------ */
+  --color-brand-50: #f0f9f3;
+  --color-brand-100: #dcf1e3;
+  --color-brand-200: #bbe3ca;
+  --color-brand-300: #8ccda6;
+  --color-brand-400: #55af7c;
+  --color-brand-500: #2f9159;
+  --color-brand-600: #1e7746;
+  --color-brand-700: #106535; /* ← THE BRAND */
+  --color-brand-800: #0d4f2a;
+  --color-brand-900: #0b4023;
+  --color-brand-950: #052414;
+
+  /* ---------------------------------------------------------------------------
+     Accent — PLACEHOLDER
+     Currently aliased to the brand green so nothing renders as broken or
+     visually provisional. It is NOT a design decision yet. The previous site
+     used #f95531 orange; treat that as prior art to react against.
+
+     Whatever is chosen must clear AA against its intended backgrounds. Bright
+     warm accents commonly fail on white for body text — if that happens, the
+     accent gets restricted to large display type and block fills rather than
+     being quietly used anyway.
+     ------------------------------------------------------------------------ */
+  --color-accent: var(--color-brand-700);
+  --color-accent-contrast: #ffffff;
+
+  /* ---------------------------------------------------------------------------
+     Neutrals — PLACEHOLDER
+     A plain, slightly warm gray ramp. Defensible and AA-clean, chosen to be
+     unobtrusive rather than expressive. Expect these to be replaced.
+     ------------------------------------------------------------------------ */
+  --color-ink-50: #f7f7f6;
+  --color-ink-100: #eeeeec;
+  --color-ink-200: #dcdcd8;
+  --color-ink-300: #bdbdb7;
+  --color-ink-400: #93938c;
+  --color-ink-500: #74746d;
+  --color-ink-600: #5c5c56;
+  --color-ink-700: #4a4a45;
+  --color-ink-800: #2e2e2b;
+  --color-ink-900: #1c1c1a;
+  --color-ink-950: #111110;
+
+  /* Semantic slots. Components reference THESE, never raw ramp steps, so the
+     design pass can retarget meaning without touching component code. */
+  --color-surface: #ffffff;
+  --color-surface-muted: var(--color-ink-50);
+  --color-surface-inverse: var(--color-brand-700);
+  --color-text: var(--color-ink-900);
+  --color-text-muted: var(--color-ink-600);
+  --color-text-inverse: #ffffff;
+  --color-border: var(--color-ink-200);
+
+  /* ---------------------------------------------------------------------------
+     Typography — PLACEHOLDER
+     System stack until the typeface is chosen. In a typographic design the
+     typeface IS the design, so this is a real decision made deliberately, not a
+     footnote to scaffolding. When chosen it gets self-hosted as woff2 with
+     font-display: swap — no third-party request, no external dependency.
+     ------------------------------------------------------------------------ */
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica,
+    Arial, sans-serif;
+
+  /* Deliberately wide scale. The design direction leans on oversized type to do
+     the work photography would otherwise do, so the top end is generous and the
+     jumps are large enough to read as intentional hierarchy. */
+  --text-display-2xl: clamp(3rem, 9vw, 7rem);
+  --text-display-2xl--line-height: 0.95;
+  --text-display-2xl--letter-spacing: -0.03em;
+  --text-display-xl: clamp(2.5rem, 6.5vw, 5rem);
+  --text-display-xl--line-height: 1;
+  --text-display-xl--letter-spacing: -0.025em;
+  --text-display: clamp(2rem, 4.5vw, 3.5rem);
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.02em;
+  --text-lead: clamp(1.125rem, 1.8vw, 1.5rem);
+  --text-lead--line-height: 1.5;
+}
+
+/* =============================================================================
+   Base layer
+   ========================================================================== */
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-surface);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Visible, unambiguous focus ring. Required for the keyboard path to be
+     usable at all, and easy to lose later to a stray `outline: none`. */
+  :focus-visible {
+    outline: 3px solid var(--color-brand-700);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* Honor a user's reduced-motion preference. The design is static by
+     intent, so this is a backstop rather than a workaround. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* =============================================================================
+   AA-legal pairings — verified by `yarn check:contrast`
+
+   Normal text needs >= 4.5:1. Large text (>=24px, or >=18.66px bold) needs 3:1.
+
+   CLEARED for normal text:
+     text on surface .............. ink-900  on white
+     text-muted on surface ........ ink-600  on white
+     brand-700 on surface ......... #106535  on white
+     text-inverse on inverse ...... white    on brand-700
+     text on surface-muted ........ ink-900  on ink-50
+
+   NOT CLEARED — do not use for body text:
+     brand-500 or lighter on white (large display type only)
+     ink-400 or lighter on white
+   ========================================================================== */

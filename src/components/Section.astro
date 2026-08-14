@@ -1,0 +1,43 @@
+---
+/**
+ * Full-width band with a constrained inner column.
+ *
+ * The design direction leans on full-bleed color blocks, so the band and its
+ * content width are separated here rather than being re-solved per page.
+ */
+interface Props {
+  /** Background treatment. `inverse` flips to brand green with white text. */
+  tone?: 'default' | 'muted' | 'inverse';
+  /** Vertical rhythm. `hero` is the oversized opening band. */
+  size?: 'default' | 'tight' | 'hero';
+  class?: string;
+  /** Rendered element. Use `div` when the section is not a landmark. */
+  as?: 'section' | 'div' | 'header' | 'footer';
+}
+
+const {
+  tone = 'default',
+  size = 'default',
+  class: className = '',
+  as: Tag = 'section',
+} = Astro.props;
+
+// Only AA-cleared pairings — see the legal set at the bottom of global.css.
+const tones = {
+  default: 'bg-[var(--color-surface)] text-[var(--color-text)]',
+  muted: 'bg-[var(--color-surface-muted)] text-[var(--color-text)]',
+  inverse: 'bg-[var(--color-surface-inverse)] text-[var(--color-text-inverse)]',
+};
+
+const sizes = {
+  tight: 'py-10 md:py-14',
+  default: 'py-16 md:py-24',
+  hero: 'py-20 md:py-32',
+};
+---
+
+<Tag class={`${tones[tone]} ${sizes[size]} ${className}`}>
+  <div class="mx-auto w-full max-w-6xl px-5 sm:px-8">
+    <slot />
+  </div>
+</Tag>

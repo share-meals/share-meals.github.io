@@ -1,0 +1,58 @@
+---
+import '~/styles/global.css';
+import Header from '~/components/Header.astro';
+import Footer from '~/components/Footer.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Omit the site-name suffix — for the home page, which carries its own. */
+  bareTitle?: boolean;
+}
+
+const { title, description, bareTitle = false } = Astro.props;
+
+const fullTitle = bareTitle ? title : `${title} — Share Meals`;
+
+// Astro.site is set in astro.config.mjs, so this resolves to an absolute
+// canonical URL including the base path.
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href={`${import.meta.env.BASE_URL}/favicon.svg`.replace(/\/+/g, '/')} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Share Meals" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary_large_image" />
+    {/* TODO(content): add an og:image once brand assets exist. Absent is
+        better than a broken or placeholder social card. */}
+  </head>
+
+  <body class="flex min-h-screen flex-col">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-[var(--color-brand-700)] focus:px-4 focus:py-2 focus:text-[var(--color-text-inverse)] focus:no-underline"
+    >
+      Skip to main content
+    </a>
+
+    <Header />
+
+    <main id="main" class="flex-1">
+      <slot />
+    </main>
+
+    <Footer />
+  </body>
+</html>

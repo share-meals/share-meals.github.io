@@ -1,0 +1,78 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import Section from '~/components/Section.astro';
+import Button from '~/components/Button.astro';
+
+/**
+ * PLACEHOLDER PAGE. Its job is to prove the tokens, type scale, layout bands,
+ * and AA-cleared color pairings render correctly — not to be the real home
+ * page. Real copy and structure are the content conversation.
+ *
+ * Copy here follows the dignity-first language rule: food that is shared is
+ * food, never "leftover" or "surplus", and the mission is framed as ensuring
+ * food security rather than against insecurity.
+ */
+---
+
+<BaseLayout
+  title="Share Meals — ensuring food security on campus"
+  description="Share Meals connects college students with food available on campus, right when it is available."
+  bareTitle
+>
+  <Section size="hero">
+    <h1 class="text-display-2xl font-extrabold text-balance m-0">
+      Food is on campus.<br />
+      <span class="text-[var(--color-brand-700)]">Students should know.</span>
+    </h1>
+
+    <p class="text-lead mt-8 max-w-2xl text-[var(--color-text-muted)]">
+      Share Meals connects students with food available near them, right when
+      it is available — within a five minute walk.
+    </p>
+
+    <div class="mt-10 flex flex-wrap gap-4">
+      <Button href="/donate">Donate</Button>
+      <Button href="/initiatives" variant="secondary">See our initiatives</Button>
+    </div>
+  </Section>
+
+  <Section tone="inverse">
+    <h2 class="text-display font-extrabold text-balance m-0">
+      Every campus has food. Getting it to students is the work.
+    </h2>
+    <p class="text-lead mt-6 max-w-2xl">
+      Placeholder band demonstrating the inverse tone — white on brand green,
+      verified at 7.16:1.
+    </p>
+    <div class="mt-10">
+      <Button href="/initiatives" variant="inverse">Placeholder action</Button>
+    </div>
+  </Section>
+
+  <Section tone="muted">
+    <h2 class="text-display font-extrabold m-0">Numbers carry the design</h2>
+    <p class="text-lead mt-4 max-w-2xl text-[var(--color-text-muted)]">
+      With no photo library, statistics set at display scale do the visual work
+      photography would otherwise do. Values below are placeholders.
+    </p>
+    <dl class="mt-12 grid gap-10 sm:grid-cols-3">
+      {
+        [
+          ['000,000', 'Meals shared'],
+          ['00', 'Campuses'],
+          ['0,000', 'Students reached'],
+        ].map(([figure, label]) => (
+          <div>
+            <dt class="sr-only">{label}</dt>
+            <dd class="m-0">
+              <span class="text-display-xl block font-extrabold text-[var(--color-brand-700)]">
+                {figure}
+              </span>
+              <span class="mt-2 block text-lg font-semibold">{label}</span>
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </Section>
+</BaseLayout>
