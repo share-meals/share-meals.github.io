@@ -15,12 +15,15 @@ interface Props {
   as?: 'section' | 'div' | 'header' | 'footer';
 }
 
+// Explicitly annotated: the dynamic `as: Tag` destructure defeats Astro's
+// automatic Props inference, leaving `tone` and `size` as `any` and silently
+// dropping type safety on the token lookups below.
 const {
   tone = 'default',
   size = 'default',
   class: className = '',
   as: Tag = 'section',
-} = Astro.props;
+}: Props = Astro.props;
 
 // Only AA-cleared pairings — see the legal set at the bottom of global.css.
 const tones = {

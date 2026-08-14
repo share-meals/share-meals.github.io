@@ -50,23 +50,9 @@ yarn dev
 | `yarn dev` | Dev server with hot reload |
 | `yarn build` | Production build to `dist/` |
 | `yarn preview` | Serve the built site locally |
-| `yarn check` | Contrast audit, link audit, and type check |
+| `yarn check` | Contrast audit and type check |
 
 ## Conventions worth knowing before editing
-
-**Internal links must use the `url()` helper** from `src/lib/url.ts`:
-
-```astro
----
-import { url } from '~/lib/url';
----
-<a href={url('/press')}>Press</a>
-```
-
-The site currently deploys to a project page under `/sharemeals-website`, so a
-hardcoded `href="/press"` works in dev and 404s in production. `yarn
-check:links` fails the build on those. Component props like
-`<Button href="/donate">` are correct as-is — the component resolves them.
 
 **Colors and type come from tokens** in `src/styles/global.css`. Only
 `#106535` green is final; accent, neutrals, and the typeface are open design
@@ -88,9 +74,10 @@ causes trouble with Vite and some Astro integrations.
 
 ## Domain
 
-Currently deploys to the GitHub Pages project page. The apex `sharemeals.org`
-still points at the old Netlify site.
+This is an *organization site*, served at the root of `share-meals.github.io`.
+Because there is no base path, internal links are plain absolute paths
+(`href="/press"`) and need no helper.
 
-At cutover, change `site` and `base` in `astro.config.mjs` to
-`https://sharemeals.org` and `/`, point DNS at GitHub Pages, and delete
-`scripts/check-links.mjs` — it exists only to guard the base path.
+The apex `sharemeals.org` still points at the old Netlify site. At cutover:
+change `site` in `astro.config.mjs` to `https://sharemeals.org`, add a `CNAME`
+file to `public/`, and point DNS at GitHub Pages. Nothing else changes.

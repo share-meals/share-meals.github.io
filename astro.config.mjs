@@ -3,18 +3,16 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 
-// Deployed to a GitHub Pages *project* page until the domain cutover.
+// Organization site: served at the ROOT of share-meals.github.io, so there is
+// no base path and internal links are plain absolute paths like "/press".
 //
-// AT LAUNCH: set site to 'https://sharemeals.org' and base to '/'. Those are the
-// only two lines that change. Everything else works because internal links go
-// through BASE_URL rather than hardcoded absolute paths — see src/lib/url.ts.
-const site = 'https://jonathan-chin.github.io';
-const base = '/sharemeals-website';
+// AT DOMAIN CUTOVER: change `site` to 'https://sharemeals.org'. That is the
+// only line that changes — base stays '/', so no links need touching.
+const site = 'https://share-meals.github.io';
 
 // https://astro.build/config
 export default defineConfig({
   site,
-  base,
   trailingSlash: 'ignore',
   integrations: [sitemap()],
   vite: {

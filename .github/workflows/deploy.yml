@@ -44,12 +44,10 @@ jobs:
       - name: Install
         run: yarn install --immutable
 
-      # Accessibility and base-path checks gate the deploy. A contrast
-      # regression or a hardcoded path fails here rather than in production.
+      # Accessibility and type gate. A contrast regression or a type error
+      # fails the deploy here rather than reaching production.
       - name: Checks
-        run: |
-          yarn check:contrast
-          yarn check:links
+        run: yarn check
 
       - name: Build
         run: yarn build

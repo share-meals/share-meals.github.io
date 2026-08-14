@@ -1,6 +1,4 @@
 ---
-import { url } from '~/lib/url';
-
 /**
  * The legal name "Share Meals United" belongs here and in other legal contexts.
  * Everywhere else in the site the brand name is "Share Meals".
@@ -17,10 +15,10 @@ const year = new Date().getFullYear();
 
     <nav aria-label="Footer" class="mt-8">
       <ul class="flex flex-wrap gap-x-8 gap-y-3 p-0 m-0 list-none">
-        <li><a class="text-inherit underline underline-offset-4" href={url('/initiatives')}>Initiatives</a></li>
-        <li><a class="text-inherit underline underline-offset-4" href={url('/press')}>Press</a></li>
-        <li><a class="text-inherit underline underline-offset-4" href={url('/contact')}>Contact</a></li>
-        <li><a class="text-inherit underline underline-offset-4" href={url('/donate')}>Donate</a></li>
+        <li><a class="text-inherit underline underline-offset-4" href="/initiatives">Initiatives</a></li>
+        <li><a class="text-inherit underline underline-offset-4" href="/press">Press</a></li>
+        <li><a class="text-inherit underline underline-offset-4" href="/contact">Contact</a></li>
+        <li><a class="text-inherit underline underline-offset-4" href="/donate">Donate</a></li>
       </ul>
     </nav>
 

@@ -1,5 +1,4 @@
 ---
-import { url } from '~/lib/url';
 import Button from './Button.astro';
 
 /**
@@ -27,8 +26,8 @@ const links = [
   { label: 'Contact', href: '/contact' },
 ];
 
-// Astro.url.pathname includes the base path; url() lets these compare directly.
-const here = Astro.url.pathname.replace(/\/$/, '');
+// Normalized so '/press' and '/press/' both mark the nav item as current.
+const here = Astro.url.pathname.replace(/\/+$/, '') || '/';
 ---
 
 <header class="border-b border-[var(--color-border)] bg-[var(--color-surface)]">
@@ -36,7 +35,7 @@ const here = Astro.url.pathname.replace(/\/$/, '');
     class="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-6 gap-y-3 px-5 py-4 sm:px-8"
   >
     <a
-      href={url('/')}
+      href="/"
       class="text-xl font-extrabold tracking-tight text-[var(--color-brand-700)] no-underline"
     >
       Share Meals
@@ -46,12 +45,11 @@ const here = Astro.url.pathname.replace(/\/$/, '');
       <ul class="flex flex-wrap gap-x-6 gap-y-2 p-0 m-0 list-none">
         {
           links.map((link) => {
-            const target = url(link.href);
-            const isCurrent = here === target.replace(/\/$/, '');
+            const isCurrent = here === link.href;
             return (
               <li>
                 <a
-                  href={target}
+                  href={link.href}
                   aria-current={isCurrent ? 'page' : undefined}
                   class:list={[
                     'text-[var(--color-text)] no-underline hover:text-[var(--color-brand-700)]',

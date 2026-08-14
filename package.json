@@ -12,13 +12,16 @@
     "preview": "astro preview",
     "astro": "astro",
     "check:contrast": "node scripts/check-contrast.mjs",
-    "check:links": "node scripts/check-links.mjs",
-    "check": "yarn check:contrast && yarn check:links && astro check"
+    "check": "yarn check:contrast && astro check"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.2.1",
     "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "typescript": "^5"
   }
 }

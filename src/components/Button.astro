@@ -1,14 +1,11 @@
 ---
-import { url } from '~/lib/url';
-
 /**
- * Renders an <a> when given `href`, otherwise a <button>. Internal paths are
- * routed through url() so they survive the GitHub Pages base path.
+ * Renders an <a> when given `href`, otherwise a <button>.
  */
 interface Props {
   href?: string;
   variant?: 'primary' | 'secondary' | 'inverse';
-  /** Set for absolute URLs to other sites — skips base-path rewriting. */
+  /** Set for links to other sites — adds rel="noopener noreferrer". */
   external?: boolean;
   class?: string;
   type?: 'button' | 'submit';
@@ -39,13 +36,12 @@ const variants = {
 };
 
 const classes = `${base} ${variants[variant]} ${className}`;
-const resolved = href && !external ? url(href) : href;
 ---
 
 {
-  resolved ? (
+  href ? (
     <a
-      href={resolved}
+      href={href}
       class={classes}
       {...external ? { rel: 'noopener noreferrer' } : {}}
     >

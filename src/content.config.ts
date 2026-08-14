@@ -1,4 +1,6 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection } from 'astro:content';
+// `z` re-exported from 'astro:content' is deprecated in Astro 7.
+import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
 
 /**
@@ -22,7 +24,7 @@ const press = defineCollection({
     publication: z.string(),
     date: z.coerce.date(),
     /** Link to the article. External, so a full URL. */
-    url: z.string().url(),
+    url: z.url(),
     /** Optional pull quote or one-line summary. */
     excerpt: z.string().optional(),
     featured: z.boolean().default(false),
