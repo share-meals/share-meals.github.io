@@ -3,54 +3,72 @@ import BaseLayout from '~/layouts/BaseLayout.astro';
 import Section from '~/components/Section.astro';
 
 /**
- * PLACEHOLDER PAGE. Its job is to prove the tokens, type scale, layout bands,
- * and AA-cleared color pairings render correctly — not to be the real home
- * page. Real copy and structure are the content conversation.
+ * HOME PAGE.
  *
- * Copy here follows the dignity-first language rule: food that is shared is
- * food, never "leftover" or "surplus", and the mission is framed as ensuring
- * food security rather than against insecurity.
+ * The hero is the decided tagline — "Food is a human right." — set alone, with
+ * no trailing qualifier. It is a belief statement, so the lead paragraph
+ * underneath it does the work of saying who we are and what we actually do.
  *
- * The call-to-action buttons were removed with the pages they pointed at. They
- * are not replaced with dead or placeholder hrefs — a button that goes nowhere
- * is worse than no button, and the real destinations are undecided.
+ * Positioning this page has to hold, in this order:
+ *   1. Share Meals is a nonprofit dedicated to food security. Not "an app".
+ *      Technology is one of the tools; it is never the headline.
+ *   2. Colleges are the roots and still the main service population, but they
+ *      are credibility, not scope — campus appears in body copy and never in
+ *      the tagline or an H1, so the brand is not siloed to it.
+ *   3. Non-tech direct service is a side note, mentioned once, not a section.
+ *
+ * Copy follows the dignity-first language rule: food that is shared is food,
+ * and the mission is framed as ensuring food security rather than against
+ * insecurity.
+ *
+ * Still placeholder: the figures in the last band. Real numbers are a content
+ * decision and are deliberately not invented here — see the note there.
+ *
+ * There are no call-to-action buttons because there are no pages to point them
+ * at yet. A button that goes nowhere is worse than no button.
  */
 ---
 
 <BaseLayout
-  title="Share Meals — ensuring food security on campus"
-  description="Share Meals connects college students with food available on campus, right when it is available."
+  title="Share Meals — food is a human right"
+  description="Share Meals is a nonprofit dedicated to food security. Some of that work is software. Some of it is showing up with food."
   bareTitle
 >
   <Section size="hero">
     <h1 class="text-display-2xl font-extrabold text-balance m-0">
-      Food is on campus.<br />
-      <span class="text-[var(--color-brand-700)]">Students should know.</span>
+      Food is a<br />
+      <span class="text-[var(--color-brand-700)]">human right.</span>
     </h1>
 
     <p class="text-lead mt-8 max-w-2xl text-[var(--color-text-muted)]">
-      Share Meals connects students with food available near them, right when
-      it is available — within a five minute walk.
+      Share Meals is a nonprofit dedicated to food security. Some of that work
+      is software. Some of it is showing up with food.
     </p>
-
   </Section>
 
   <Section tone="inverse">
     <h2 class="text-display font-extrabold text-balance m-0">
-      Every campus has food. Getting it to students is the work.
+      Believing it is the easy part.
     </h2>
     <p class="text-lead mt-6 max-w-2xl">
-      Placeholder band demonstrating the inverse tone — white on brand green,
-      verified at 7.16:1.
+      A right that exists on paper is not a meal in anyone's hands. Closing that
+      distance is the whole of our work: software that shows people the food
+      already around them, and programs that put food where software alone
+      won't reach.
+    </p>
+    <p class="text-lead mt-6 max-w-2xl">
+      We began with college students, and campuses are still where most of our
+      work happens. They are not where it stops. A right that only holds on
+      campus was never a right.
     </p>
   </Section>
 
   <Section tone="muted">
-    <h2 class="text-display font-extrabold m-0">Numbers carry the design</h2>
-    <p class="text-lead mt-4 max-w-2xl text-[var(--color-text-muted)]">
-      With no photo library, statistics set at display scale do the visual work
-      photography would otherwise do. Values below are placeholders.
-    </p>
+    {/* TODO(content): replace with real, sourced figures before launch, and
+        keep the labels honest about what each one counts. Zeros are here on
+        purpose — an invented number on a page about a right is a bad trade,
+        and the band's layout is what is being proven, not the values. */}
+    <h2 class="text-display font-extrabold m-0">The work, in numbers</h2>
     <dl class="mt-12 grid gap-10 sm:grid-cols-3">
       {
         [

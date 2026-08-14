@@ -26,3 +26,7 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# local agent tooling — launch configs point at whatever port happens to be
+# free on one machine, so they are not shared state
+.claude/
