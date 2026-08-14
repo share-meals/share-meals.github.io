@@ -28,11 +28,29 @@ Non-negotiables, each of which has already been built or fixed here:
   attribute anywhere west of UTC.
 - **Respect `prefers-reduced-motion`.** Backstopped in `global.css`.
 
-Verify against the **production build** (`yarn build && yarn preview`), not the
-dev server — the Astro dev toolbar injects its own focusable elements and will
-distort keyboard and landmark testing.
+### The gate
 
-Automated checks catch a minority of this. Tab through the page.
+`yarn check:a11y` runs axe-core in real Chromium against every built page and
+exits non-zero on any violation. It is wired into the deploy workflow after the
+build, so a violation fails the deploy rather than reaching production.
+
+```
+yarn check:all     # types + token contrast + build + WCAG gate
+yarn check:a11y    # WCAG gate alone — needs `yarn build` first
+```
+
+It checks each page at 1280px and again at 320px, because contrast and target
+size problems often only appear after the layout reflows, and it measures
+reflow itself since axe does not.
+
+**What it cannot do.** axe catches perhaps a third to a half of WCAG issues. It
+cannot tell whether alt text is *accurate*, whether a heading *describes* its
+section, whether link text makes sense out of context, or whether a keyboard
+order is *sensible* rather than merely present. A green gate is not compliance.
+
+Verify by hand against the **production build** (`yarn build && yarn preview`),
+never the dev server — the Astro dev toolbar injects its own focusable elements
+and will distort keyboard and landmark testing. Tab through the page.
 
 ## Development
 
