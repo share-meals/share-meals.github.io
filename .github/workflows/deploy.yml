@@ -49,7 +49,14 @@ jobs:
       - name: Checks
         run: yarn check
 
+      # PUBLIC_DIRECTUS_URL is a repository *variable*, not a secret: it is a
+      # public unauthenticated endpoint, and the value is compiled into a
+      # script every visitor downloads, so there would be nothing to hide.
+      # Leaving it unset is a supported state — the impact band is left out of
+      # the build entirely rather than shipping broken.
       - name: Build
+        env:
+          PUBLIC_DIRECTUS_URL: ${{ vars.PUBLIC_DIRECTUS_URL }}
         run: yarn build
 
       # The WCAG gate runs against the built output, so the browser has to be

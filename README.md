@@ -52,6 +52,24 @@ yarn dev
 | `yarn preview` | Serve the built site locally |
 | `yarn check` | Contrast audit and type check |
 
+### The impact numbers
+
+The band of figures at the foot of the home page is fetched in the browser from
+the Directus `/public-stats` endpoint. Point `PUBLIC_DIRECTUS_URL` at the
+backend to enable it — see `.env.example`, and the `PUBLIC_DIRECTUS_URL`
+repository variable for CI and deploys.
+
+With the variable unset the band is left out of the build, which is the correct
+behaviour rather than a degraded one: the numbers are decoration, and every
+failure path — no variable, no network, a 500, a malformed payload, no
+JavaScript — ends with the band simply not appearing. Nothing on the page
+should be written to assume it is there.
+
+The labels are constrained by what the endpoint actually counts.
+`servings_offered` is what people *offered*, not what anyone received, so it is
+captioned "servings offered" and never "meals served". `src/components/ImpactStats.astro`
+carries the reasoning; read it before changing any wording there.
+
 ## Conventions worth knowing before editing
 
 **Colors and type come from tokens** in `src/styles/global.css`. Only

@@ -1,0 +1,294 @@
+---
+import Section from '~/components/Section.astro';
+
+/**
+ * ORG-WIDE IMPACT NUMBERS, from the Directus `GET /public-stats` endpoint.
+ *
+ * WHY THE NUMBERS ARE FETCHED IN THE BROWSER RATHER THAN BAKED IN AT BUILD.
+ *
+ * The backend recomputes this payload up to once a day. Fetching at build time
+ * would freeze the numbers at whenever the site was last deployed, which on a
+ * site that deploys by hand could be weeks. The cost is that the band is not
+ * in the HTML, which is discussed under "what the gate cannot see" below.
+ *
+ * FAIL QUIET, ALWAYS.
+ *
+ * These numbers are decoration on a marketing page, not its purpose, so no
+ * failure here may degrade the page. The band ships `hidden` and is revealed
+ * only once real data has arrived and passed the checks below. A network
+ * failure, a CORS failure, a 500, a malformed payload, or no JavaScript at all
+ * all land in the same place: the band never appears and the page reads as
+ * though it was never there. There is deliberately no spinner, no error
+ * message, and no zeroed-out placeholder — see the note on zeroes below.
+ *
+ * WHAT THE GATE CANNOT SEE.
+ *
+ * `yarn check:a11y` runs axe against the built page, where this band is still
+ * `hidden` and therefore skipped. The revealed state has been checked by hand
+ * at 1280px and 320px against a local mock of the endpoint, and the markup is
+ * static — only the text nodes change — so there is nothing dynamic for the
+ * gate to miss. Anyone changing the *structure* here has to re-check by hand;
+ * a green gate says nothing about this component.
+ *
+ * The band is omitted from the build entirely when PUBLIC_DIRECTUS_URL is
+ * unset, rather than shipping a script with nowhere to call.
+ */
+
+const directusUrl = import.meta.env.PUBLIC_DIRECTUS_URL;
+---
+
+{
+  directusUrl && (
+    <Section tone="muted" id="impact" hidden>
+      <h2 class="text-display m-0 font-extrabold">The work, in numbers</h2>
+
+      {/*
+        Label in the <dt>, figure in the <dd>, with the visual order flipped by
+        `flex-col-reverse` so the number still reads first. The alternative —
+        an `sr-only` <dt> repeating a visible label — makes screen readers
+        announce every label twice.
+      */}
+      <dl class="mt-12 grid gap-10 sm:grid-cols-3" data-figures>
+        <div class="flex flex-col-reverse">
+          <dt class="mt-2 text-lg font-semibold">Communities</dt>
+          <dd
+            class="figure m-0 font-extrabold text-[var(--color-brand-700)]"
+            data-figure="communities"
+          />
+        </div>
+        <div class="flex flex-col-reverse">
+          <dt class="mt-2 text-lg font-semibold">People sharing food</dt>
+          <dd
+            class="figure m-0 font-extrabold text-[var(--color-brand-700)]"
+            data-figure="members"
+          />
+        </div>
+        <div class="flex flex-col-reverse">
+          {/*
+            "Servings offered", never "meals served". The backend counts what
+            people said they were putting out, not what anyone took — the
+            endpoint has no delivery figure to offer. Captioning an offer as a
+            delivery would overstate the work on a page about a right.
+          */}
+          <dt class="mt-2 text-lg font-semibold">Servings offered</dt>
+          <dd
+            class="figure m-0 font-extrabold text-[var(--color-brand-700)]"
+            data-figure="servings_offered"
+          />
+        </div>
+      </dl>
+
+      <div class="mt-14" data-regions hidden>
+        <h3 class="m-0 text-lg font-semibold">By region</h3>
+        <ul class="m-0 mt-4 grid list-none gap-4 p-0 sm:grid-cols-2" data-region-list />
+        {/*
+          Both halves of this are load-bearing. The rows genuinely do not sum
+          to the totals, because communities with no region recorded are left
+          off — claiming otherwise would be checkable and wrong. And a region's
+          row credits it only with the people attributed to it, so a member
+          active in two regions lands in one row; calling that "reach" would
+          overstate every row on the list.
+        */}
+        <p class="mt-6 max-w-2xl text-[var(--color-text-muted)]">
+          Each community is counted in one region, and communities without a
+          region recorded are left off — so these rows come to less than the
+          totals above. They show where the work is attributed, not everyone a
+          region reaches.
+        </p>
+      </div>
+
+      {/*
+        Deliberately vague, and deliberately not built from `generated_at`. The
+        payload is cached for up to a day, so a precise "as of 4:31pm" would sit
+        unchanged for hours and invite someone to notice. A loose phrase also
+        sidesteps the timezone trap: there is no rendered date to drift out of
+        step with a `datetime` attribute.
+      */}
+      <p class="mt-12 text-[var(--color-text-muted)]">Updated daily.</p>
+    </Section>
+  )
+}
+
+<style>
+  /**
+   * WHY THESE FIGURES DO NOT USE THE `display-xl` STEP FROM THE TYPE SCALE.
+   *
+   * The scale sizes type against the viewport, which is the right default and
+   * wrong here: what has to fit is the *column*, and how much of it a figure
+   * needs depends on how many digits the backend sends. `display-xl` at 1280px
+   * is ~83px, and seven-digit figures at that size run straight through the
+   * column into the one beside them. That is not a hypothetical — the endpoint
+   * documents that production numbers are larger than the sample, so the band
+   * would break precisely as the work it describes grows.
+   *
+   * So the figure is sized to the narrower of two limits: the viewport-based
+   * step it would otherwise have used, and whatever fits the column at the
+   * current digit count. Short numbers are unaffected and keep the full
+   * display size; only long ones step down, and all three step down together
+   * because `--chars` is the longest of them.
+   *
+   * The 0.68em-per-character budget is deliberately generous — Onest's digits
+   * are nearer 0.6em and its comma far narrower — because the headroom is what
+   * absorbs the letter-spacing increase required by WCAG 1.4.12. Verified at
+   * 1280px and 320px, with the spacing overrides applied and seven-digit
+   * figures loaded.
+   */
+  [data-figures] {
+    /* Overwritten from the payload; this default only covers the moment
+       before the script runs, when the band is still hidden anyway. */
+    --chars: 6;
+  }
+
+  [data-figures] > div {
+    container-type: inline-size;
+  }
+
+  .figure {
+    font-size: clamp(
+      2.5rem,
+      min(6.5vw, calc(100cqi / (var(--chars) * 0.68))),
+      5rem
+    );
+    line-height: 1;
+    letter-spacing: -0.025em;
+  }
+</style>
+
+<script>
+  /** Trailing slashes are easy to leave on an env var and produce a 404. */
+  const BASE = import.meta.env.PUBLIC_DIRECTUS_URL?.replace(/\/+$/, '');
+
+  /** The three totals the band renders. `swipes_given` is deliberately not
+   *  shown: it is a genuine delivered count, but adding it to an offer figure
+   *  would launder one into the other, and alone it is too small to caption. */
+  const FIGURES = ['communities', 'members', 'servings_offered'] as const;
+
+  interface Metrics {
+    communities: number;
+    members: number;
+    posts: number;
+    servings_offered: number;
+    swipes_given: number;
+  }
+
+  interface RegionRow extends Metrics {
+    /** `null` is a real bucket — a community whose region an admin never set. */
+    region: string | null;
+  }
+
+  interface PublicStats {
+    generated_at: string;
+    totals: Metrics;
+    by_region: RegionRow[];
+  }
+
+  /**
+   * The endpoint is documented to return numbers, not numeric strings, and to
+   * always include both views. This checks anyway: a static page has no way to
+   * recover from a surprise, so anything unexpected becomes "no data" and the
+   * band stays hidden.
+   */
+  function isStats(value: unknown): value is PublicStats {
+    if (typeof value !== 'object' || value === null) return false;
+    const { totals, by_region: byRegion } = value as Partial<PublicStats>;
+    if (typeof totals !== 'object' || totals === null) return false;
+    if (!FIGURES.every((key) => Number.isFinite(totals[key]))) return false;
+    return Array.isArray(byRegion);
+  }
+
+  async function loadStats(): Promise<PublicStats | null> {
+    try {
+      // No `credentials: 'include'`. The backend sends
+      // `Access-Control-Allow-Origin: *` while Directus sets
+      // `Access-Control-Allow-Credentials: true` process-wide, and browsers
+      // reject that pair — but only on credentialed requests. There is nothing
+      // to authenticate as here, so a plain fetch is both correct and the only
+      // one that works.
+      const res = await fetch(`${BASE}/public-stats`);
+      if (!res.ok) return null;
+      const body: unknown = await res.json();
+      const data = (body as { data?: unknown })?.data;
+      return isStats(data) ? data : null;
+    } catch {
+      // Offline, DNS, CORS, a deploy in progress — all the same to the page.
+      return null;
+    }
+  }
+
+  /** Locale is pinned to match `<html lang="en">`. A bare `toLocaleString()`
+   *  would render "3.312" for a reader whose browser is set to German, on a
+   *  page that claims to be in English. */
+  const format = (n: number) => n.toLocaleString('en-US');
+
+  const plural = (n: number, one: string, many: string) =>
+    `${format(n)} ${n === 1 ? one : many}`;
+
+  function render(stats: PublicStats) {
+    const section = document.querySelector<HTMLElement>('#impact');
+    if (!section) return;
+
+    // Zeroes are worse than nothing: "0 communities" reads as a dead project,
+    // and this band exists to show the work is real. If any headline figure is
+    // missing, the honest move is to say nothing at all.
+    if (FIGURES.some((key) => stats.totals[key] <= 0)) return;
+
+    const formatted = FIGURES.map((key) => format(stats.totals[key]));
+
+    for (const [i, key] of FIGURES.entries()) {
+      const cell = section.querySelector<HTMLElement>(`[data-figure="${key}"]`);
+      if (cell) cell.textContent = formatted[i];
+    }
+
+    // Hand the longest figure to the CSS so all three can be sized to fit
+    // their column. See the note above the `.figure` rule for why the type
+    // scale alone cannot do this.
+    const grid = section.querySelector<HTMLElement>('[data-figures]');
+    const longest = Math.max(...formatted.map((s) => s.length));
+    grid?.style.setProperty('--chars', String(longest));
+
+    // Rows with no region are a real bucket, not an error — but "Unspecified"
+    // is not a place, and naming it on a public page explains an internal data
+    // gap to an audience that has no use for it. Those rows are dropped here;
+    // the totals above still include them, which is why the two views can
+    // disagree on their sum without either being wrong.
+    const named = stats.by_region.filter(
+      (row) => typeof row.region === 'string' && row.region.trim() !== '',
+    );
+
+    const regions = section.querySelector<HTMLElement>('[data-regions]');
+    const list = section.querySelector<HTMLElement>('[data-region-list]');
+
+    // One region tells the reader nothing the totals did not already say.
+    if (regions && list && named.length > 1) {
+      for (const row of named) {
+        const item = document.createElement('li');
+
+        const name = document.createElement('span');
+        name.className = 'block font-semibold';
+        // textContent, not innerHTML: region names are admin-entered strings
+        // arriving over the network and are treated as data, never markup.
+        name.textContent = row.region;
+
+        const detail = document.createElement('span');
+        detail.className = 'mt-1 block text-[var(--color-text-muted)]';
+        detail.textContent = [
+          plural(row.members, 'person', 'people'),
+          `${format(row.servings_offered)} servings offered`,
+        ].join(', ');
+
+        item.append(name, detail);
+        list.append(item);
+      }
+      regions.hidden = false;
+    }
+
+    // Revealed only now, with every figure already in place, so the band never
+    // appears mid-populate. No `aria-live` — this is not an update the reader
+    // asked for, and announcing a block of marketing figures over whatever
+    // they were reading would be noise.
+    section.hidden = false;
+  }
+
+  const stats = await loadStats();
+  if (stats) render(stats);
+</script>

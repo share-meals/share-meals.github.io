@@ -179,6 +179,8 @@
      brand-700 on surface ......... #106535  on white
      text-inverse on inverse ...... white    on brand-700
      text on surface-muted ........ ink-900  on ink-50
+     text-muted on surface-muted .. ink-600  on ink-50
+     brand-700 on surface-muted ... #106535  on ink-50
 
    NOT CLEARED — do not use for body text:
      brand-500 or lighter on white (large display type only)

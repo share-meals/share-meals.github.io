@@ -45,7 +45,11 @@ jobs:
       - name: Types and token contrast
         run: yarn check
 
+      # Same repository variable the deploy uses, so review builds the same
+      # page production will. See the note in deploy.yml.
       - name: Build
+        env:
+          PUBLIC_DIRECTUS_URL: ${{ vars.PUBLIC_DIRECTUS_URL }}
         run: yarn build
 
       # The WCAG gate drives a real browser against the built output, so both
