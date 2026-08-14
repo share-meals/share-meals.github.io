@@ -52,11 +52,31 @@ jobs:
       - name: Build
         run: yarn build
 
-      # The WCAG gate runs against the built output, so it has to come after
-      # the build. Only Chromium is installed, and `--with-deps` pulls the
-      # system libraries the headless browser needs on a bare runner.
+      # The WCAG gate runs against the built output, so the browser has to be
+      # ready after the build. Cache keyed on the resolved Playwright version,
+      # since the browser build is tied to the Playwright release — an
+      # unrelated dependency bump should not discard a 115MB download.
+      - name: Resolve Playwright version
+        id: pw
+        run: |
+          echo "version=$(node -p "require('./node_modules/playwright/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Chromium
+        id: playwright-cache
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.pw.outputs.version }}-chromium
+
       - name: Install Chromium for the accessibility gate
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: yarn playwright install --with-deps chromium
+
+      # A cache hit restores the browser binary but not the system libraries it
+      # links against — those live outside the cached path.
+      - name: Install browser system libraries
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: yarn playwright install-deps chromium
 
       # Fails the deploy on any WCAG 2.2 AA violation. This is the enforcement
       # behind the accessibility requirement in AGENTS.md — without it, the
