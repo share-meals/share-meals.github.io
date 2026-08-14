@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '~/layouts/BaseLayout.astro';
 import Section from '~/components/Section.astro';
-import Button from '~/components/Button.astro';
 
 /**
  * PLACEHOLDER PAGE. Its job is to prove the tokens, type scale, layout bands,
@@ -11,6 +10,10 @@ import Button from '~/components/Button.astro';
  * Copy here follows the dignity-first language rule: food that is shared is
  * food, never "leftover" or "surplus", and the mission is framed as ensuring
  * food security rather than against insecurity.
+ *
+ * The call-to-action buttons were removed with the pages they pointed at. They
+ * are not replaced with dead or placeholder hrefs — a button that goes nowhere
+ * is worse than no button, and the real destinations are undecided.
  */
 ---
 
@@ -30,10 +33,6 @@ import Button from '~/components/Button.astro';
       it is available — within a five minute walk.
     </p>
 
-    <div class="mt-10 flex flex-wrap gap-4">
-      <Button href="/donate">Donate</Button>
-      <Button href="/initiatives" variant="secondary">See our initiatives</Button>
-    </div>
   </Section>
 
   <Section tone="inverse">
@@ -44,9 +43,6 @@ import Button from '~/components/Button.astro';
       Placeholder band demonstrating the inverse tone — white on brand green,
       verified at 7.16:1.
     </p>
-    <div class="mt-10">
-      <Button href="/initiatives" variant="inverse">Placeholder action</Button>
-    </div>
   </Section>
 
   <Section tone="muted">
