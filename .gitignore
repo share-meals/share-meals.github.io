@@ -5,6 +5,10 @@ dist/
 
 # dependencies
 node_modules/
+# Yarn's local resolution cache. Regenerated on every install and pinned by
+# nothing — yarn.lock is the file that actually fixes versions. Tracking it
+# just puts a 340KB binary diff in every dependency change.
+.yarn/install-state.gz
 
 # logs
 npm-debug.log*
