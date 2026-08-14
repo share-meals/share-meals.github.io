@@ -49,10 +49,34 @@ jobs:
         run: yarn build
 
       # The WCAG gate drives a real browser against the built output, so both
-      # the build and the browser have to come first. `--with-deps` pulls the
-      # system libraries the headless shell needs on a bare runner.
+      # the build and the browser have to come first.
+      #
+      # Keyed on the resolved Playwright version rather than the lockfile: the
+      # browser build is tied to the Playwright release, so an unrelated
+      # dependency bump should not throw away a 115MB download. Resolved after
+      # `yarn install`, since it reads from node_modules.
+      - name: Resolve Playwright version
+        id: pw
+        run: |
+          echo "version=$(node -p "require('./node_modules/playwright/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Chromium
+        id: playwright-cache
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.pw.outputs.version }}-chromium
+
       - name: Install Chromium
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: yarn playwright install --with-deps chromium
+
+      # A cache hit restores the browser binary but not the system libraries it
+      # links against — those are installed outside the cached path, so they
+      # still have to be put back on a fresh runner.
+      - name: Install browser system libraries
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: yarn playwright install-deps chromium
 
       - name: Accessibility gate
         run: yarn check:a11y
