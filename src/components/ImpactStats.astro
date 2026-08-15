@@ -1,5 +1,29 @@
 ---
 import Section from '~/components/Section.astro';
+import { US_STATE_PATHS, US_STATE_VIEWBOX } from '~/data/us-states';
+
+interface Props {
+  /**
+   * How the regional breakdown is drawn.
+   *
+   * `tiles` is the default and the recommendation. Equal squares give New
+   * Jersey the same weight as Texas, which matters because the states Share
+   * Meals works in are exactly the ones a real map renders as slivers.
+   *
+   * `geographic` is true state outlines — instantly recognisable, and honest
+   * about where the country actually is, at the cost of ~24KB of inline path
+   * data and shaded states a few pixels wide.
+   *
+   * `none` drops the map and keeps the list.
+   *
+   * `both` renders the two side by side. It exists to choose between them,
+   * not to ship — two maps of the same four numbers is redundant on a page
+   * whose job is to be read quickly.
+   */
+  map?: 'tiles' | 'geographic' | 'both' | 'none';
+}
+
+const { map = 'tiles' }: Props = Astro.props;
 
 /**
  * ORG-WIDE IMPACT NUMBERS, from the Directus `GET /public-stats` endpoint.
@@ -23,22 +47,88 @@ import Section from '~/components/Section.astro';
  *
  * WHAT THE GATE CANNOT SEE.
  *
- * `yarn check:a11y` runs axe against the built page, where this band is still
- * `hidden` and therefore skipped. The revealed state has been checked by hand
- * at 1280px and 320px against a local mock of the endpoint, and the markup is
- * static — only the text nodes change — so there is nothing dynamic for the
- * gate to miss. Anyone changing the *structure* here has to re-check by hand;
- * a green gate says nothing about this component.
+ * In a normal build `yarn check:a11y` runs axe against a page where this band
+ * is still `hidden`, so axe skips it entirely and a green gate says nothing
+ * about this component.
  *
- * The band is omitted from the build entirely when PUBLIC_DIRECTUS_URL is
- * unset, rather than shipping a script with nowhere to call.
+ * The fixture below fixes that, as a side effect worth knowing about: it
+ * resolves with no network, so the band is revealed before the page finishes
+ * loading and axe sees the real thing. Anyone changing the structure here
+ * should run the gate that way:
+ *
+ *   USE_DUMMY_STATS=1 yarn build && yarn check:a11y
+ *
+ * Still beyond it: 1.4.12 text spacing, which axe does not test, and long
+ * figures — the fixture is one payload, and it was a seven-digit number that
+ * broke the column during development.
+ *
+ * With PUBLIC_DIRECTUS_URL unset the markup is omitted from the build, but
+ * roughly 1.5KB of inert script still ships: Astro bundles a component's
+ * `<script>` statically, so a runtime condition cannot remove it. It exits
+ * immediately — no fixture tag to read, and no base URL to fetch from. Not
+ * worth contorting the component to shave, but worth not claiming otherwise.
+ *
+ * LOOKING AT IT WITHOUT A BACKEND.
+ *
+ * `USE_DUMMY_STATS=1` embeds `fixtures/public-stats.dummy.json` in the page
+ * and the script reads that instead of fetching anything, so the band can be
+ * worked on with no Directus running and no server to start. It is off unless
+ * the variable is set in the shell, it is never set in CI or the deploy
+ * workflow, and the build prints a warning whenever it is on — because the
+ * whole risk of a plausible fake is that it stops looking like one.
  */
 
 const directusUrl = import.meta.env.PUBLIC_DIRECTUS_URL;
+
+// process.env, not import.meta.env: Astro only exposes PUBLIC_-prefixed
+// variables through the latter, and this one must not reach the client bundle
+// as a build-time flag. It follows that USE_DUMMY_STATS has to be set in the
+// shell — putting it in `.env` will not work, because Astro does not load
+// `.env` files into process.env.
+//
+// `astro dev` with nothing configured falls back to the fixture on its own.
+// Without that the band simply is not there while working on the page, which
+// is indistinguishable from having broken it. `import.meta.env.DEV` is false
+// during `astro build`, so this cannot follow anything into production.
+const useDummy =
+  process.env.USE_DUMMY_STATS === '1' || (import.meta.env.DEV && !directusUrl);
+
+/**
+ * The tile grid, one row per line, '' for a gap. This is the widely used
+ * 8x11 arrangement: geographically suggestive rather than accurate, which is
+ * the whole trade — Rhode Island gets the same square as Texas.
+ *
+ * All 50 states and DC are laid out whether or not there is data for them, so
+ * the country reads as a country. Empty ones stay faint.
+ */
+const TILE_ROWS = [
+  ['AK', '', '', '', '', '', '', '', '', '', 'ME'],
+  ['', '', '', '', '', '', '', '', '', 'VT', 'NH'],
+  ['WA', 'ID', 'MT', 'ND', 'MN', 'IL', 'WI', 'MI', 'NY', 'RI', 'MA'],
+  ['OR', 'NV', 'WY', 'SD', 'IA', 'IN', 'OH', 'PA', 'NJ', 'CT', ''],
+  ['CA', 'UT', 'CO', 'NE', 'MO', 'KY', 'WV', 'VA', 'MD', 'DC', ''],
+  ['', 'AZ', 'NM', 'KS', 'AR', 'TN', 'NC', 'SC', 'DE', '', ''],
+  ['', '', '', 'OK', 'LA', 'MS', 'AL', 'GA', '', '', ''],
+  ['HI', '', '', 'TX', '', '', '', '', 'FL', '', ''],
+];
+
+const dummy = useDummy
+  ? (await import('../../fixtures/public-stats.dummy.json')).default.data
+  : null;
+
+if (useDummy) {
+  console.warn(
+    `\n  ⚠ The impact band is showing INVENTED numbers from ` +
+      `fixtures/public-stats.dummy.json.\n` +
+      (import.meta.env.DEV
+        ? '    Set PUBLIC_DIRECTUS_URL to use a real backend.\n'
+        : '    This build must not be deployed.\n'),
+  );
+}
 ---
 
 {
-  directusUrl && (
+  (directusUrl || dummy) && (
     <Section tone="muted" id="impact" hidden>
       <h2 class="text-display m-0 font-extrabold">The work, in numbers</h2>
 
@@ -65,12 +155,17 @@ const directusUrl = import.meta.env.PUBLIC_DIRECTUS_URL;
         </div>
         <div class="flex flex-col-reverse">
           {/*
-            "Servings offered", never "meals served". The backend counts what
-            people said they were putting out, not what anyone took — the
-            endpoint has no delivery figure to offer. Captioning an offer as a
-            delivery would overstate the work on a page about a right.
+            "Servings shared", never "meals served". Two separate limits are
+            being respected here. The backend counts what people said they
+            were putting out, not what anyone took, so any word implying
+            receipt or delivery would overstate the work. And a serving is not
+            a meal — swapping the unit inflates the figure silently.
+
+            "Shared" is the softest wording that stays true, and the endpoint's
+            own documentation names it as safe. "Offered" is stricter still if
+            this ever needs tightening.
           */}
-          <dt class="mt-2 text-lg font-semibold">Servings offered</dt>
+          <dt class="mt-2 text-lg font-semibold">Servings shared</dt>
           <dd
             class="figure m-0 font-extrabold text-[var(--color-brand-700)]"
             data-figure="servings_offered"
@@ -80,31 +175,120 @@ const directusUrl = import.meta.env.PUBLIC_DIRECTUS_URL;
 
       <div class="mt-14" data-regions hidden>
         <h3 class="m-0 text-lg font-semibold">By region</h3>
-        <ul class="m-0 mt-4 grid list-none gap-4 p-0 sm:grid-cols-2" data-region-list />
+
         {/*
-          Both halves of this are load-bearing. The rows genuinely do not sum
-          to the totals, because communities with no region recorded are left
-          off — claiming otherwise would be checkable and wrong. And a region's
-          row credits it only with the people attributed to it, so a member
-          active in two regions lands in one row; calling that "reach" would
-          overstate every row on the list.
+          A grid cartogram: every state the same square, arranged in roughly
+          the shape of the country. Chosen over true outlines because the
+          states Share Meals actually works in are the ones a real map handles
+          worst — New Jersey, Connecticut and Rhode Island are a few pixels
+          wide at this size, so the shaded states would be the hardest to see.
+          Equal squares give each one the same weight and room for a label.
+
+          aria-hidden, and deliberately: to a screen reader this is 51
+          abbreviations in a meaningless order. The list underneath carries the
+          same information in a usable form, which is also what keeps the
+          shading from being the only way to read the data (1.4.1).
         */}
-        <p class="mt-6 max-w-2xl text-[var(--color-text-muted)]">
-          Each community is counted in one region, and communities without a
-          region recorded are left off — so these rows come to less than the
-          totals above. They show where the work is attributed, not everyone a
-          region reaches.
-        </p>
+        {map !== 'none' && (
+          <div class={map === 'both' ? 'mapcompare' : ''} data-map hidden aria-hidden="true">
+            {(map === 'tiles' || map === 'both') && (
+              <div class="tilemap mt-6">
+                {TILE_ROWS.map((row) =>
+                  row.map((code) =>
+                    code ? (
+                      <div class="tile" data-state={code}>
+                        {code}
+                      </div>
+                    ) : (
+                      <div />
+                    ),
+                  ),
+                )}
+              </div>
+            )}
+
+        {/*
+          True outlines. No labels: at this size most states cannot hold two
+          legible characters, so the shading alone marks them and the list
+          below carries every figure. That division is also what keeps this
+          off the wrong side of 1.4.1.
+
+          The greys are deliberately faint, which is defensible only because
+          this map is decorative — `aria-hidden`, with the data duplicated
+          immediately below. If it ever becomes the only place a figure
+          appears, these fills have to be re-checked against 1.4.11 first.
+        */}
+            {(map === 'geographic' || map === 'both') && (
+              <svg class="geomap mt-6" viewBox={US_STATE_VIEWBOX}>
+                {Object.entries(US_STATE_PATHS).map(([code, d]) => (
+                  <path d={d} data-state={code} />
+                ))}
+              </svg>
+            )}
+          </div>
+        )}
+
+        {/*
+          <details>, not a button and some ARIA. It is keyboard-operable,
+          announced correctly, and toggles without any of our code — the
+          project rule is semantic HTML first, and this is the case it was
+          written for.
+
+          Open or closed is decided at render from the viewport: on a phone the
+          list is 32 regions of two lines each below a map that already answers
+          "where", so it starts collapsed; from 40rem up it starts open,
+          because there it is a two-column block that was never in the way.
+
+          It is a disclosure rather than a truncation on purpose. Showing "the
+          top few" would reintroduce exactly the ranking the alphabetical sort
+          was chosen to avoid — and with an alphabetical list, "the first six"
+          means nothing at all.
+        */}
+        <details class="regions mt-6" data-region-details>
+          <summary class="regions-summary" data-region-summary />
+          {/*
+            One column on phones, two from 40rem, three from 64rem. Three only
+            at the top end because each row is a region name over a figure
+            line — "3,900 people, 173,160 servings shared" needs the width, and
+            forcing a third column earlier would wrap every row onto three
+            lines and make the list taller, not shorter.
+          */}
+          <ul
+            class="m-0 mt-4 grid list-none gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3"
+            data-region-list
+          />
+        </details>
       </div>
 
       {/*
-        Deliberately vague, and deliberately not built from `generated_at`. The
-        payload is cached for up to a day, so a precise "as of 4:31pm" would sit
-        unchanged for hours and invite someone to notice. A loose phrase also
-        sidesteps the timezone trap: there is no rendered date to drift out of
-        step with a `datetime` attribute.
+        NOTE for whoever writes copy here next. Two things about these rows are
+        not self-evident from looking at them, and both were previously spelled
+        out in a caption that was removed as clutter:
+
+        1. They do not sum to the totals above. Communities with no region
+           recorded are dropped from the list, and their people and servings go
+           with them, so adding the rows up gives less than the headline.
+        2. A row credits a region only with what is attributed to it. Someone
+           active in two regions lands in one row, so a row is not a count of
+           everyone that region reaches.
+
+        Neither is a defect, but neither may be contradicted. Do not add copy
+        that says these rows add up, or that describes a row as a region's
+        reach.
       */}
-      <p class="mt-12 text-[var(--color-text-muted)]">Updated daily.</p>
+
+      {/*
+        Dev only. `set:html` on a JSON script tag rather than a `define:vars`
+        script, which would force the client script inline and untyped.
+      */}
+      {dummy && (
+        <script
+          is:inline
+          type="application/json"
+          data-stats-fixture
+          set:html={JSON.stringify(dummy)}
+        />
+      )}
     </Section>
   )
 }
@@ -143,14 +327,230 @@ const directusUrl = import.meta.env.PUBLIC_DIRECTUS_URL;
     container-type: inline-size;
   }
 
+  /**
+   * Read this as: take the size the type scale would have given, then never
+   * exceed what actually fits the column.
+   *
+   * The order matters and got it wrong once. Written the other way round —
+   * `clamp(2.5rem, min(6.5vw, fit), 5rem)` — the 2.5rem floor outranks the fit
+   * term, so a figure that needs to shrink below 40px to fit simply does not.
+   * That went unnoticed until a ten-character figure met the three-column grid
+   * at 640px, which is the narrowest those columns ever are: ~176px each,
+   * against 272px of digits. Below 640px the grid is a single column and the
+   * problem disappears, which is exactly why testing only 1280 and 320 missed
+   * it.
+   *
+   * The floor still does its job everywhere it is not the cause of an
+   * overflow: at 320px `6.5vw` is only ~21px, and without the floor every
+   * figure on a phone would be half the size it should be.
+   */
   .figure {
-    font-size: clamp(
-      2.5rem,
-      min(6.5vw, calc(100cqi / (var(--chars) * 0.68))),
-      5rem
+    font-size: min(
+      clamp(2.5rem, 6.5vw, 5rem),
+      calc(100cqi / (var(--chars) * 0.68))
     );
     line-height: 1;
     letter-spacing: -0.025em;
+  }
+
+  /**
+   * THE CARTOGRAM.
+   *
+   * Four discrete bins rather than a continuous ramp, because every fill is a
+   * background for text that has to clear AA. A smooth gradient would put the
+   * label on an unbounded number of unverified backgrounds; four bins are four
+   * pairings, all on the cleared list in global.css and checked by
+   * `yarn check:contrast`.
+   *
+   * The steps skip brand-400 and brand-500 on purpose. Those sit in the dead
+   * zone where neither ink-900 nor white reaches 4.5:1 — brand-500 on white is
+   * already documented as failing at 3.95:1. Binning around them keeps the ramp
+   * legible instead of quietly shipping unreadable squares.
+   */
+  /**
+   * Shown at every width, phones included.
+   *
+   * This was originally hidden below 40rem on the reasoning that eleven
+   * columns leave each square about 22px, too narrow for a two-letter label.
+   * That reasoning was arithmetic, not observation: rendered at 320px the
+   * squares are 22px with an 11px label, the text does not overflow, and the
+   * country is perfectly readable. The map was being withheld from phones to
+   * fix a problem it did not have.
+   *
+   * Squares are the reason it survives the shrink — they scale down evenly and
+   * every state keeps the same room, which is the same property that made this
+   * form preferable to true outlines in the first place.
+   */
+  .tilemap {
+    display: grid;
+    grid-template-columns: repeat(11, 1fr);
+    gap: 0.25rem;
+    max-width: 34rem;
+    margin-inline: auto;
+  }
+
+  .tile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1;
+    border-radius: 3px;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+
+    /* States with no communities. Present so the map reads as the country,
+       quiet enough not to compete with the ones that carry data. */
+    background: transparent;
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    color: var(--color-text-muted);
+  }
+
+  .tile[data-bin] {
+    box-shadow: none;
+  }
+
+  .tile[data-bin='1'] {
+    background: var(--color-brand-100);
+    color: var(--color-text);
+  }
+
+  .tile[data-bin='2'] {
+    background: var(--color-brand-300);
+    color: var(--color-text);
+  }
+
+  .tile[data-bin='3'] {
+    background: var(--color-brand-600);
+    color: var(--color-text-inverse);
+  }
+
+  .tile[data-bin='4'] {
+    background: var(--color-brand-900);
+    color: var(--color-text-inverse);
+  }
+
+  /**
+   * THE GEOGRAPHIC MAP.
+   *
+   * Same four bins as the cartogram so the two forms stay interchangeable, but
+   * as fills rather than backgrounds-behind-text — no labels fit at this size,
+   * so none of the AA text pairings apply here.
+   *
+   * Unlike the cartogram this one is kept at every width. Its shapes scale with
+   * the viewBox instead of needing room for a label, so it stays readable at
+   * 320px where eleven columns of squares do not.
+   */
+  .geomap {
+    display: block;
+    width: 100%;
+    max-width: 34rem;
+    height: auto;
+    /* Centred to match the cartogram — they occupy the same slot, and one
+       centred while the other sits left would read as a mistake. */
+    margin-inline: auto;
+  }
+
+  .geomap path {
+    /* Every state, including the ones with no communities. The white hairline
+       is what separates them; without it the country is one silhouette. */
+    fill: var(--color-ink-200);
+    stroke: var(--color-surface);
+    stroke-width: 1;
+    stroke-linejoin: round;
+  }
+
+  .geomap path[data-bin='1'] {
+    fill: var(--color-brand-100);
+  }
+
+  .geomap path[data-bin='2'] {
+    fill: var(--color-brand-300);
+  }
+
+  .geomap path[data-bin='3'] {
+    fill: var(--color-brand-600);
+  }
+
+  .geomap path[data-bin='4'] {
+    fill: var(--color-brand-900);
+  }
+
+  /**
+   * `map="both"`, for choosing between the two forms.
+   *
+   * Side by side only from 80rem up. Below that the two share the full column
+   * width, and the cartogram needs about 34rem to keep its squares labelable —
+   * at half of a narrower viewport it would fall under its own 40rem rule and
+   * vanish, leaving one map where two were asked for.
+   */
+  /**
+   * `list-item`, not `inline-flex`. A <summary> is `display: list-item` by
+   * default and that is what draws the disclosure triangle; changing the
+   * display type silently removes the marker, leaving a bold line of text with
+   * nothing to suggest it can be opened. Caught by looking at a screenshot,
+   * not by any check — no rule is broken, the control just stops looking like
+   * one.
+   *
+   * `inside` keeps the triangle within the box rather than in a margin the
+   * parent does not reserve.
+   *
+   * The padding is the 24px target (2.5.8); the line box alone falls short.
+   */
+  .regions-summary {
+    display: list-item;
+    list-style-position: inside;
+    min-height: 24px;
+    padding: 0.25rem 0;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .regions-summary::marker {
+    font-size: 0.85em;
+  }
+
+  /**
+   * Sticky only while open, so the control that closes a 32-row list is still
+   * reachable from the bottom of it.
+   *
+   * Only while open on purpose: a closed <details> is one line tall, so
+   * sticking it would do nothing but risk it hovering over the map above.
+   *
+   * The opaque background is required, not decorative — list rows scroll
+   * underneath, and it is `surface-muted` because that is the band this
+   * component renders in. Moving the band to another tone means changing this
+   * with it.
+   *
+   * No `top` offset is needed: the site header is not sticky. The skip link
+   * sits at z-index 50 when focused, well clear of this.
+   *
+   * 2.4.11 Focus Not Obscured is not at risk here — nothing inside the list
+   * takes focus, and the sticky element unsticks at the end of the <details>,
+   * so it can never cover a focused control below it.
+   */
+  .regions[open] > .regions-summary {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--color-surface-muted);
+    padding-block: 0.75rem;
+    /* Without an edge, a row sliding under the bar reads as two overlapping
+       lines of text rather than as content passing behind something. The rule
+       is what makes it a bar. */
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .mapcompare {
+    display: grid;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  @media (min-width: 80rem) {
+    .mapcompare {
+      grid-template-columns: 1fr 1fr;
+    }
   }
 </style>
 
@@ -196,7 +596,29 @@ const directusUrl = import.meta.env.PUBLIC_DIRECTUS_URL;
     return Array.isArray(byRegion);
   }
 
+  /**
+   * Present only when the page was built with USE_DUMMY_STATS=1. Checked
+   * before the network so the band works with nothing running, and validated
+   * on the same path as a real response — a fixture that has drifted out of
+   * shape should fail exactly like a backend that has.
+   */
+  function fixtureStats(): PublicStats | null {
+    const tag = document.querySelector('[data-stats-fixture]');
+    if (!tag?.textContent) return null;
+    try {
+      const parsed: unknown = JSON.parse(tag.textContent);
+      if (!isStats(parsed)) return null;
+      console.warn('Impact band: showing INVENTED numbers from a checked-in fixture.');
+      return parsed;
+    } catch {
+      return null;
+    }
+  }
+
   async function loadStats(): Promise<PublicStats | null> {
+    // Unset when the page was built for the fixture alone. Without this the
+    // fetch would resolve "undefined/public-stats" against the site's origin.
+    if (!BASE) return null;
     try {
       // No `credentials: 'include'`. The backend sends
       // `Access-Control-Allow-Origin: *` while Directus sets
@@ -215,6 +637,37 @@ const directusUrl = import.meta.env.PUBLIC_DIRECTUS_URL;
     }
   }
 
+  /**
+   * `region` is a free-text field an admin fills in per community, so this
+   * maps what they are likely to have typed onto a state. Two-letter codes are
+   * accepted as-is. Anything unrecognised — a city, a typo, a region that is
+   * not a US state — simply does not appear on the map; it still appears in
+   * the list below it, which is why an unmatched value loses nothing.
+   */
+  const STATE_CODES: Record<string, string> = {
+    alabama: 'AL', alaska: 'AK', arizona: 'AZ', arkansas: 'AR', california: 'CA',
+    colorado: 'CO', connecticut: 'CT', delaware: 'DE', florida: 'FL', georgia: 'GA',
+    hawaii: 'HI', idaho: 'ID', illinois: 'IL', indiana: 'IN', iowa: 'IA',
+    kansas: 'KS', kentucky: 'KY', louisiana: 'LA', maine: 'ME', maryland: 'MD',
+    massachusetts: 'MA', michigan: 'MI', minnesota: 'MN', mississippi: 'MS',
+    missouri: 'MO', montana: 'MT', nebraska: 'NE', nevada: 'NV',
+    'new hampshire': 'NH', 'new jersey': 'NJ', 'new mexico': 'NM', 'new york': 'NY',
+    'north carolina': 'NC', 'north dakota': 'ND', ohio: 'OH', oklahoma: 'OK',
+    oregon: 'OR', pennsylvania: 'PA', 'rhode island': 'RI', 'south carolina': 'SC',
+    'south dakota': 'SD', tennessee: 'TN', texas: 'TX', utah: 'UT', vermont: 'VT',
+    virginia: 'VA', washington: 'WA', 'west virginia': 'WV', wisconsin: 'WI',
+    wyoming: 'WY', 'district of columbia': 'DC', 'washington dc': 'DC',
+  };
+
+  const CODES = new Set(Object.values(STATE_CODES));
+
+  function stateCode(region: string): string | null {
+    const key = region.trim().toLowerCase();
+    if (STATE_CODES[key]) return STATE_CODES[key];
+    const upper = region.trim().toUpperCase();
+    return CODES.has(upper) ? upper : null;
+  }
+
   /** Locale is pinned to match `<html lang="en">`. A bare `toLocaleString()`
    *  would render "3.312" for a reader whose browser is set to German, on a
    *  page that claims to be in English. */
@@ -222,6 +675,46 @@ const directusUrl = import.meta.env.PUBLIC_DIRECTUS_URL;
 
   const plural = (n: number, one: string, many: string) =>
     `${format(n)} ${n === 1 ? one : many}`;
+
+  /**
+   * Shades the cartogram from the region rows. Bins are relative to the
+   * largest region rather than absolute, because there is no meaningful
+   * absolute scale here — the map answers "where, and roughly how much
+   * compared to everywhere else", and the exact figures are in the list.
+   *
+   * Two regions can land on the same state ("NY" and "New York" are separate
+   * rows to the backend), so values are added rather than overwritten.
+   */
+  function shadeMap(section: HTMLElement, named: RegionRow[]) {
+    const mapEl = section.querySelector<HTMLElement>('[data-map]');
+    if (!mapEl) return;
+
+    const byState = new Map<string, number>();
+    for (const row of named) {
+      const code = stateCode(row.region as string);
+      if (code) byState.set(code, (byState.get(code) ?? 0) + row.servings_offered);
+    }
+
+    // Nothing recognisable as a state — an entirely reasonable outcome, since
+    // `region` is free text. A map of 51 empty squares says nothing, so there
+    // is no map.
+    if (byState.size === 0) return;
+
+    const max = Math.max(...byState.values());
+
+    for (const [code, value] of byState) {
+      // querySelectorAll, not querySelector: `map="both"` puts the same state
+      // on the page twice, and shading only the first leaves the second map
+      // looking like it has no data.
+      const shapes = mapEl.querySelectorAll<HTMLElement>(`[data-state="${code}"]`);
+      // The largest always lands in bin 4, so the ramp uses its full range
+      // even when every region is close together.
+      const bin = String(Math.ceil((value / max) * 4) || 1);
+      for (const shape of shapes) shape.dataset.bin = bin;
+    }
+
+    mapEl.hidden = false;
+  }
 
   function render(stats: PublicStats) {
     const section = document.querySelector<HTMLElement>('#impact');
@@ -255,12 +748,30 @@ const directusUrl = import.meta.env.PUBLIC_DIRECTUS_URL;
       (row) => typeof row.region === 'string' && row.region.trim() !== '',
     );
 
+    /**
+     * Alphabetical, deliberately overriding the order the endpoint sends.
+     *
+     * The payload arrives sorted by community count descending, which reads as
+     * a ranking — and a ranking is the wrong frame here. It invites a reader to
+     * treat the bottom of the list as the least important places, when the
+     * order is really an artefact of where the work started. Alphabetical says
+     * nothing, which is the point, and it is the only order that makes a list
+     * this long scannable for a particular state.
+     *
+     * `localeCompare` rather than `<`: it sorts accented and non-ASCII region
+     * names sensibly, and `region` is free text that has never promised to be
+     * plain ASCII.
+     */
+    const listed = [...named].sort((a, b) =>
+      (a.region as string).localeCompare(b.region as string, 'en'),
+    );
+
     const regions = section.querySelector<HTMLElement>('[data-regions]');
     const list = section.querySelector<HTMLElement>('[data-region-list]');
 
     // One region tells the reader nothing the totals did not already say.
     if (regions && list && named.length > 1) {
-      for (const row of named) {
+      for (const row of listed) {
         const item = document.createElement('li');
 
         const name = document.createElement('span');
@@ -273,12 +784,42 @@ const directusUrl = import.meta.env.PUBLIC_DIRECTUS_URL;
         detail.className = 'mt-1 block text-[var(--color-text-muted)]';
         detail.textContent = [
           plural(row.members, 'person', 'people'),
-          `${format(row.servings_offered)} servings offered`,
+          // Must match the <dt> above — the two are the same claim.
+          `${format(row.servings_offered)} servings shared`,
         ].join(', ');
 
         item.append(name, detail);
         list.append(item);
       }
+      const summary = section.querySelector<HTMLElement>('[data-region-summary]');
+      if (summary) {
+        summary.textContent = `All ${format(listed.length)} regions`;
+      }
+
+      // Decided once, from the width at reveal. Not kept in sync with resize:
+      // re-opening or re-closing the list under someone who has just toggled
+      // it themselves would be worse than being slightly stale after a device
+      // rotation.
+      const details = section.querySelector<HTMLDetailsElement>('[data-region-details]');
+      if (details) {
+        details.open = window.matchMedia('(min-width: 40rem)').matches;
+
+        // Closing from the bottom of a 32-row list removes everything between
+        // the summary and the viewport, so the reader is left looking at
+        // whatever happened to be further down the page — usually the footer,
+        // with no idea the list collapsed. Pull the summary back into view,
+        // but only when it has actually scrolled off the top; doing it
+        // unconditionally would yank the page around on a close that was
+        // already visible.
+        details.addEventListener('toggle', () => {
+          if (details.open || !summary) return;
+          if (summary.getBoundingClientRect().top < 0) {
+            summary.scrollIntoView({ block: 'start' });
+          }
+        });
+      }
+
+      shadeMap(section, named);
       regions.hidden = false;
     }
 
@@ -289,6 +830,6 @@ const directusUrl = import.meta.env.PUBLIC_DIRECTUS_URL;
     section.hidden = false;
   }
 
-  const stats = await loadStats();
+  const stats = fixtureStats() ?? (await loadStats());
   if (stats) render(stats);
 </script>

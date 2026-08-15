@@ -65,9 +65,29 @@ failure path — no variable, no network, a 500, a malformed payload, no
 JavaScript — ends with the band simply not appearing. Nothing on the page
 should be written to assume it is there.
 
+`yarn dev` shows the band without any backend running, using invented numbers
+from `fixtures/public-stats.dummy.json`. Set `PUBLIC_DIRECTUS_URL` to work
+against a real Directus instead — it takes precedence:
+
+```bash
+PUBLIC_DIRECTUS_URL=http://localhost:8055 yarn dev
+```
+
+For a *built* page the fixture is opt-in, since a build can be deployed:
+
+```bash
+USE_DUMMY_STATS=1 yarn build && yarn preview
+```
+
+Both paths are loud — the build warns and the page warns in the console — and
+neither variable is ever set in CI or the deploy workflow, so a deployed build
+always fetches a live Directus. See `fixtures/README.md`; no number in that
+file may be used in copy.
+
 The labels are constrained by what the endpoint actually counts.
 `servings_offered` is what people *offered*, not what anyone received, so it is
-captioned "servings offered" and never "meals served". `src/components/ImpactStats.astro`
+captioned "servings shared" and never "meals served" — and never "meals"
+anything, since a serving is not a meal. `src/components/ImpactStats.astro`
 carries the reasoning; read it before changing any wording there.
 
 ## Conventions worth knowing before editing

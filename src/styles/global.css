@@ -182,7 +182,16 @@
      text-muted on surface-muted .. ink-600  on ink-50
      brand-700 on surface-muted ... #106535  on ink-50
 
+   CLEARED for the cartogram's shading steps (see ImpactStats.astro):
+     tile bin 1 ................... ink-900  on brand-100
+     tile bin 2 ................... ink-900  on brand-300
+     tile bin 3 ................... white    on brand-600
+     tile bin 4 ................... white    on brand-900
+
    NOT CLEARED — do not use for body text:
      brand-500 or lighter on white (large display type only)
      ink-400 or lighter on white
+     any label on brand-400 or brand-500 — the dead zone, too dark for
+       ink-900 and too light for white. This is why the cartogram ramp
+       steps from brand-300 straight to brand-600.
    ========================================================================== */
