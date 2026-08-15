@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '~/layouts/BaseLayout.astro';
 import Section from '~/components/Section.astro';
+import Button from '~/components/Button.astro';
 import ImpactStats from '~/components/ImpactStats.astro';
 
 /**
@@ -26,8 +27,14 @@ import ImpactStats from '~/components/ImpactStats.astro';
  * entirely if the numbers cannot be fetched — see ImpactStats.astro. Nothing
  * on this page should be written to depend on it being there.
  *
- * There are no call-to-action buttons because there are no pages to point them
- * at yet. A button that goes nowhere is worse than no button.
+ * The one call to action points at /app, and it sits in the second band rather
+ * than the hero on purpose. Positioning rule 1 above is the reason: an app
+ * button directly under the tagline makes the app the headline, which is the
+ * one thing this page is not supposed to do. In the second band it arrives
+ * after the sentence that introduces the software, as the answer to it.
+ *
+ * That is still the only button. Anywhere else on this page there is nothing
+ * to point at yet, and a button that goes nowhere is worse than no button.
  */
 ---
 
@@ -62,6 +69,12 @@ import ImpactStats from '~/components/ImpactStats.astro';
       We began with college students, and campuses are still where most of our
       work happens. They are not where it stops. A right that only holds on
       campus was never a right.
+    </p>
+
+    {/* Link text has to stand on its own — read out of context in a list of
+        links, "learn more" says nothing about where it goes. */}
+    <p class="mt-10 m-0">
+      <Button href="/app" variant="inverse">See the Share Meals app</Button>
     </p>
   </Section>
 

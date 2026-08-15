@@ -84,3 +84,9 @@ jobs:
 
       - name: Accessibility gate
         run: yarn check:a11y
+
+      # Nothing here uploads the PDF — this runs so that a change which breaks
+      # the render (a print rule that spills the flyer onto a second page, a
+      # route that stops resolving) fails in review rather than at deploy time.
+      - name: Printable one-pager
+        run: yarn build:pdf

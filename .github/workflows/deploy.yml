@@ -91,6 +91,13 @@ jobs:
       - name: Accessibility gate
         run: yarn check:a11y
 
+      # Renders /app to dist/share-meals-app.pdf. It has to run after the build
+      # and before the upload, because the PDF is a build output rather than a
+      # checked-in asset — see the note at the top of scripts/build-pdf.mjs.
+      # Reuses the Chromium installed above for the accessibility gate.
+      - name: Printable one-pager
+        run: yarn build:pdf
+
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
         with:

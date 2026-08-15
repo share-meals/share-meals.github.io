@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 340" width="1040" height="340">
+  <!--
+    PLACEHOLDER for the /app "How it works" diagram.
+
+    This is not art. It is a schematic of the composition the page is built
+    around, drawn so that whoever replaces it knows what shape has to fit.
+    Replace this whole file; see README.md in this directory.
+
+    THE SHAPE: a hub, not a pipeline. Erika and Serjio both post, and both
+    arrows run RIGHT into the phone. Phoebe reads the same phone from the other
+    side, so both of her arrows run LEFT into it. Everything points at the app.
+
+    NO CAPTIONS IN THE ART. The four sentences live in HTML underneath, so they
+    stay selectable and translatable and stay legible on a narrow screen where
+    this drawing has scaled down. Art with baked-in text will be unreadable at
+    320px.
+  -->
+  <rect x="1" y="1" width="1038" height="338" rx="8"
+        fill="#f0f9f3" stroke="#106535" stroke-width="1.6" stroke-dasharray="7 5"/>
+
+  <g fill="none" stroke="#106535" stroke-width="1.6" opacity=".5">
+    <!-- Erika, top left -->
+    <circle cx="96" cy="86" r="21"/>
+    <path d="M62 140a34 34 0 0 1 68 0" stroke-linecap="round"/>
+    <!-- Serjio, bottom left -->
+    <circle cx="96" cy="230" r="21"/>
+    <path d="M62 284a34 34 0 0 1 68 0" stroke-linecap="round"/>
+    <!-- Phoebe, right -->
+    <circle cx="944" cy="158" r="21"/>
+    <path d="M910 212a34 34 0 0 1 68 0" stroke-linecap="round"/>
+    <!-- the phone at the centre -->
+    <rect x="470" y="60" width="100" height="220" rx="16"/>
+    <path d="M498 78h44"/>
+    <path d="M520 150a16 16 0 1 1 .1 0zM520 166v40" stroke-linecap="round"/>
+  </g>
+
+  <!-- the four arrows, all converging on the phone -->
+  <g stroke="#106535" stroke-width="3" opacity=".55" stroke-linecap="round">
+    <path d="M170 112h268"/>
+    <path d="M170 256h268"/>
+    <path d="M870 112H602"/>
+    <path d="M870 256H602"/>
+  </g>
+  <g fill="#106535" opacity=".55">
+    <path d="M438 102l24 10-24 10z"/>
+    <path d="M438 246l24 10-24 10z"/>
+    <path d="M602 102l-24 10 24 10z"/>
+    <path d="M602 246l-24 10 24 10z"/>
+  </g>
+
+  <g font-family="system-ui, sans-serif" font-size="15" fill="#106535" opacity=".75"
+     text-anchor="middle">
+    <text x="520" y="316">placeholder — replace public/figures/how-it-works.svg</text>
+  </g>
+</svg>
