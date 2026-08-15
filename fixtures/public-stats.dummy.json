@@ -1,0 +1,278 @@
+{
+  "data": {
+    "generated_at": "2026-08-14T18:05:00.000Z",
+    "totals": {
+      "communities": 760,
+      "members": 282300,
+      "posts": 2183704,
+      "servings_offered": 12137691,
+      "swipes_given": 34466
+    },
+    "by_region": [
+      {
+        "region": "New Jersey",
+        "communities": 186,
+        "members": 71400,
+        "posts": 514080,
+        "servings_offered": 2784600,
+        "swipes_given": 4284
+      },
+      {
+        "region": "New York",
+        "communities": 131,
+        "members": 50200,
+        "posts": 375496,
+        "servings_offered": 2025570,
+        "swipes_given": 6526
+      },
+      {
+        "region": "Pennsylvania",
+        "communities": 58,
+        "members": 21900,
+        "posts": 169944,
+        "servings_offered": 913230,
+        "swipes_given": 4380
+      },
+      {
+        "region": "Massachusetts",
+        "communities": 41,
+        "members": 15600,
+        "posts": 125424,
+        "servings_offered": 671580,
+        "swipes_given": 4212
+      },
+      {
+        "region": "Connecticut",
+        "communities": 33,
+        "members": 12300,
+        "posts": 102336,
+        "servings_offered": 546120,
+        "swipes_given": 0
+      },
+      {
+        "region": "Maryland",
+        "communities": 27,
+        "members": 9900,
+        "posts": 85140,
+        "servings_offered": 452925,
+        "swipes_given": 1287
+      },
+      {
+        "region": "Illinois",
+        "communities": 24,
+        "members": 9100,
+        "posts": 80808,
+        "servings_offered": 428610,
+        "swipes_given": 1820
+      },
+      {
+        "region": "California",
+        "communities": 22,
+        "members": 8600,
+        "posts": 61920,
+        "servings_offered": 416670,
+        "swipes_given": 2322
+      },
+      {
+        "region": "Virginia",
+        "communities": 19,
+        "members": 7050,
+        "posts": 52734,
+        "servings_offered": 351090,
+        "swipes_given": 423
+      },
+      {
+        "region": "Ohio",
+        "communities": 17,
+        "members": 6200,
+        "posts": 48112,
+        "servings_offered": 317130,
+        "swipes_given": 0
+      },
+      {
+        "region": "North Carolina",
+        "communities": 15,
+        "members": 5400,
+        "posts": 43416,
+        "servings_offered": 283500,
+        "swipes_given": 1080
+      },
+      {
+        "region": "Michigan",
+        "communities": 14,
+        "members": 5100,
+        "posts": 42432,
+        "servings_offered": 198900,
+        "swipes_given": 1377
+      },
+      {
+        "region": "Georgia",
+        "communities": 13,
+        "members": 4700,
+        "posts": 40420,
+        "servings_offered": 189645,
+        "swipes_given": 282
+      },
+      {
+        "region": "Florida",
+        "communities": 12,
+        "members": 4250,
+        "posts": 30600,
+        "servings_offered": 182962,
+        "swipes_given": 0
+      },
+      {
+        "region": "Texas",
+        "communities": 12,
+        "members": 4400,
+        "posts": 39072,
+        "servings_offered": 183480,
+        "swipes_given": 572
+      },
+      {
+        "region": "Washington",
+        "communities": 11,
+        "members": 3900,
+        "posts": 29172,
+        "servings_offered": 173160,
+        "swipes_given": 1053
+      },
+      {
+        "region": "Rhode Island",
+        "communities": 10,
+        "members": 3600,
+        "posts": 27936,
+        "servings_offered": 164700,
+        "swipes_given": 216
+      },
+      {
+        "region": "Delaware",
+        "communities": 9,
+        "members": 3200,
+        "posts": 25728,
+        "servings_offered": 150720,
+        "swipes_given": 416
+      },
+      {
+        "region": "Minnesota",
+        "communities": 9,
+        "members": 3050,
+        "posts": 25376,
+        "servings_offered": 147772,
+        "swipes_given": 610
+      },
+      {
+        "region": "Colorado",
+        "communities": 8,
+        "members": 2650,
+        "posts": 23532,
+        "servings_offered": 135548,
+        "swipes_given": 159
+      },
+      {
+        "region": "Wisconsin",
+        "communities": 8,
+        "members": 2800,
+        "posts": 24080,
+        "servings_offered": 139440,
+        "swipes_given": 0
+      },
+      {
+        "region": "Indiana",
+        "communities": 7,
+        "members": 2400,
+        "posts": 17280,
+        "servings_offered": 126000,
+        "swipes_given": 312
+      },
+      {
+        "region": "Missouri",
+        "communities": 7,
+        "members": 2300,
+        "posts": 17204,
+        "servings_offered": 89700,
+        "swipes_given": 460
+      },
+      {
+        "region": "Arizona",
+        "communities": 6,
+        "members": 1950,
+        "posts": 15678,
+        "servings_offered": 81315,
+        "swipes_given": 0
+      },
+      {
+        "region": "Oregon",
+        "communities": 6,
+        "members": 1850,
+        "posts": 15392,
+        "servings_offered": 79642,
+        "swipes_given": 240
+      },
+      {
+        "region": "Tennessee",
+        "communities": 6,
+        "members": 2100,
+        "posts": 16296,
+        "servings_offered": 84735,
+        "swipes_given": 567
+      },
+      {
+        "region": "Maine",
+        "communities": 5,
+        "members": 1450,
+        "posts": 10440,
+        "servings_offered": 68295,
+        "swipes_given": 87
+      },
+      {
+        "region": "New Hampshire",
+        "communities": 5,
+        "members": 1700,
+        "posts": 14620,
+        "servings_offered": 75480,
+        "swipes_given": 340
+      },
+      {
+        "region": "Vermont",
+        "communities": 5,
+        "members": 1550,
+        "posts": 13764,
+        "servings_offered": 70912,
+        "swipes_given": 418
+      },
+      {
+        "region": "Iowa",
+        "communities": 4,
+        "members": 1200,
+        "posts": 9312,
+        "servings_offered": 59760,
+        "swipes_given": 240
+      },
+      {
+        "region": "South Carolina",
+        "communities": 4,
+        "members": 1300,
+        "posts": 9724,
+        "servings_offered": 62985,
+        "swipes_given": 0
+      },
+      {
+        "region": "Utah",
+        "communities": 4,
+        "members": 1100,
+        "posts": 8844,
+        "servings_offered": 56265,
+        "swipes_given": 297
+      },
+      {
+        "region": null,
+        "communities": 22,
+        "members": 8100,
+        "posts": 67392,
+        "servings_offered": 425250,
+        "swipes_given": 486
+      }
+    ]
+  }
+}

@@ -9,9 +9,13 @@
  */
 
 const TOKENS = {
+  'brand-900': '#0b4023',
   'brand-700': '#106535',
   'brand-600': '#1e7746',
   'brand-500': '#2f9159',
+  'brand-400': '#55af7c',
+  'brand-300': '#8ccda6',
+  'brand-100': '#dcf1e3',
   'ink-900': '#1c1c1a',
   'ink-600': '#5c5c56',
   'ink-400': '#93938c',
@@ -28,6 +32,13 @@ const CLEARED = [
   ['ink-900', 'ink-50', 'normal', 'text on surface-muted'],
   ['ink-600', 'ink-50', 'normal', 'text-muted on surface-muted'],
   ['brand-700', 'ink-50', 'normal', 'brand-700 on surface-muted'],
+
+  // The cartogram's four shading steps. Each is a background for a state
+  // label, so each needs its own clearance.
+  ['ink-900', 'brand-100', 'normal', 'tile bin 1 — label on brand-100'],
+  ['ink-900', 'brand-300', 'normal', 'tile bin 2 — label on brand-300'],
+  ['white', 'brand-600', 'normal', 'tile bin 3 — label on brand-600'],
+  ['white', 'brand-900', 'normal', 'tile bin 4 — label on brand-900'],
 ];
 
 /** Pairings documented as unusable for body text. Asserted to actually fail,
@@ -35,6 +46,14 @@ const CLEARED = [
 const EXPECTED_FAIL = [
   ['brand-500', 'white', 'normal', 'brand-500 on white'],
   ['ink-400', 'white', 'normal', 'ink-400 on white'],
+
+  // Why the cartogram's ramp jumps from brand-300 straight to brand-600.
+  // These mid greens are too dark for ink-900 and too light for white, so a
+  // label sits on them illegibly whichever way you go. Asserted so that if the
+  // ramp is ever retuned, anyone who tries to use them finds out here.
+  ['ink-900', 'brand-500', 'normal', 'label on brand-500'],
+  ['white', 'brand-500', 'normal', 'white label on brand-500'],
+  ['white', 'brand-400', 'normal', 'white label on brand-400'],
 ];
 
 function luminance(hex) {
