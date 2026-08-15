@@ -1,0 +1,429 @@
+/* =============================================================================
+   THE ONE-PAGER SHEET
+
+   Shared by every route that is both a web page and a printed Letter sheet:
+   `/app` and `/pantry-point` today, whatever else lands in `SHEETS` in
+   `scripts/build-pdf.mjs` later.
+
+   WHY THIS FILE EXISTS. The print block started life inside `app.astro` as one
+   `<style is:global>`, which was right while there was one sheet. The second
+   sheet made it wrong: roughly two hundred lines of it — page setup, stripping
+   the site chrome, the masthead, collapsing the bands, the whole print type
+   scale — are not about the app at all, and a copy in each page is a copy that
+   drifts. The first divergence would show up as one PDF quietly setting its
+   body a half-point larger than the other, which nothing in CI would catch.
+
+   WHAT BELONGS IN HERE. Anything true of *a sheet*: the page box, the type
+   scale, the panel grid, the diagram-plus-captions idiom, the band treatments.
+
+   WHAT DOES NOT. Anything true of *one* sheet — the height a particular
+   illustration is capped at, a headline that needs its line break undone, a
+   band that only one page has. Those stay in the page, next to the markup they
+   describe. The rule of thumb: if you cannot state the rule without naming the
+   page, it is not shared.
+
+   Imported from page frontmatter, so Astro still bundles it per route — this is
+   not served to `/` or anywhere else that is not a sheet.
+   ========================================================================== */
+
+/* -----------------------------------------------------------------------------
+   SCREEN
+   -------------------------------------------------------------------------- */
+
+/* The print-only masthead does not exist on screen. This rule is the only thing
+   hiding it, and it is `display` rather than the `hidden` attribute on purpose
+   — see the note in PrintMasthead.astro, which is a real bug that shipped once.
+   `.print-only` covers the lines that replace a link or a button on paper. */
+.print-masthead,
+.print-only {
+  display: none;
+}
+
+/* -----------------------------------------------------------------------------
+   THE PANELS
+
+   A rule above the heading rather than a filled bar inside a bordered box. Two
+   reasons the original flyers' green bars went: a bar AND a border is two
+   containment systems doing one job, and six saturated green blocks on a page
+   that already opens and closes on full-bleed green was more green than the
+   page could carry — and more toner than the sheet deserved.
+
+   Weight separates the two tiers. Same heading level either way: the type scale
+   carries the emphasis, never the markup.
+   -------------------------------------------------------------------------- */
+.panels {
+  display: grid;
+  gap: 2rem 2.5rem;
+  margin: 3rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.panel {
+  border-top: 2px solid var(--color-border);
+  padding-top: 1.1rem;
+}
+
+/* brand-700 on white — 7.16:1, and a cleared pairing. */
+.panel--lead {
+  border-top-width: 5px;
+  border-top-color: var(--color-brand-700);
+}
+
+.panel-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+
+.panel--lead .panel-title {
+  font-size: 1.5rem;
+  color: var(--color-brand-700);
+}
+
+.panel p {
+  color: var(--color-text-muted);
+}
+
+@media (width >= 48rem), print {
+  .panels--lead {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .panels--rest {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* -----------------------------------------------------------------------------
+   DIAGRAM PLUS CAPTIONS
+
+   Both sheets carry one illustration whose sentences live in HTML underneath it
+   rather than baked into the art. That is not a stylistic preference: text in an
+   image cannot be selected or translated, does not reflow — so at 320px it
+   scales down until it is unreadable — and collapses into a single `alt`
+   attribute for anyone using a screen reader.
+
+   The `aspect-ratio` and the printed height cap are art-specific and stay with
+   the page. Everything else is the idiom.
+   -------------------------------------------------------------------------- */
+.flow-diagram {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.flow-captions {
+  display: grid;
+  gap: 1rem 2rem;
+  margin-top: 1.5rem;
+  color: var(--color-text-muted);
+}
+
+@media (width >= 48rem), print {
+  .flow-captions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* =============================================================================
+   PRINT — this is what produces the PDF.
+
+   The shape of the problem: the screen design is a vertical run of full-bleed
+   bands sized for a 1280px viewport, and a flyer is one Letter page. So print
+   strips the chrome, collapses the band padding, drops the type down to
+   document sizes, and holds the panels in their columns.
+   ========================================================================== */
+@media print {
+  /* Letter, matching the original artwork's 8.5x11in. The margin is set here
+     rather than in the PDF renderer so that a reader hitting Cmd+P gets the
+     same page the generated file has. `scripts/build-pdf.mjs` measures its
+     headroom against these numbers — change one and change the other. */
+  @page {
+    size: letter;
+    margin: 0.5in;
+  }
+
+  html,
+  body {
+    background: #fff;
+  }
+
+  /* Site chrome is navigation, and navigation does not survive printing. */
+  body > header,
+  body > footer,
+  .no-print {
+    display: none !important;
+  }
+
+  /* `display` overrides the `hidden` attribute, which is what makes these
+     print-only elements rather than screen elements being hidden. */
+  .print-masthead {
+    display: flex !important;
+    align-items: center;
+    gap: 7pt;
+    border-bottom: 1pt solid var(--color-brand-700);
+    padding-bottom: 6pt !important;
+    margin-bottom: 10pt;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  .print-masthead img {
+    width: 26pt;
+    height: 26pt;
+  }
+
+  .print-wordmark {
+    font-size: 14pt;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--color-brand-700);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Pushed right, so the sheet says where to go without a call to action
+     competing with the one at the foot of the page. */
+  .print-url {
+    margin-left: auto;
+    font-size: 9pt;
+    color: #000;
+  }
+
+  /* The bands stop being bands. Their padding and max-width exist to give a
+     scrolling page rhythm; on one sheet they only waste it. */
+  main section,
+  main div {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    max-width: none !important;
+  }
+
+  main section {
+    /* Band separation is the first thing to give when the page is tight and
+       the first thing to restore when it is not. */
+    margin-bottom: 10pt;
+    /* The muted band's tint is a device for separating bands on a scrolling
+       page. With the padding gone it becomes a grey box with type jammed
+       against its edges, so on paper the separation is left to the headings. */
+    background: #fff !important;
+  }
+
+  /* Print type. The screen scale is clamped against the viewport, which in a
+     paged context resolves against the sheet and comes out far too large. */
+  body {
+    /* 9pt rather than 9.5. Dropping half a point compounds across every
+       paragraph on the sheet and bought most of the headroom these pages need
+       — see the note in scripts/build-pdf.mjs on why a 1% margin is not a
+       margin. Still comfortably readable at arm's length on paper. */
+    font-size: 9pt;
+    line-height: 1.4;
+    color: #000;
+  }
+
+  h1 {
+    font-size: 26pt !important;
+    line-height: 1.05 !important;
+    letter-spacing: -0.02em !important;
+    margin: 0 0 8pt !important;
+  }
+
+  /* The hero's line break and coloured second line are a screen device; on
+     paper the headline wants to be one plain line. Removing the <br> closes the
+     two halves up against each other — "sharedin seconds" — so the space the
+     break was standing in for has to be put back explicitly. */
+  h1 br {
+    display: none;
+  }
+
+  h1 span::before {
+    content: ' ';
+  }
+
+  h1 span {
+    color: inherit !important;
+  }
+
+  h2 {
+    font-size: 12pt !important;
+    line-height: 1.2 !important;
+  }
+
+  h3 {
+    font-size: 10pt !important;
+    line-height: 1.25 !important;
+  }
+
+  /* Tailwind's text-sm is 0.875rem — about 10.5pt, which is LARGER than the
+     9pt body a sheet sets, so small print printed bigger than the copy it was
+     meant to sit quietly under. */
+  .text-sm {
+    font-size: 8.5pt !important;
+  }
+
+  .text-lead {
+    font-size: 10.5pt !important;
+    line-height: 1.45 !important;
+    margin-top: 0 !important;
+  }
+
+  /* Muted grey is a screen-contrast decision. On paper it prints weakly, and
+     the reason for the tone — receding behind the headline — does not apply.
+     `li` as well as `p`: some sheets carry their steps as list items, and with
+     only `p` covered they printed visibly lighter than the columns beside
+     them. */
+  main p,
+  main li {
+    color: #000 !important;
+    margin-top: 4pt !important;
+  }
+
+  /* Nested lists, which the `p` rule above does not reach — left alone they
+     open a gap under a heading that the columns beside it do not have, and the
+     row stops sitting level. */
+  main ul {
+    margin-top: 4pt !important;
+  }
+
+  /* ---------------------------------------------------------------------------
+     BANDS THAT KEEP THEIR GREEN.
+
+     `print-color-adjust` defaults to `economy`, and in print media Chromium
+     drops background colours under it — which left the first of these bands
+     printing white text on white paper, invisible. The colour has to be asked
+     for explicitly.
+
+     A class also beats the `main section` padding reset above on specificity,
+     so the padding declared here is what gives the band its presence on the
+     sheet rather than being flattened with the rest.
+
+     The white text is likewise not automatic: the blanket black above would
+     otherwise sink every word in here into its own background. It wins on
+     specificity — a class plus an element beats `main p` — so this holds
+     regardless of which stylesheet the page happens to order last.
+     ------------------------------------------------------------------------ */
+  .print-band-inverse {
+    background: var(--color-brand-700) !important;
+    color: #fff !important;
+    padding: 6pt 9pt !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .print-band-inverse :is(h2, h3, p, li, span, strong, a) {
+    color: #fff !important;
+  }
+
+  .print-band-inverse h2 {
+    font-size: 12pt !important;
+  }
+
+  /* A band whose content is a heading and a short strip — a logo row, a list of
+     store names — stacks into more of a sheet than it has to give, so on paper
+     it collapses to a single baseline-aligned row. The wrapper is an inert div
+     on screen.
+     Not applied to inverse bands generally: one carrying real paragraphs needs
+     its leading between them, which is why the margin reset lives here rather
+     than on `.print-band-inverse`. */
+  .print-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 14pt;
+    row-gap: 3pt;
+  }
+
+  .print-row :is(h2, h3, p, li, span) {
+    margin-top: 0 !important;
+  }
+
+  .flow-captions {
+    gap: 5pt 12pt !important;
+    margin-top: 8pt !important;
+  }
+
+  .flow-captions p {
+    margin-top: 0 !important;
+  }
+
+  .flow-figure {
+    margin-top: 10pt !important;
+    /* Colour on an otherwise black-and-white sheet. The diagram is an <img>, so
+       it prints as artwork regardless; this covers the browser's "background
+       graphics off" setting for anything drawn with CSS. */
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .flow-diagram {
+    /* Capped by height rather than width — see the per-page rule that sets it.
+       The sheet is the one place the illustration has a fixed budget. */
+    width: auto !important;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  /* The panels hold their columns on paper — the point of a one-pager is
+     everything visible without turning it over. The grid comes from the
+     `, print` query above; only the spacing needs bringing down. */
+  .panels {
+    gap: 11pt 14pt !important;
+    margin-top: 10pt !important;
+  }
+
+  .panel {
+    border-top-width: 1.2pt !important;
+    padding-top: 4pt !important;
+    /* The rules are the only structure holding the panels apart now, so they
+       have to survive a printer with background graphics switched off. A border
+       does; the filled bar this replaced did not. */
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .panel--lead {
+    border-top-width: 3pt !important;
+  }
+
+  .panel-title {
+    font-size: 10pt !important;
+  }
+
+  .panel--lead .panel-title {
+    font-size: 11.5pt !important;
+  }
+
+  /* The closing band is tinted on screen. On paper the tint prints as a weak
+     grey wash, so the separation becomes a rule instead. */
+  main section:last-of-type {
+    color: #000 !important;
+    border-top: 2pt solid var(--color-brand-700);
+    padding-top: 8pt !important;
+    /* Trailing margin below the last band is wasted paper, and it was enough on
+       its own to tip a sheet onto a second page. */
+    margin-bottom: 0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Nothing should split across a page if the content ever outgrows one sheet —
+     a panel broken over a fold is the worst version of these pages. */
+  .panel,
+  .flow-figure {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  h1,
+  h2,
+  h3 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+}

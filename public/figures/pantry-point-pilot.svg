@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 240" width="1200" height="240">
+  <!--
+    PLACEHOLDER for the /pantry-point "How the pilot ran" diagram.
+
+    This is not art. It is a schematic of the composition the band is built
+    around, drawn so that whoever replaces it knows what shape has to fit.
+    Replace this whole file; see README.md in this directory.
+
+    THE SHAPE: a funnel into a pipeline, which is the opposite of the hub on
+    /app and the reason these two illustrations cannot share one drawing. Two
+    routes to credits come in from the left — a survey, or a purchase — and
+    they MERGE. From the merge it is a single line: phone, machine, food. The
+    merge is the whole point of the picture. Both routes ended at the same
+    machine drawing on the same account, which is what made it impossible to
+    tell from the outside who had paid.
+
+    WHY THE CANVAS IS THIS FLAT. 5:1, and the drawing is stretched to use it.
+    On the printed sheet this is capped by HEIGHT — the page has about an inch
+    of room for it and far more width than it needs — so a taller canvas does
+    not buy a bigger picture, it buys a narrower one floating in white space
+    with the caption columns running past it on both sides. Flatter is the only
+    axis on which this drawing can grow. Replacement art should stay near this
+    ratio for the same reason, not merely to satisfy the `aspect-ratio` rule.
+
+    NO CAPTIONS IN THE ART. The sentences live in HTML underneath, so they stay
+    selectable and translatable and stay legible on a narrow screen where this
+    drawing has scaled down. Art with baked-in text will be unreadable at 320px,
+    and is capped at about an inch and a quarter tall on the printed sheet.
+  -->
+  <rect x="1" y="1" width="1198" height="238" rx="8"
+        fill="#f0f9f3" stroke="#106535" stroke-width="1.6" stroke-dasharray="7 5"/>
+
+  <g fill="none" stroke="#106535" stroke-width="1.6" opacity=".5">
+    <!-- the student who took the survey -->
+    <circle cx="58" cy="58" r="15"/>
+    <path d="M34 92a24 24 0 0 1 48 0" stroke-linecap="round"/>
+    <!-- the survey itself -->
+    <rect x="130" y="26" width="54" height="66" rx="4"/>
+    <path d="M142 44h30M142 58h30M142 72h18" stroke-linecap="round"/>
+
+    <!-- the student who bought credits -->
+    <circle cx="58" cy="182" r="15"/>
+    <path d="M34 216a24 24 0 0 1 48 0" stroke-linecap="round"/>
+    <!-- the payment -->
+    <rect x="130" y="160" width="54" height="36" rx="4"/>
+    <path d="M130 172h54"/>
+
+    <!-- the phone, where the two routes have already merged -->
+    <rect x="500" y="50" width="76" height="140" rx="12"/>
+    <path d="M522 66h32" stroke-linecap="round"/>
+    <!-- a scan code, drawn as four blocks rather than a real one -->
+    <path d="M514 104h18v18h-18zM540 104h18v18h-18zM514 130h18v18h-18zM540 130h18v18h-18z"/>
+
+    <!-- the machine -->
+    <rect x="790" y="30" width="140" height="180" rx="8"/>
+    <path d="M888 30v180"/>
+    <path d="M806 54h68M806 84h68M806 114h68M806 144h68" stroke-linecap="round"/>
+    <rect x="898" y="54" width="22" height="26" rx="3"/>
+    <rect x="806" y="170" width="68" height="30" rx="4"/>
+
+    <!-- what came out -->
+    <rect x="1080" y="20" width="62" height="52" rx="5"/>
+    <circle cx="1111" cy="120" r="26"/>
+    <rect x="1080" y="168" width="62" height="52" rx="5"/>
+  </g>
+
+  <!-- The two routes converge, then run as one line to the right. -->
+  <g stroke="#106535" stroke-width="3" opacity=".55" fill="none" stroke-linecap="round">
+    <!-- student to survey, student to payment -->
+    <path d="M88 58h20"/>
+    <path d="M88 182h20"/>
+    <!-- both routes bend into the phone: this is the merge -->
+    <path d="M190 58h80a14 14 0 0 1 14 14v34a14 14 0 0 0 14 14h180"/>
+    <path d="M190 182h80a14 14 0 0 0 14-14v-34a14 14 0 0 1 14-14h180"/>
+    <!-- one line from here on -->
+    <path d="M576 120h176"/>
+    <path d="M930 120h100"/>
+    <path d="M1030 46v148"/>
+    <path d="M1030 46h28M1030 120h28M1030 194h28"/>
+  </g>
+  <g fill="#106535" opacity=".55">
+    <path d="M108 51l16 7-16 7z"/>
+    <path d="M108 175l16 7-16 7z"/>
+    <path d="M478 113l16 7-16 7z"/>
+    <path d="M752 113l16 7-16 7z"/>
+    <path d="M1058 39l16 7-16 7z"/>
+    <path d="M1058 113l16 7-16 7z"/>
+    <path d="M1058 187l16 7-16 7z"/>
+  </g>
+
+  <g font-family="system-ui, sans-serif" font-size="13" fill="#106535" opacity=".75"
+     text-anchor="middle">
+    <text x="600" y="232">placeholder — replace public/figures/pantry-point-pilot.svg</text>
+  </g>
+</svg>

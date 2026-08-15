@@ -1,0 +1,430 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import Section from '~/components/Section.astro';
+import Button from '~/components/Button.astro';
+import PrintMasthead from '~/components/PrintMasthead.astro';
+/* The sheet stylesheet — the page box, the print type scale, the panel grid,
+ * the band treatments. Shared with /app; only what is specific to this page's
+ * art is left in the block at the bottom of this file. */
+import '~/styles/one-pager.css';
+
+/**
+ * PANTRY POINT — /pantry-point
+ *
+ * A rebuild of the printed one-pager in `designs/smsp-one-pager.svg`, the same
+ * way `/app` is a rebuild of `designs/sma-one-pager.svg`: the argument is
+ * carried over, the Illustrator sheet is not. It is set in Onest with the
+ * site's tokens rather than the original's Roboto and its own blues, and it is
+ * the source of the PDF — `scripts/build-pdf.mjs` renders this route to
+ * `dist/pantry-point.pdf`, so there is one copy of the copy rather than a page
+ * and an asset drifting apart.
+ *
+ * THE RENAME. The product is Pantry Point. It was the Smart Pantry, and the
+ * source flyer says so on every line. The old name appears exactly once on this
+ * page, in the hero paragraph, and never again: anyone who knew it needs the
+ * bridge, and anyone who did not should not have to carry two names through a
+ * sheet they are scanning in five seconds. Nothing here is titled "formerly
+ * known as" — that is a redirect note, not a headline.
+ *
+ * TENSE, WHICH IS THE STRUCTURAL DECISION ON THIS PAGE.
+ *
+ * The original flyer describes one specific mechanism in the present tense —
+ * short survey, credits to an account, scan a phone at the machine. That is
+ * how the PILOT was run. It is not a claim about how a Pantry Point works
+ * today, and writing it as one would put an undated 2019 product description in
+ * front of an administrator as though it were an offer.
+ *
+ * So the page splits along that seam:
+ *
+ *   - The DURABLE argument — footprint, staffing, hours, the machines it works
+ *     with, what it can hold, and why it does not single anybody out — is in
+ *     the present tense, because it is a property of the model rather than of
+ *     one deployment.
+ *   - The MECHANISM is in its own band, in the past tense, labelled as the
+ *     pilot. It earns its place: it is the part that was actually tested, and a
+ *     campus starting from scratch has to decide the same things.
+ *
+ * The data argument — the flyer's "DATA DRIVEN" panel — moved into the pilot
+ * band rather than staying a feature panel, and for the same reason. The two
+ * points of contact it describes are the survey and the scan, so it is a
+ * property of that mechanism and cannot be promised independently of it.
+ *
+ * COPY NOTES.
+ *
+ * The flyer's personas, Evette and Niamh, are gone. Named personas work in the
+ * present tense, which is how `/app` still uses them; recounting a finished
+ * pilot through invented people reads as though they were participants. The
+ * two paths matter and are kept — one route to credits was a survey, the other
+ * was a purchase — but as routes rather than as characters.
+ *
+ * "Food insecure" as a label on a person is gone with them, per the language
+ * rule. It described the reader's situation as an identity, and the sentence
+ * does not need it: what mattered was that credits were granted rather than
+ * bought.
+ *
+ * TODO(content): whether any Pantry Point is running anywhere today. This page
+ * is deliberately silent on it — there is no "currently at N campuses" line —
+ * because that is a fact nobody has confirmed, and a stale number is worse than
+ * no number. If the answer is "none right now", the pilot band's framing is
+ * already honest and nothing needs to change.
+ */
+
+/** Kept in one place: the hero link and the PDF filename both reference it. */
+const pdfHref = '/pantry-point.pdf';
+
+/**
+ * THE PANELS — five, in two tiers, matching the structure `/app` settled on.
+ *
+ * The flyer had six blocks: "Solved pain points" (which was three arguments in
+ * one box), Modularity, Nutrition, Reduced stigma, Data driven, and the flow
+ * diagram. Four of those are feature panels here; the flow diagram has its own
+ * band, "Reduced stigma" was promoted out of the grid entirely, and "Data
+ * driven" went into the pilot band.
+ *
+ * WHY "SOLVED PAIN POINTS" WAS SPLIT. It ran floor space, staffing and
+ * accessibility together under one heading, which buried the two numbers that
+ * do the most work on this page. Space and staffing are the constraints that
+ * decide whether a campus can host this at all; accessibility is why it is
+ * worth hosting. Those are not the same kind of claim and they should not share
+ * a box.
+ *
+ * WHY TWO TIERS. For the administrator who can say yes, footprint and staffing
+ * are the decision-drivers — the rest is supporting argument. Six identical
+ * boxes assert that everything matters equally, and it does not.
+ *
+ * WHY THE HEADINGS ARE SENTENCES. Same trade as `/app`: the flyer's headings
+ * were abstract nouns, which make the reader convert a category into a benefit
+ * themselves. The heading makes the claim and the body substantiates it. The
+ * original nouns are kept in comments so the trade stays visible.
+ */
+
+/** What decides whether a campus can host this at all. */
+const leadFeatures = [
+  {
+    // was part of "Solved pain points" — floor space
+    title: 'It fits where a food pantry cannot',
+    body: [
+      // TODO(content): both figures are carried over from the 2019 flyer and
+      // are unverified. The machine footprint is checkable against a real unit;
+      // the hundred square feet is a claim about somebody else's pantry and
+      // should be sourced or softened before this goes in front of a university.
+      'A machine takes about six and a half square feet. A staffed pantry needs at least a hundred, plus a door, a store room and somewhere to wait — which is why this fits in a building that has no room for a pantry at all.',
+    ],
+  },
+  {
+    // was part of "Solved pain points" — staffing
+    title: 'It runs without a volunteer roster',
+    body: [
+      'Restocking is the job, and it is one you can train someone to do in an afternoon. A staffed pantry needs volunteers, a rota, and someone to train them — and it closes on the days nobody signs up.',
+    ],
+  },
+];
+
+/** The supporting argument: why it is worth hosting once it fits. */
+const restFeatures = [
+  {
+    // was part of "Solved pain points" — accessibility
+    title: 'Open at two in the morning',
+    body: [
+      'It runs around the clock, so a night shift or a gap between classes is not a reason to miss it. Cheap enough to put in several buildings, so it need not mean a walk across campus.',
+    ],
+  },
+  {
+    // was "Modularity"
+    title: 'It uses the machines already on campus',
+    body: [
+      'Snack, beverage and refrigerated machines all work. A university decides what to stock and where it goes, rather than taking a fixed unit.',
+    ],
+  },
+  {
+    // was "Nutrition"
+    title: 'Fresh food, not only what keeps',
+    body: [
+      'Prepackaged fresh meals, dry goods, shelf-stable items, fruit and vegetables — a wider range than most people expect, and stock that was chosen rather than donated.',
+    ],
+  },
+];
+
+/**
+ * THE PILOT FLOW — four captions, in the past tense, sitting under one
+ * illustration.
+ *
+ * They are HTML rather than lettering baked into the art, for the three reasons
+ * documented in `public/figures/README.md`: text in an image cannot be selected
+ * or translated, does not reflow at 320px, and collapses into a single alt
+ * attribute for a screen reader. Which is also why the image is `alt=""` —
+ * everything it says is said here.
+ */
+/* Kept short deliberately. On paper these run as four columns across a 7.5in
+ * sheet, so each one is about 28 characters wide — a sentence that reads as one
+ * line on screen becomes five in the strip, and the fourth column sets the
+ * height of the whole row. Terse also suits the job: the picture is doing the
+ * describing and these are labels on its stages, not prose. */
+const pilotSteps = [
+  'A student who needed credits answered a short survey, and the credits arrived in their account.',
+  'A student who wanted to fund the pantry bought credits into their own account instead.',
+  'At the machine the phone was the key: scan in, choose, and the credits came off.',
+  'Out came oatmeal, salads, nuts, fruit and vegetables — the same stock either way.',
+];
+---
+
+<BaseLayout
+  title="Pantry Point"
+  description="Pantry Point turns the vending machines a university already has into automated food pantries — open around the clock, and small enough to put in several buildings at once."
+>
+  <PrintMasthead />
+
+  <Section size="hero">
+    <h1 class="text-display-xl font-extrabold text-balance m-0">
+      A whole pantry,<br />
+      <span class="text-[var(--color-brand-700)]">in a vending machine.</span>
+    </h1>
+
+    <p class="text-lead mt-8 max-w-2xl text-[var(--color-text-muted)]">
+      Pantry Point turns vending machines a university already has into
+      automated food pantries, open around the clock. It came out of two years
+      of interviews, and was piloted on campus as the Smart Pantry.
+    </p>
+
+    {/* Hidden in print: in the PDF this link points at the file you are
+        already reading. */}
+    <p class="mt-10 m-0 no-print">
+      <Button href={pdfHref} variant="secondary">
+        Download the one-pager (PDF)
+      </Button>
+    </p>
+  </Section>
+
+  {/* THE DIGNITY BAND.
+
+      This was the flyer's "REDUCED STIGMA" panel, sitting fifth in a grid of six
+      between Nutrition and Data driven. It is promoted out of the grid and given
+      the loud slot directly after the hero, for the same reason "Featured in"
+      was promoted on /app: it is not a product attribute, it is the argument the
+      product exists to make, and it read as a weak feature while sitting among
+      peers that answered "can we run this".
+
+      It is also the honest headline for the whole page. Floor space and staffing
+      are why a university says yes; this is why it matters that they do. Putting
+      it before the operational case rather than after says which one is the
+      point.
+
+      Inverse, because it is a claim worth making loudly, and because the page
+      needs a block of brand colour between the hero and the muted band below.
+
+      NOT wrapped in `.print-row`. That collapses a band into one baseline-aligned
+      line, which is right for a strip of logos and wrong for two real paragraphs
+      — see the note on the class in one-pager.css. */}
+  <Section tone="inverse" size="tight" class="print-band-inverse">
+    <h2 class="text-display font-extrabold text-balance m-0">
+      Nobody behind you knows who paid.
+    </h2>
+
+    {/* ONE paragraph, not the two this started as. Two reasons, and the second
+        is the real one:
+
+        `.text-lead` is set to `margin-top: 0` on paper — the screen scale puts
+        24px above a lead paragraph, which is right under a headline and wasteful
+        between siblings — so a second one here would have printed jammed against
+        the first with no leading at all.
+
+        And the half that was cut was the 24-hour claim, which the "Open at two
+        in the morning" panel below already makes at greater length. The band was
+        making its own argument and then borrowing someone else's. */}
+    <p class="text-lead mt-6 max-w-2xl">
+      A staffed food pantry asks a student to walk through a door that announces
+      why they are there. Pantry Point looks like every other vending machine on
+      campus: the same credits at the same machine, and no way for anyone nearby
+      to tell whether they were bought or granted.
+    </p>
+  </Section>
+
+  <Section tone="muted">
+    <h2 class="text-display font-extrabold text-balance m-0">
+      How the pilot ran
+    </h2>
+
+    {/* The tense is the point of this paragraph, and it is doing real work: it
+        is the difference between a description and an offer. Everything below
+        it is past tense and stays that way. */}
+    <p class="text-lead mt-6 max-w-2xl text-[var(--color-text-muted)]">
+      History, not an offer — but it is the part that was actually tested, and a
+      campus starting one has to settle the same questions.
+    </p>
+
+    <figure class="flow-figure m-0 mt-12">
+      <img
+        src="/figures/pantry-point-pilot.svg"
+        alt=""
+        width="1200"
+        height="240"
+        class="flow-diagram"
+      />
+
+      <figcaption class="flow-captions">
+        {pilotSteps.map((step) => <p class="m-0">{step}</p>)}
+      </figcaption>
+    </figure>
+
+    {/* WAS A FEATURE PANEL ("DATA DRIVEN"), now a coda to the pilot.
+        The two points of contact it describes are the survey and the scan —
+        both of which are the mechanism above. Left in the grid it promised a
+        capability independent of the thing that produced it, which is a promise
+        this page cannot keep. */}
+    <h3 class="panel-title pilot-coda mt-12">Two points of contact</h3>
+    <p class="mt-4 m-0 max-w-3xl text-[var(--color-text-muted)]">
+      The survey and the scan were also the only things the pilot measured: what
+      students said they needed, and then what they actually took, when, and
+      where. A campus running this again gets the same two readings.
+    </p>
+  </Section>
+
+  <Section>
+    <h2 class="text-display font-extrabold text-balance m-0">
+      Why the model works on a campus
+    </h2>
+
+    <ul class="panels panels--lead">
+      {
+        leadFeatures.map((feature) => (
+          <li class="panel panel--lead">
+            <h3 class="panel-title m-0">{feature.title}</h3>
+            {feature.body.map((paragraph, i) => (
+              <p class:list={['m-0', i === 0 ? 'mt-4' : 'mt-3']}>{paragraph}</p>
+            ))}
+          </li>
+        ))
+      }
+    </ul>
+
+    <ul class="panels panels--rest">
+      {
+        restFeatures.map((feature) => (
+          <li class="panel">
+            <h3 class="panel-title m-0">{feature.title}</h3>
+            {feature.body.map((paragraph) => (
+              <p class="m-0 mt-3">{paragraph}</p>
+            ))}
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  {/* Muted, not inverse. The footer is brand green and full width, so an
+      inverse band immediately above it merges into one undifferentiated green
+      block and the closing call to action stops reading as its own thing. */}
+  <Section tone="muted" size="tight">
+    <h2 class="text-display font-extrabold text-balance m-0">
+      Bring Pantry Point to your campus.
+    </h2>
+    <p class="text-lead mt-6 max-w-2xl text-[var(--color-text-muted)]">
+      Tell us how your vending contracts and your dining program are set up, and
+      we will tell you what running this would take.
+    </p>
+    {/* TODO(content): same open question as /app — confirm nucleus@ is still
+        the right inbox for campus enquiries. Carried over from the printed
+        one-pager and not verified. */}
+    <p class="text-lead mt-6 m-0">
+      <a
+        href="mailto:nucleus@sharemeals.org"
+        class="font-semibold text-[var(--color-brand-700)] underline"
+        >nucleus@sharemeals.org</a
+      >
+    </p>
+  </Section>
+</BaseLayout>
+
+{/*
+  PRINT RULES SPECIFIC TO THIS SHEET.
+
+  The bulk of the print layout is in `~/styles/one-pager.css`, imported at the
+  top of this file and shared with /app. What is left here is what cannot be
+  stated without naming this page: the proportions of its illustration, and the
+  one band whose paragraphs need holding apart.
+
+  `is:global` because the Section bands are rendered by a component and cannot
+  be reached from a scoped block. Astro bundles CSS per page, so despite the
+  name none of this is served on any other route.
+*/}
+<style is:global>
+  /* Reserves the diagram's box before the file loads so the captions below do
+     not jump. Matches the placeholder's viewBox; replacement art should keep
+     roughly this ratio or this number needs to move with it. */
+  .flow-diagram {
+    aspect-ratio: 1200 / 240;
+  }
+
+  @media print {
+    /* Capped by height, not width — the sheet is the one place this has a fixed
+       budget, and the page-count guard in scripts/build-pdf.mjs is what proves
+       the number still works. This drawing is a long horizontal pipeline, so at
+       this height it is nowhere near the width of the printable box; height is
+       the only constraint that binds. Which is also why the canvas is 5:1 and
+       not the 1040:340 /app uses: at a fixed height, the only way this drawing
+       gets bigger is by getting flatter. At 3.5:1 it rendered 312pt wide with
+       the caption columns running past it into white space on both sides. */
+    .flow-diagram {
+      height: 78pt !important;
+    }
+
+    /* FOUR COLUMNS, not the shared sheet's two.
+       This is a saving of about fifty points, but it is not only a saving: the
+       diagram above is a left-to-right pipeline with four stages, so four
+       captions in a row sit under the stages they describe. The two-column
+       default is right for /app, whose drawing is a hub and whose captions have
+       no left-to-right order to preserve. */
+    .flow-captions {
+      grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    }
+
+    /* Tailwind's `mt-12` is 3rem, and 48px of it survived into print because
+       nothing in the sheet resets an arbitrary utility margin — it was the
+       single largest piece of waste on this page, worth more than the diagram
+       and the band spacing put together. Screen keeps the utility; paper does
+       not. Worth checking for on any element that carries a spacing class into
+       a print band. */
+    .pilot-coda {
+      margin-top: 8pt !important;
+    }
+
+    /* ---------------------------------------------------------------------
+       SPACING, TIGHTER THAN THE SHARED SHEET.
+
+       This page runs denser than /app's: five bands, one of them carrying a
+       full-width figure, where /app has six shallower ones. It came in two
+       pixels under a 960px budget on the first fit, which is not a fit — the
+       note in scripts/build-pdf.mjs is about exactly this, and a margin inside
+       the noise between how macOS and Linux rasterise the same webfont will
+       pass here and spill onto a second page on CI.
+
+       The remaining sixty points come out of the gaps rather than the copy.
+       The sentences had already been cut twice by this point, and shaving a
+       third time would have started removing the argument instead of the
+       slack. Every number here is a reduction of a shared default, so raising
+       one back is a local edit rather than a decision about the other sheet.
+       ------------------------------------------------------------------- */
+    main section {
+      margin-bottom: 4pt;
+    }
+
+    .panels {
+      margin-top: 7pt !important;
+    }
+
+    .flow-figure {
+      margin-top: 7pt !important;
+    }
+
+    .print-band-inverse {
+      padding: 5pt 9pt !important;
+    }
+
+    /* The lead scale exists to set a paragraph apart from body copy, and 9.5pt
+       against a 9pt body still does that on paper. 10.5pt was buying a
+       distinction the sheet could no longer afford across three bands. */
+    .text-lead {
+      font-size: 9.5pt !important;
+    }
+  }
+</style>
