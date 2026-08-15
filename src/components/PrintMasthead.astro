@@ -1,0 +1,28 @@
+---
+/**
+ * The print-only masthead for the one-pager routes.
+ *
+ * The site header is navigation and is stripped from a printed sheet, which
+ * would otherwise leave the flyer with nothing on it identifying who it is
+ * from — the one thing a sheet handed to a stranger cannot be missing.
+ *
+ * It is `display: none` on screen (in `one-pager.css`), which also keeps it out
+ * of the accessibility tree, where it would only duplicate the header already
+ * above it.
+ *
+ * NOT the `hidden` attribute, and this is a bug that actually shipped:
+ * Tailwind's preflight sets `[hidden] { display: none !important }` inside
+ * `@layer base`, and for important declarations the layer cascade runs the
+ * other way — a layered `!important` beats an unlayered one. The print rule
+ * silently lost to it and the masthead never appeared on the sheet.
+ *
+ * The logomark is `alt=""` because the wordmark beside it already says
+ * "Share Meals"; alt text here would announce the name twice.
+ */
+---
+
+<div class="print-masthead">
+  <img src="/logomark.svg" alt="" width="34" height="34" />
+  <span class="print-wordmark">Share Meals</span>
+  <span class="print-url">sharemeals.org</span>
+</div>

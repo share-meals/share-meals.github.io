@@ -22,8 +22,16 @@
  * to its left, so the longer label would read as "Share Meals — the Share Meals
  * app". The page's own <h1> and <title> carry the full name for anyone arriving
  * from a search result rather than from this nav.
+ *
+ * "Pantry Point" is NOT shortened the same way. It is a proper name rather than
+ * a common noun, so "Pantry" would read as a category next to "App" and lose
+ * the one thing the label has to establish — that the product is called this
+ * now, and was called something else before.
  */
-const links: { label: string; href: string }[] = [{ label: 'App', href: '/app' }];
+const links: { label: string; href: string }[] = [
+  { label: 'App', href: '/app' },
+  { label: 'Pantry Point', href: '/pantry-point' },
+];
 
 // Normalized so '/x' and '/x/' both mark the nav item as current.
 const here = Astro.url.pathname.replace(/\/+$/, '') || '/';

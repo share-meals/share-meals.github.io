@@ -47,7 +47,10 @@ const DIST = 'dist';
  * be asserted or it is not really a constraint. Copy grows, and the sheet is
  * within about half an inch of full.
  */
-const SHEETS = [{ route: '/app', out: 'share-meals-app.pdf', maxPages: 1 }];
+const SHEETS = [
+  { route: '/app', out: 'share-meals-app.pdf', maxPages: 1 },
+  { route: '/pantry-point', out: 'pantry-point.pdf', maxPages: 1 },
+];
 
 /**
  * Page count, read back off the rendered bytes.
