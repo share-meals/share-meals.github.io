@@ -1,0 +1,939 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import Section from '~/components/Section.astro';
+import Button from '~/components/Button.astro';
+
+/**
+ * THE SHARE MEALS APP — /app
+ *
+ * This page is a rebuild of the printed one-pager in `designs/sma-one-pager.svg`
+ * (an Illustrator sheet from the app's earlier life). It is deliberately not a
+ * reproduction: the structure and the narrative are carried over, but they are
+ * set in Onest with the site's tokens rather than the flyer's Roboto and its
+ * own greens, and the flyer's six equal feature boxes have been restructured —
+ * see the panel notes below.
+ *
+ * The page is also the SOURCE OF THE PDF. `scripts/build-pdf.mjs` renders this
+ * exact route to `dist/share-meals-app.pdf` after the build, using the print
+ * rules at the bottom of this file. There is no second copy of the copy to
+ * keep in sync, which is the whole reason the flyer is a route and not an
+ * asset checked into `public/`.
+ *
+ * COPY NOTES.
+ *
+ * The flyer's header tagline was "HUNGER TECH". It is dropped. It leads with
+ * the deficit rather than the sharing, which is the one thing the language
+ * rule is most specific about, and nothing else on the site talks that way.
+ *
+ * "Extra food" and "extra meal swipe" are kept from the original — they are
+ * accurate and they describe the food rather than the person.
+ *
+ * The audience is two-headed and the order matters: a student reading this
+ * should understand what the app does within the first paragraph, and a
+ * university administrator should find the verification, per-campus control
+ * and device-access answers without having to ask. The closing band is addressed to the
+ * administrator, because they are the one who can act on it.
+ *
+ * WHAT IS NOT HERE, ON PURPOSE.
+ *
+ * Official App Store and Google Play badge artwork. All three download routes
+ * are now real links in the "Get the app" band, but the badges themselves are
+ * trademarked assets with their own placement rules and are not in this repo —
+ * the same problem as the publication logos, documented in
+ * `public/logos/README.md`. Apple's and Google's prescribed link text on the
+ * site's own button says the same thing and owes nobody anything.
+ */
+
+/** Kept in one place: the band headings, the PDF filename and the print date
+ *  all reference it, and it is the thing most likely to be reworded. */
+const pdfHref = '/share-meals-app.pdf';
+
+/**
+ * The credibility band. `logo` is the path to an SVG in `public/logos/`; leave
+ * it null and the name renders as a wordmark instead, which is what is on the
+ * page today. See the band's own note below on sourcing the artwork.
+ */
+const credits: { name: string; logo: string | null }[] = [
+  { name: 'The New York Times', logo: null },
+  { name: 'TEDxMU', logo: null },
+  { name: 'EdSurge', logo: null },
+];
+
+/**
+ * WHERE TO GET THE APP.
+ *
+ * Both URLs are confirmed live — the App Store listing is actively maintained
+ * (v4.1.8, updated February 2025, seller "Share Meals United, Inc."), which is
+ * what unblocked this: index.astro's rule is that a button going nowhere is
+ * worse than no button, and until these were verified there was nothing real
+ * to point at.
+ *
+ * The wording is Apple's and Google's own prescribed link text, and the marks
+ * are drawn here as monochrome glyphs in the site's own green rather than
+ * reproduced from the official badge artwork. That distinction is deliberate:
+ * these read as an icon set, not as a counterfeit of a badge whose colours,
+ * proportions and clear-space are specified by their owners. Naming a store
+ * you link to is exactly what a trademark is for — passing off artwork as
+ * theirs is not.
+ *
+ * The third link is the flyer's own "Use from any Browser" badge, restored.
+ * It matters more than its position at the end suggests: it is the one route
+ * that does not require a phone at all, which is the whole claim of the
+ * "Works without a smartphone" panel.
+ */
+const stores: {
+  label: string;
+  href: string;
+  /** 24x24 path data. `stroke` icons are drawn as outlines, the rest filled. */
+  icon: { d: string; stroke?: boolean };
+}[] = [
+  {
+    label: 'Download on the App Store',
+    href: 'https://apps.apple.com/us/app/share-meals/id1227449725',
+    icon: {
+      d: 'M17.05 12.54c-.02-2.4 1.96-3.55 2.05-3.61-1.12-1.63-2.86-1.86-3.48-1.88-1.48-.15-2.89.87-3.64.87-.75 0-1.91-.85-3.14-.83-1.61.02-3.1.94-3.93 2.38-1.68 2.91-.43 7.22 1.2 9.58.8 1.16 1.75 2.46 3 2.41 1.2-.05 1.66-.78 3.11-.78 1.45 0 1.86.78 3.13.75 1.29-.02 2.11-1.18 2.9-2.34.91-1.34 1.29-2.64 1.31-2.71-.03-.01-2.51-.96-2.53-3.82zM14.7 5.6c.66-.8 1.11-1.92 0.99-3.03-.95.04-2.11.63-2.79 1.43-.61.71-1.15 1.85-1.01 2.94 1.06.08 2.15-.54 2.81-1.34z',
+    },
+  },
+  {
+    label: 'Get it on Google Play',
+    href: 'https://play.google.com/store/apps/details?id=org.sharemeals.app',
+    icon: {
+      d: 'M3.6 1.9c-.24.25-.38.64-.38 1.15v17.9c0 .51.14.9.38 1.15l.06.06 10.03-10.03v-.24L3.66 1.84l-.06.06zm13.44 6.6L14.7 7.16 4.6 1.28l10.14 10.14 2.3-2.92zM4.6 22.72l10.1-5.88 2.34-1.34-2.3-2.92L4.6 22.72zm15.36-11.6l-2.5-1.44-2.5 2.32 2.5 2.32 2.55-1.47c.72-.42 1.02-1.07 1.02-1.85 0-.78-.35-1.44-1.07-1.88z',
+    },
+  },
+  {
+    label: 'Use it in any browser',
+    href: 'https://app.sharemeals.org',
+    icon: {
+      stroke: true,
+      d: 'M12 2.6a9.4 9.4 0 1 0 0 18.8 9.4 9.4 0 0 0 0-18.8zM2.9 12h18.2M12 2.6c2.35 2.55 3.67 5.92 3.76 9.4-.09 3.48-1.41 6.85-3.76 9.4-2.35-2.55-3.67-5.92-3.76-9.4.09-3.48 1.41-6.85 3.76-9.4z',
+    },
+  },
+];
+
+/**
+ * THE PANELS — five, not the flyer's six, in two tiers.
+ *
+ * WHY FIVE. "Featured in" came out. It is not a feature: it is social proof,
+ * and in a grid of product attributes it sat there pretending to be a peer of
+ * Safety and Modularity while answering a completely different question. It
+ * now has a band of its own directly after the hero, where it frames what
+ * follows instead of hiding among it. That also cleared the half-empty sixth
+ * cell at the bottom of the printed sheet.
+ *
+ * WHY TWO TIERS. Six identical boxes assert that six things matter equally,
+ * and they do not. For the university administrator who can actually say yes,
+ * Safety and Modularity are the decision-drivers — everything else is
+ * supporting argument. The layout now says so.
+ *
+ * WHY THE HEADINGS ARE SENTENCES. The flyer's headings were abstract nouns —
+ * "Safety", "Immediacy", "Modularity" — which make the reader do the work of
+ * converting a category into a benefit. On a sheet somebody scans in five
+ * seconds that is a wasted line, so the heading makes the claim and the body
+ * substantiates it. The cost is the crisp one-word rhythm, which had its own
+ * scannability; the nouns are kept here in comments so the trade stays visible
+ * to whoever revisits this.
+ */
+
+/** Safety and Modularity — what an administrator needs answered to say yes. */
+const leadFeatures = [
+  {
+    // was "Safety"
+    title: 'Only verified students, and only your campus',
+    body: [
+      'Students verify a university email address before they can use the app, and they only ever interact with other students at their own university.',
+      'All communication happens inside the app, with email addresses hidden. Name, major and profile photo are optional.',
+    ],
+  },
+  {
+    // was "Modularity"
+    title: 'Turn on only the parts you want',
+    body: [
+      'Want students to share meal swipes but not post food? Or only post food? Features turn on and off per campus, so the app fits the way your dining and student life actually work.',
+    ],
+  },
+];
+
+/** The supporting argument: why it works once it is running. */
+const restFeatures = [
+  {
+    // was "Immediacy"
+    title: 'Everyone knows within seconds',
+    body: [
+      'The moment a student shares a meal swipe or posts extra food, every other student on the app gets a push notification — and can open a live map of everything currently on offer.',
+    ],
+  },
+  {
+    // was "Tech equity"
+    title: 'Works without a smartphone',
+    body: [
+      'The app runs on any phone, and in any web browser — a laptop, a desktop, or a machine in the campus computer lab. A student without a smartphone is not shut out.',
+    ],
+  },
+  {
+    // was "Community"
+    title: 'Sharing a meal, not just food',
+    body: [
+      'Students who experience food insecurity are often isolated alongside it. Bringing students together over a good meal is the point of the app, not a side effect of it.',
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="The Share Meals app"
+  description="The Share Meals app lets college students share extra food with each other — an unused meal swipe, or food from an event. One post, and the whole campus knows."
+>
+  {/* PRINT-ONLY MASTHEAD.
+      The site header is navigation and is stripped from the sheet, which would
+      otherwise leave the flyer with nothing on it identifying who it is from —
+      the one thing a sheet handed to a stranger cannot be missing. It is
+      `display: none` on screen, which also keeps it out of the accessibility
+      tree, where it would only duplicate the header already above it.
+
+      NOT the `hidden` attribute. Tailwind's preflight sets
+      `[hidden] { display: none !important }` inside `@layer base`, and for
+      important declarations the layer cascade runs the other way — a layered
+      `!important` beats an unlayered one. The print rule below silently lost
+      to it and the masthead never appeared on the sheet. */}
+  <div class="print-masthead">
+    <img src="/logomark.svg" alt="" width="34" height="34" />
+    <span class="print-wordmark">Share Meals</span>
+    <span class="print-url">sharemeals.org</span>
+  </div>
+
+  <Section size="hero">
+    <h1 class="text-display-xl font-extrabold text-balance m-0">
+      Extra food, shared<br />
+      <span class="text-[var(--color-brand-700)]">in seconds.</span>
+    </h1>
+
+    <p class="text-lead mt-8 max-w-2xl text-[var(--color-text-muted)]">
+      The Share Meals app lets college students share extra food with each
+      other — an unused meal swipe, or food from an event or a meeting. One
+      post, and everyone on campus knows.
+    </p>
+
+    {/* Hidden in print: in the PDF this link points at the file you are
+        already reading. */}
+    <p class="mt-10 m-0 no-print">
+      <Button href={pdfHref} variant="secondary">
+        Download the one-pager (PDF)
+      </Button>
+    </p>
+  </Section>
+
+  {/* CREDIBILITY BAND.
+
+      This was one of the flyer's six feature panels, which was the wrong shape
+      for it: the other five answer "what does this do and can I run it here",
+      and a reader scanning that grid is in evaluation mode. This answers
+      "should I take these people seriously" — a different question, and it read
+      as a weak feature while sitting among them.
+
+      It sits directly after the hero because that is where it frames
+      everything below it, and it is an inverse band because it is a claim
+      worth making loudly. It is also the page's only block of brand green now
+      that the panels' green bars are gone, which the vertical rhythm needs.
+
+      LOGOS. Each credit renders its `logo` as an <img> when one is set, and
+      falls back to the name set as a wordmark when it is not. Both are live
+      right now in text form because the artwork is not in the repo yet —
+      dropping a file into `public/logos/` and filling in the `logo` field is
+      the whole switch, no markup change.
+
+      Where the art has to come from matters here. These are other
+      organisations' trademarks, so they need the current official asset from
+      the owner's own brand page, not a trace and not a lift from the 2019
+      flyer — that file's masthead is seven years old and may not be the mark
+      the NYT publishes today.
+
+      TODO(content): 2019-era credentials carried over from the printed flyer —
+      undated, unlinked, and unverified. Confirm before this goes in front of
+      administrators. */}
+  <Section tone="inverse" size="tight" class="credits-band">
+    {/* The wrapper exists for print only, where this stacks into more of a
+        sheet than it has to give. There it becomes a single baseline-aligned
+        row; on screen it is an inert div. */}
+    <div class="credits-row">
+      <h2 class="text-display font-extrabold m-0">Featured in</h2>
+
+      <ul class="credits mt-8 flex flex-wrap items-center gap-x-12 gap-y-6 p-0 m-0 list-none">
+        {
+          credits.map((credit) => (
+            <li>
+              {credit.logo ? (
+                /* Meaningful, so it gets real alt text: the whole point of the
+                   band is which publications these are, and an empty alt would
+                   leave a screen reader with a bare "Featured in". */
+                <img
+                  src={credit.logo}
+                  alt={credit.name}
+                  height="44"
+                  class="credit-logo"
+                />
+              ) : (
+                <span class="text-2xl md:text-3xl font-extrabold">
+                  {credit.name}
+                </span>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </Section>
+
+  <Section tone="muted">
+    <h2 class="text-display font-extrabold text-balance m-0">How it works</h2>
+
+    {/* THE FLOW DIAGRAM — one illustration, four captions.
+
+        The picture is a single replaceable asset in `public/figures/`. The
+        shape it draws is a HUB, not a pipeline: Erika and Serjio both post and
+        both arrows run right into the phone, while Phoebe reads that same
+        phone from the other side, so her two arrows run left into it. That
+        convergence is what made the original flyer read as a story rather than
+        a list, and it is the thing to preserve when the art is replaced.
+
+        WHY THE CAPTIONS ARE NOT IN THE PICTURE. They are HTML, deliberately,
+        for three reasons that all bite at once: text baked into an image
+        cannot be selected or translated; it does not reflow, so on a 320px
+        screen a diagram this wide scales down until its own lettering is
+        unreadable; and it collapses into a single alt attribute for anyone
+        using a screen reader. Keeping them outside costs a little fidelity to
+        the original sheet and buys all three back.
+
+        Which is also why the image is `alt=""`. It is not that the diagram is
+        unimportant — it is that everything it says is already said in the text
+        directly beneath it, and alt text here would read the section twice.
+        This only holds while the art carries no words of its own; art with
+        baked-in captions needs a real description instead. */}
+    <figure class="flow-figure m-0 mt-12">
+      <img
+        src="/figures/how-it-works.svg"
+        alt=""
+        width="1040"
+        height="340"
+        class="flow-diagram"
+      />
+
+      <figcaption class="flow-captions">
+        <p class="m-0">
+          <strong class="font-semibold text-[var(--color-text)]">Erika</strong> has
+          extra meal swipes, so she posts the times and dining halls where she
+          is usually free.
+        </p>
+        <p class="m-0">
+          <strong class="font-semibold text-[var(--color-text)]">Serjio</strong>'s
+          tutoring club has extra sandwiches, so he posts a photo with the time
+          and the location.
+        </p>
+        <p class="m-0">
+          Both posts land on one live map, and everyone on campus gets a push
+          notification.
+        </p>
+        <p class="m-0">
+          <strong class="font-semibold text-[var(--color-text)]">Phoebe</strong> messages
+          Erika and meets her at the dining hall. Another day she walks to the
+          student union after class, in time for a few of Serjio's sandwiches.
+        </p>
+      </figcaption>
+    </figure>
+  </Section>
+
+  <Section>
+    {/* The band now carries a heading. Without one this was a <section>
+        landmark with no accessible name — axe passes it, but an unlabelled
+        region is a worse experience than a labelled one, and the panels were
+        floating with nothing saying what they collectively answer.
+
+        The panel headings are h3 under it, which is what they actually are:
+        they were h2 only because there was no h2 above them to sit under. */}
+    <h2 class="text-display font-extrabold text-balance m-0">
+      Why it works on a campus
+    </h2>
+
+    {/* THE TREATMENT. The flyer's solid green heading bar is gone, replaced by
+        a rule above each heading. Two reasons: a bar AND a border box is two
+        containment systems doing one job, and six saturated green blocks on a
+        page that already opens and closes on full-bleed green was more green
+        than the page could carry — and more toner than the sheet deserved.
+
+        Weight is what separates the tiers. The two that close the deal get a
+        heavy brand rule and larger type; the three supporting ones get a hairline
+        and step down. Same heading level, different visual weight — the type
+        scale carries the emphasis, not the markup. */}
+    <ul class="panels panels--lead">
+      {
+        leadFeatures.map((feature) => (
+          <li class="panel panel--lead">
+            <h3 class="panel-title m-0">{feature.title}</h3>
+            {feature.body.map((paragraph, i) => (
+              <p class:list={['m-0', i === 0 ? 'mt-4' : 'mt-3']}>{paragraph}</p>
+            ))}
+          </li>
+        ))
+      }
+    </ul>
+
+    <ul class="panels panels--rest">
+      {
+        restFeatures.map((feature) => (
+          <li class="panel">
+            <h3 class="panel-title m-0">{feature.title}</h3>
+            {feature.body.map((paragraph, i) => (
+              <p class:list={['m-0', i === 0 ? 'mt-3' : 'mt-3']}>{paragraph}</p>
+            ))}
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  {/* Muted, not inverse. The footer is brand green and full width, so an
+      inverse band immediately above it merges into one undifferentiated green
+      block and the closing call to action stops reading as its own thing. */}
+  {/* GET THE APP.
+
+      The page has two audiences and this band is the students' one, which is
+      why it sits immediately before the closing band rather than inside it —
+      that one is addressed to the administrator who can say yes on behalf of a
+      campus, and the two asks should not be tangled together.
+
+      Green, so the page alternates white / green / muted / white / green /
+      muted rather than running two default bands into each other. */}
+  <Section tone="inverse" size="tight" class="stores-band">
+    <h2 class="text-display font-extrabold text-balance m-0">Get the app</h2>
+
+    <p class="text-lead mt-6 max-w-2xl">
+      Free, and it works on any phone — or in a browser, with no phone at all.
+    </p>
+
+    {/* Links are useless on paper, so the sheet gets the print-only line below
+        instead — a reader holding it can act on a search but not on a URL they
+        would have to retype. */}
+    <ul class="mt-8 flex flex-wrap gap-4 p-0 m-0 list-none no-print">
+      {
+        stores.map((store) => (
+          <li>
+            <Button href={store.href} variant="inverse" external>
+              {/* Decorative: the label sits right beside it, and giving the
+                  mark its own alt or title would make a screen reader announce
+                  the destination twice. */}
+              <svg
+                viewBox="0 0 24 24"
+                width="19"
+                height="19"
+                aria-hidden="true"
+                focusable="false"
+                class="shrink-0"
+                fill={store.icon.stroke ? 'none' : 'currentColor'}
+                stroke={store.icon.stroke ? 'currentColor' : undefined}
+                stroke-width={store.icon.stroke ? 1.7 : undefined}
+                stroke-linejoin={store.icon.stroke ? 'round' : undefined}
+              >
+                <path d={store.icon.d} />
+              </svg>
+              {store.label}
+            </Button>
+          </li>
+        ))
+      }
+    </ul>
+
+    {/* The store links are useless on paper — nobody retypes those — so the
+        sheet names the destinations instead and lets the reader search. The
+        web address is the exception, printed verbatim: it is short enough to
+        type, and it is the only route that needs no phone at all.
+
+        Terse because it has to hold one line. The fuller sentence this
+        replaced wrapped to two and put the sheet onto a second page. */}
+    <p class="print-stores m-0">
+      App Store &middot; Google Play &middot; app.sharemeals.org
+    </p>
+  </Section>
+
+  <Section tone="muted" size="tight">
+    <h2 class="text-display font-extrabold text-balance m-0">
+      Bring it to your campus.
+    </h2>
+    <p class="text-lead mt-6 max-w-2xl text-[var(--color-text-muted)]">
+      Tell us how dining works at your university and we will tell you what
+      running the app there would take.
+    </p>
+    {/* TODO(content): confirm nucleus@ is still the right inbox for campus
+        enquiries before this page ships. It is carried over from the printed
+        one-pager and has not been verified. */}
+    <p class="text-lead mt-6 m-0">
+      <a
+        href="mailto:nucleus@sharemeals.org"
+        class="font-semibold text-[var(--color-brand-700)] underline"
+        >nucleus@sharemeals.org</a
+      >
+    </p>
+
+  </Section>
+</BaseLayout>
+
+{/*
+  PRINT RULES — these produce the PDF.
+
+  `is:global` because the header, the footer and the Section bands are rendered
+  by components and cannot be reached from a scoped block. Astro bundles CSS
+  per page, so despite the name none of this is served on any other route.
+
+  The shape of the problem: the screen design is a vertical run of full-bleed
+  bands sized for a 1280px viewport, and the flyer is one Letter page. So print
+  strips the chrome, collapses the band padding, drops the type down to
+  document sizes, and puts the panels back into the two-by-three grid the
+  original sheet used.
+*/}
+<style is:global>
+  /* Screen: the masthead does not exist. This is the only thing hiding it —
+     see the note on the element for why the `hidden` attribute is not used. */
+  .print-masthead,
+  .print-stores {
+    display: none;
+  }
+
+  /* Logos sit on a green band, so they need to be light-on-dark artwork. The
+     height is fixed and the width follows, which keeps two marks of different
+     proportions optically level. */
+  .credit-logo {
+    height: 2.75rem;
+    width: auto;
+    display: block;
+  }
+
+  /* ---------------------------------------------------------------------------
+     THE PANELS.
+
+     A rule above the heading rather than a filled bar inside a bordered box.
+     Two reasons the flyer's green bar went: a bar AND a border is two
+     containment systems doing one job, and six saturated green blocks on a
+     page that already opens and closes on full-bleed green was more green than
+     the page could carry.
+
+     Weight separates the two tiers. Same heading level either way — the type
+     scale carries the emphasis, never the markup.
+     ------------------------------------------------------------------------ */
+  .panels {
+    display: grid;
+    gap: 2rem 2.5rem;
+    margin: 3rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .panel {
+    border-top: 2px solid var(--color-border);
+    padding-top: 1.1rem;
+  }
+
+  /* brand-700 on white — 7.16:1, and a cleared pairing. */
+  .panel--lead {
+    border-top-width: 5px;
+    border-top-color: var(--color-brand-700);
+  }
+
+  .panel-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.25;
+    text-wrap: balance;
+  }
+
+  .panel--lead .panel-title {
+    font-size: 1.5rem;
+    color: var(--color-brand-700);
+  }
+
+  .panel p {
+    color: var(--color-text-muted);
+  }
+
+  @media (width >= 48rem), print {
+    .panels--lead {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .panels--rest {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  /* ---------------------------------------------------------------------------
+     THE FLOW DIAGRAM in "How it works".
+
+     One image plus a caption block. The image is a fixed-aspect box that
+     scales with the column; the captions sit under it and go multi-column
+     only when there is room for them to.
+     ------------------------------------------------------------------------ */
+  .flow-diagram {
+    display: block;
+    width: 100%;
+    height: auto;
+    /* Reserves the box before the file loads so the captions below do not jump.
+       Matches the placeholder's viewBox; replacement art should keep roughly
+       this ratio or this number needs to move with it. */
+    aspect-ratio: 1040 / 340;
+  }
+
+  .flow-captions {
+    display: grid;
+    gap: 1rem 2rem;
+    margin-top: 1.5rem;
+    color: var(--color-text-muted);
+  }
+
+  @media (width >= 48rem), print {
+    .flow-captions {
+      /* Four captions over two columns, matching the two halves of the
+         picture: the two posts, then the app and the person who answers. */
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media print {
+    /* Letter, matching the original artwork's 8.5x11in. The margin is set here
+       rather than in the PDF renderer so that a reader hitting Cmd+P gets the
+       same page the generated file has. */
+    @page {
+      size: letter;
+      margin: 0.5in;
+    }
+
+    html,
+    body {
+      background: #fff;
+    }
+
+    /* Site chrome is navigation, and navigation does not survive printing. */
+    body > header,
+    body > footer,
+    .no-print {
+      display: none !important;
+    }
+
+    /* `display` overrides the `hidden` attribute, which is what makes the
+       masthead a print-only element rather than a screen element being hidden. */
+    .print-masthead {
+      display: flex !important;
+      align-items: center;
+      gap: 7pt;
+      border-bottom: 1pt solid var(--color-brand-700);
+      padding-bottom: 6pt !important;
+      margin-bottom: 10pt;
+    }
+
+    .print-masthead img {
+      width: 26pt;
+      height: 26pt;
+    }
+
+    .print-wordmark {
+      font-size: 14pt;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--color-brand-700);
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    /* Pushed right, so the sheet says where to go without a call to action
+       competing with the one at the foot of the page. */
+    .print-url {
+      margin-left: auto;
+      font-size: 9pt;
+      color: #000;
+    }
+
+    /* The bands stop being bands. Their padding and max-width exist to give a
+       scrolling page rhythm; on one sheet they only waste it. */
+    main section,
+    main div {
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      max-width: none !important;
+    }
+
+    main section {
+      /* The hub diagram is more compact than the three-column version it
+         replaced, which put roughly two inches back on the sheet. This is
+         where some of it is spent — band separation is the first thing to
+         give when the page is tight and the first thing to restore when it
+         is not. */
+      margin-bottom: 10pt;
+      /* The muted band's tint is a device for separating bands on a scrolling
+         page. With the padding gone it becomes a grey box with type jammed
+         against its edges, so on paper the separation is left to the headings. */
+      background: #fff !important;
+    }
+
+    /* Print type. The screen scale is clamped against the viewport, which in a
+       paged context resolves against the sheet and comes out far too large. */
+    body {
+      /* 9pt rather than 9.5. Dropping half a point compounds across every
+         paragraph on the sheet and bought most of the headroom this page needs
+         — see the note in scripts/build-pdf.mjs on why a 1% margin is not a
+         margin. Still comfortably readable at arm's length on paper. */
+      font-size: 9pt;
+      line-height: 1.4;
+      color: #000;
+    }
+
+    h1 {
+      font-size: 26pt !important;
+      line-height: 1.05 !important;
+      letter-spacing: -0.02em !important;
+      margin: 0 0 8pt !important;
+    }
+
+    /* The hero's line break and coloured second line are a screen device; on
+       paper the headline wants to be one plain line. Removing the <br> closes
+       the two halves up against each other — "sharedin seconds" — so the space
+       the break was standing in for has to be put back explicitly. */
+    h1 br {
+      display: none;
+    }
+
+    h1 span::before {
+      content: ' ';
+    }
+
+    h1 span {
+      color: inherit !important;
+    }
+
+    h2 {
+      font-size: 12pt !important;
+      line-height: 1.2 !important;
+    }
+
+    h3 {
+      font-size: 10pt !important;
+      line-height: 1.25 !important;
+    }
+
+    /* Tailwind's text-sm is 0.875rem — about 10.5pt, which is LARGER than the
+       9.5pt body this sheet sets, so the credibility line printed bigger than
+       the copy it was meant to sit quietly under. */
+    .text-sm {
+      font-size: 8.5pt !important;
+    }
+
+    .text-lead {
+      font-size: 10.5pt !important;
+      line-height: 1.45 !important;
+      margin-top: 0 !important;
+    }
+
+    /* Muted grey is a screen-contrast decision. On paper it prints weakly, and
+       the reason for the tone — receding behind the headline — does not apply.
+       `li` as well as `p`: the two posts in step one are list items, and with
+       only `p` covered they printed visibly lighter than the columns beside
+       them. */
+    /* The credibility band is excluded — it is white-on-green, and the
+       blanket black would make its text vanish into its own background. */
+    main p,
+    main li:not(.credits li) {
+      color: #000 !important;
+      margin-top: 4pt !important;
+    }
+
+    /* The nested list in step one, which the `p` rule above does not reach —
+       left alone it opened a gap under that heading that the other two columns
+       did not have, and the row stopped sitting level. */
+    main ul {
+      margin-top: 4pt !important;
+    }
+
+    .flow-captions p {
+      margin-top: 0 !important;
+    }
+
+    /* The sheet is the one place the diagram has a fixed budget, so it is
+       capped by height rather than left to take the full column width. */
+    .flow-figure {
+      margin-top: 10pt !important;
+    }
+
+    .flow-diagram {
+      width: auto !important;
+      max-width: 100%;
+      /* Capped by height, not width: the sheet is the one place this has a
+         fixed budget, and the page-count guard in scripts/build-pdf.mjs is
+         what proves the number still works. Raising it is the first thing to
+         try if the replacement art needs more room — and the first thing that
+         will fail the build if there isn't any. */
+      height: 86pt !important;
+      margin: 0 auto;
+    }
+
+    .flow-captions {
+      gap: 5pt 12pt !important;
+      margin-top: 8pt !important;
+    }
+
+    /* Colour on an otherwise black-and-white sheet. The diagram is an <img>,
+       so it prints as artwork regardless; this covers the browser's
+       "background graphics off" setting for anything drawn with CSS. */
+    .flow-figure {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    /* THE CREDIBILITY BAND on paper. It keeps its green — it is the only
+       block of brand colour left on the sheet and it is the flyer's own
+       banner idiom — but everything inside comes down hard. At screen sizes
+       two publication names set at 30px would eat an inch of the page. */
+    /* The green has to be asked for explicitly. `print-color-adjust` defaults
+       to `economy`, and in print media Chromium drops background colours under
+       it — which left this band's white text sitting on white paper, invisible.
+       A class beats the `main section` padding reset above on specificity, so
+       the padding here is what gives the band its presence on the sheet. */
+    .credits-band {
+      background: var(--color-brand-700) !important;
+      color: #fff !important;
+      padding: 6pt 9pt !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    /* Same reasoning as the credibility band: `print-color-adjust` defaults to
+       `economy`, under which Chromium drops background colours in print, and
+       this band is white text on green. Without `exact` it prints invisible. */
+    .stores-band {
+      background: var(--color-brand-700) !important;
+      color: #fff !important;
+      padding: 6pt 9pt !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .stores-band h2,
+    .stores-band p {
+      color: #fff !important;
+      margin-top: 0 !important;
+    }
+
+    .stores-band h2 {
+      font-size: 12pt !important;
+    }
+
+    .print-stores {
+      display: block;
+      font-size: 9.5pt !important;
+    }
+
+    /* One row on paper, like the credits band above it. */
+    .stores-band > div {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      column-gap: 14pt;
+      row-gap: 3pt;
+    }
+
+    .stores-band .text-lead {
+      display: none;
+    }
+
+    .credits-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      column-gap: 14pt;
+      row-gap: 3pt;
+    }
+
+    .credits {
+      gap: 3pt 12pt !important;
+      margin-top: 0 !important;
+    }
+
+    /* The span carries `text-2xl`, so sizing the <li> alone did nothing — the
+       inner element won and the names were printing at 18pt while this rule
+       quietly claimed otherwise. Both are targeted. */
+    .credits li,
+    .credits li span {
+      font-size: 12pt !important;
+      margin-top: 0 !important;
+      color: #fff !important;
+    }
+
+    .credits-row h2 {
+      margin-top: 0 !important;
+      color: #fff !important;
+      /* Much larger than the body on screen, but on a sheet with a fixed
+         budget it goes back to the same size as every other band heading. */
+      font-size: 12pt !important;
+    }
+
+    .credit-logo {
+      height: 15pt !important;
+      width: auto !important;
+    }
+
+    /* The panels hold their columns on paper — the point of a one-pager is
+       everything visible without turning it over. The grid comes from the
+       `, print` query above; only the spacing needs bringing down. */
+    .panels {
+      gap: 11pt 14pt !important;
+      margin-top: 10pt !important;
+    }
+
+    .panel {
+      border-top-width: 1.2pt !important;
+      padding-top: 4pt !important;
+      /* The rules are the only structure holding the panels apart now, so they
+         have to survive a printer with background graphics switched off. A
+         border does; the filled bar this replaced did not. */
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .panel--lead {
+      border-top-width: 3pt !important;
+    }
+
+    .panel-title {
+      font-size: 10pt !important;
+    }
+
+    .panel--lead .panel-title {
+      font-size: 11.5pt !important;
+    }
+
+    /* The closing band is tinted on screen. On paper the tint prints as a weak
+       grey wash, so the separation becomes a rule instead. */
+    main section:last-of-type {
+      color: #000 !important;
+      border-top: 2pt solid var(--color-brand-700);
+      padding-top: 8pt !important;
+      /* Trailing margin below the last band is wasted paper, and it was enough
+         on its own to tip the sheet onto a second page. */
+      margin-bottom: 0 !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    /* Nothing should split across a page if the content ever outgrows one
+       sheet — a panel broken over a fold is the worst version of this page. */
+    .panel,
+    .flow-figure {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    h1,
+    h2,
+    h3 {
+      break-after: avoid;
+      page-break-after: avoid;
+    }
+  }
+</style>

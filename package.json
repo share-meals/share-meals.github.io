@@ -14,7 +14,8 @@
     "check:contrast": "node scripts/check-contrast.mjs",
     "check": "yarn check:contrast && astro check",
     "check:a11y": "node scripts/check-a11y.mjs",
-    "check:all": "yarn check && astro build && yarn check:a11y"
+    "build:pdf": "node scripts/build-pdf.mjs",
+    "check:all": "yarn check && astro build && yarn check:a11y && yarn build:pdf"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",

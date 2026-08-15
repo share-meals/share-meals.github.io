@@ -14,12 +14,16 @@
  * If the nav grows past ~6 items, revisit — that is the point where a
  * disclosure earns its complexity.
  *
- * EMPTY ON PURPOSE. The previous items mirrored the old site's structure and
- * were removed with their pages; the information architecture is being decided
- * from scratch. The rendering below is kept and handles the empty case, so
- * adding a section back means adding one entry here and nothing else.
+ * This list was empty while the information architecture was being decided from
+ * scratch, and the rendering below still handles the empty case — adding a
+ * section means adding one entry here and nothing else.
+ *
+ * "App" rather than "The Share Meals app": the wordmark is already immediately
+ * to its left, so the longer label would read as "Share Meals — the Share Meals
+ * app". The page's own <h1> and <title> carry the full name for anyone arriving
+ * from a search result rather than from this nav.
  */
-const links: { label: string; href: string }[] = [];
+const links: { label: string; href: string }[] = [{ label: 'App', href: '/app' }];
 
 // Normalized so '/x' and '/x/' both mark the nav item as current.
 const here = Astro.url.pathname.replace(/\/+$/, '') || '/';
@@ -51,9 +55,19 @@ const here = Astro.url.pathname.replace(/\/+$/, '') || '/';
     </a>
 
     {/* Rendered only when there is something in it — an empty landmark is
-        noise for screen reader users, not a neutral placeholder. */}
+        noise for screen reader users, not a neutral placeholder.
+
+        `sm:ml-auto` is what pushes the nav to the right-hand end of the bar,
+        and it scales to any number of links: the auto margin absorbs whatever
+        space is left over, so the group stays flush right and grows leftwards
+        as items are added, rather than needing a width or a spacer element.
+
+        Only from `sm` up. Below that the nav is already `w-full` on its own
+        row, where an auto margin would shunt one or two short links to the far
+        right of an otherwise empty line, away from the wordmark they belong
+        with. */}
     {links.length > 0 && (
-    <nav aria-label="Main" class="order-3 w-full sm:order-2 sm:w-auto">
+    <nav aria-label="Main" class="order-3 w-full sm:order-2 sm:ml-auto sm:w-auto">
       <ul class="flex flex-wrap gap-x-6 gap-y-2 p-0 m-0 list-none">
         {
           links.map((link) => {

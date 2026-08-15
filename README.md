@@ -51,6 +51,27 @@ yarn dev
 | `yarn build` | Production build to `dist/` |
 | `yarn preview` | Serve the built site locally |
 | `yarn check` | Contrast audit and type check |
+| `yarn build:pdf` | Render the printable one-pager into `dist/` |
+
+### The app one-pager
+
+`/app` is both the web page for the Share Meals app and the source of the
+printed one-pager. `yarn build:pdf` renders that route through Chromium, using
+the `@media print` rules at the foot of `src/pages/app.astro`, and writes
+`dist/share-meals-app.pdf` — which is what the download button on the page
+points at.
+
+It is generated rather than checked in so the flyer cannot drift from the page:
+there is one copy of the copy. The build fails if the sheet stops fitting on one
+page, because a one-pager that silently becomes two pages is otherwise a
+perfectly valid PDF.
+
+The consequence is that the download link 404s under `yarn dev` — the file only
+exists after a real build. Use `yarn build && yarn build:pdf && yarn preview` to
+see it work.
+
+It rebuilds the flyer from `designs/sma-one-pager.svg`, the original Illustrator
+sheet. That file is kept for reference only; nothing in the build reads it.
 
 ### The impact numbers
 
