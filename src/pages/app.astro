@@ -624,7 +624,7 @@ const restFeatures = [
       gap: 7pt;
       border-bottom: 1pt solid var(--color-brand-700);
       padding-bottom: 6pt !important;
-      margin-bottom: 11pt;
+      margin-bottom: 10pt;
     }
 
     .print-masthead img {
@@ -666,7 +666,7 @@ const restFeatures = [
          where some of it is spent — band separation is the first thing to
          give when the page is tight and the first thing to restore when it
          is not. */
-      margin-bottom: 11pt;
+      margin-bottom: 10pt;
       /* The muted band's tint is a device for separating bands on a scrolling
          page. With the padding gone it becomes a grey box with type jammed
          against its edges, so on paper the separation is left to the headings. */
@@ -676,7 +676,11 @@ const restFeatures = [
     /* Print type. The screen scale is clamped against the viewport, which in a
        paged context resolves against the sheet and comes out far too large. */
     body {
-      font-size: 9.5pt;
+      /* 9pt rather than 9.5. Dropping half a point compounds across every
+         paragraph on the sheet and bought most of the headroom this page needs
+         — see the note in scripts/build-pdf.mjs on why a 1% margin is not a
+         margin. Still comfortably readable at arm's length on paper. */
+      font-size: 9pt;
       line-height: 1.4;
       color: #000;
     }
@@ -765,7 +769,7 @@ const restFeatures = [
          what proves the number still works. Raising it is the first thing to
          try if the replacement art needs more room — and the first thing that
          will fail the build if there isn't any. */
-      height: 94pt !important;
+      height: 86pt !important;
       margin: 0 auto;
     }
 

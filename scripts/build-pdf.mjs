@@ -108,6 +108,23 @@ function serve() {
   });
 }
 
+/**
+ * The printable box, in CSS pixels at 96dpi: US Letter (8.5x11in) less the
+ * 0.5in margins the page's own `@page` rule sets. Kept here rather than
+ * derived from the PDF because it is also what the headroom check measures
+ * against — if the `@page` rule changes, these change with it.
+ */
+const PRINT_WIDTH = 720;
+const PRINT_HEIGHT = 960;
+
+/**
+ * Warn below this much spare room. Not a failure: a tight sheet is a judgement
+ * call, and a hard threshold here would block legitimately dense pages. It
+ * exists so that "ok" stops being a binary and a sheet one line from spilling
+ * says so out loud.
+ */
+const MIN_SPARE_PX = 40;
+
 const { server, port } = await serve();
 const base = `http://127.0.0.1:${port}`;
 
@@ -137,6 +154,28 @@ for (const { route, out, maxPages } of SHEETS) {
   // Chromium applies `@media screen` to `page.pdf()` by default. The print
   // block on the page is the entire layout, so this is not optional.
   await page.emulateMedia({ media: 'print' });
+
+  // HOW MUCH ROOM IS LEFT, not just whether it fitted.
+  //
+  // The page count alone is a cliff: a sheet that fits with two millimetres to
+  // spare reports exactly the same "ok" as one with an inch, right up until it
+  // silently costs a page. That is not hypothetical — this sheet once passed
+  // locally with 10px of a 960px budget and then failed on CI, because macOS
+  // and Linux rasterise the same webfont slightly differently and 1% is inside
+  // that noise. Headroom is reported on every run so the margin is visible
+  // before it is gone.
+  //
+  // Letter is 8.5x11in; the page's own `@page` rule sets 0.5in margins, so the
+  // printable box is 7.5x10in — 720x960 at 96dpi. Measured with a viewport
+  // that tall so nothing is clipped by the window rather than by the sheet.
+  await page.setViewportSize({ width: PRINT_WIDTH, height: PRINT_HEIGHT * 4 });
+  const usedPx = await page.evaluate(() => {
+    const blocks = [...document.querySelectorAll('main > *')];
+    return blocks.length
+      ? Math.max(...blocks.map((el) => el.getBoundingClientRect().bottom))
+      : document.documentElement.scrollHeight;
+  });
+  const sparePx = Math.round(PRINT_HEIGHT - usedPx);
 
   const pdf = await page.pdf({
     format: 'Letter',
@@ -171,9 +210,20 @@ for (const { route, out, maxPages } of SHEETS) {
   }
 
   await writeFile(join(DIST, out), pdf);
+  const spare = `${sparePx}px spare`;
   console.log(
-    `  ok    ${route}  ->  ${out}  (${pages} page${pages === 1 ? '' : 's'}, ${kb} KB)`,
+    `  ok    ${route}  ->  ${out}  (${pages} page${pages === 1 ? '' : 's'}, ${kb} KB, ${spare})`,
   );
+
+  if (sparePx < MIN_SPARE_PX) {
+    console.log(
+      `        WARN  only ${spare} of ${PRINT_HEIGHT}px. Text metrics differ`,
+    );
+    console.log(
+      `              between platforms, so a margin this thin can fit here and`,
+    );
+    console.log(`              spill onto a second page on CI.`);
+  }
 }
 
 await context.close();
