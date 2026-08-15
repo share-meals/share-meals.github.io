@@ -8,11 +8,16 @@ the site or served from the built output.
 A response in the shape of Directus `GET /public-stats`, which fills the
 "The work, in numbers" band on the home page.
 
-**Every number in it is invented.** They are shaped to be plausible for Share
-Meals rather than arbitrary, which makes them more dangerous, not less — a
-plausible fake is the kind that gets quoted. Nothing here may be used in copy,
-a grant application, a deck, or anything else that leaves a screen. The only
-real figures come from the live endpoint.
+**Every number in it is invented, and they are far larger than the real ones.**
+760 communities across 32 states is a national organisation; the live endpoint
+currently reports three communities in two states. These figures were sized to
+stress the layout — they are what caught a ten-character figure overflowing its
+column — not to describe or forecast the organisation.
+
+They are internally consistent rather than arbitrary, which makes them more
+dangerous, not less: a fake that hangs together is the kind that gets quoted.
+Nothing here may be used in copy, a grant application, a deck, or anything else
+that leaves a screen. The only real figures come from the live endpoint.
 
 What *is* faithful to the real response: the shape, the invariant that region
 rows sum exactly to the totals across all five metrics, the row ordering
