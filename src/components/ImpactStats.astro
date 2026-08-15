@@ -19,8 +19,12 @@ interface Props {
    * `both` renders the two side by side. It exists to choose between them,
    * not to ship — two maps of the same four numbers is redundant on a page
    * whose job is to be read quickly.
+   *
+   * `bins` is the same idea for the shading scale: two cartograms of the same
+   * data, one binned linearly and one by quartile. Also for choosing, not for
+   * shipping.
    */
-  map?: 'tiles' | 'geographic' | 'both' | 'none';
+  map?: 'tiles' | 'geographic' | 'both' | 'bins' | 'none';
 }
 
 const { map = 'tiles' }: Props = Astro.props;
@@ -190,9 +194,9 @@ if (useDummy) {
           shading from being the only way to read the data (1.4.1).
         */}
         {map !== 'none' && (
-          <div class={map === 'both' ? 'mapcompare' : ''} data-map hidden aria-hidden="true">
+          <div class={map === 'both' || map === 'bins' ? 'mapcompare' : ''} data-map hidden aria-hidden="true">
             {(map === 'tiles' || map === 'both') && (
-              <div class="tilemap mt-6">
+              <div class="tilemap mt-6" data-binning="log">
                 {TILE_ROWS.map((row) =>
                   row.map((code) =>
                     code ? (
@@ -207,6 +211,40 @@ if (useDummy) {
               </div>
             )}
 
+            {/*
+              Two cartograms of identical data, differing only in how values
+              are turned into shading steps. Captions are inside the
+              aria-hidden wrapper, which is fine for a comparison mode that is
+              never meant to ship.
+            */}
+            {map === 'bins' &&
+              (['linear', 'quartile', 'log'] as const).map((method) => (
+                <div>
+                  <p class="m-0 text-sm font-semibold">
+                    {
+                      {
+                        linear: 'Linear — share of the largest',
+                        quartile: 'Quartile — rank among regions',
+                        log: 'Log — magnitude, log-scaled',
+                      }[method]
+                    }
+                  </p>
+                  <div class="tilemap mt-3" data-binning={method}>
+                    {TILE_ROWS.map((row) =>
+                      row.map((code) =>
+                        code ? (
+                          <div class="tile" data-state={code}>
+                            {code}
+                          </div>
+                        ) : (
+                          <div />
+                        ),
+                      ),
+                    )}
+                  </div>
+                </div>
+              ))}
+
         {/*
           True outlines. No labels: at this size most states cannot hold two
           legible characters, so the shading alone marks them and the list
@@ -219,7 +257,7 @@ if (useDummy) {
           appears, these fills have to be re-checked against 1.4.11 first.
         */}
             {(map === 'geographic' || map === 'both') && (
-              <svg class="geomap mt-6" viewBox={US_STATE_VIEWBOX}>
+              <svg class="geomap mt-6" viewBox={US_STATE_VIEWBOX} data-binning="log">
                 {Object.entries(US_STATE_PATHS).map(([code, d]) => (
                   <path d={d} data-state={code} />
                 ))}
@@ -234,10 +272,11 @@ if (useDummy) {
           project rule is semantic HTML first, and this is the case it was
           written for.
 
-          Open or closed is decided at render from the viewport: on a phone the
-          list is 32 regions of two lines each below a map that already answers
-          "where", so it starts collapsed; from 40rem up it starts open,
-          because there it is a two-column block that was never in the way.
+          Starts collapsed at every width. The three figures and the cartogram
+          are the summary; 32 regions of two lines each are the detail behind
+          it, and that relationship does not change with the size of the
+          screen. The <details> default does this on its own — no script sets
+          `open`.
 
           It is a disclosure rather than a truncation on purpose. Showing "the
           top few" would reintroduce exactly the ranking the alphabetical sort
@@ -541,16 +580,14 @@ if (useDummy) {
     border-bottom: 1px solid var(--color-border);
   }
 
+  /* auto-fit rather than a fixed column count and a breakpoint: the
+     comparison modes render two maps or three, and 19rem is about the width
+     below which the cartogram's labels start to crowd. */
   .mapcompare {
     display: grid;
     gap: 2rem;
     align-items: start;
-  }
-
-  @media (min-width: 80rem) {
-    .mapcompare {
-      grid-template-columns: 1fr 1fr;
-    }
+    grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
   }
 </style>
 
@@ -702,15 +739,73 @@ if (useDummy) {
 
     const max = Math.max(...byState.values());
 
-    for (const [code, value] of byState) {
-      // querySelectorAll, not querySelector: `map="both"` puts the same state
-      // on the page twice, and shading only the first leaves the second map
-      // looking like it has no data.
-      const shapes = mapEl.querySelectorAll<HTMLElement>(`[data-state="${code}"]`);
-      // The largest always lands in bin 4, so the ramp uses its full range
-      // even when every region is close together.
-      const bin = String(Math.ceil((value / max) * 4) || 1);
-      for (const shape of shapes) shape.dataset.bin = bin;
+    /**
+     * Share of the largest region. Honest about magnitude — a state half the
+     * shade of another really does have roughly half the servings — but it
+     * collapses when one region dominates. With the current spread, New Jersey
+     * is so far ahead that 29 of 32 states fall in the palest step and the map
+     * reads as a single flat colour.
+     */
+    const linearBin = (value: number) => Math.ceil((value / max) * 4) || 1;
+
+    /**
+     * Position in the ordered list instead. Every step gets roughly a quarter
+     * of the regions, so the map always has contrast regardless of how skewed
+     * the data is.
+     *
+     * The cost is real and worth stating plainly: shading no longer means "how
+     * much", only "more than". Two states a rounding error apart can sit in
+     * different steps, and the gap between the darkest and the second darkest
+     * is invisible. The exact figures are in the list underneath, which is what
+     * makes the trade defensible here.
+     */
+    const ordered = [...byState.values()].sort((a, b) => a - b);
+    const quartileBin = (value: number) =>
+      Math.ceil(((ordered.indexOf(value) + 1) / ordered.length) * 4) || 1;
+
+    /**
+     * Magnitude again, but on a log scale between the smallest and largest
+     * region rather than a straight share of the largest.
+     *
+     * The reason the linear version collapses is that this data is skewed the
+     * way geographic data usually is — one region an order of magnitude ahead,
+     * a long tail behind it. Taking logs first compresses that tail into the
+     * range the four steps actually cover, so a sevenfold difference stays
+     * visible instead of rounding to the same shade, and the ordering never
+     * lies: darker still means more.
+     *
+     * Normalised between min and max, not against the max alone. Against the
+     * max alone every log sits in a narrow band near 1 — log(56,265) and
+     * log(2,784,600) are 10.9 and 14.8 — and the map collapses again, just at
+     * the dark end this time.
+     *
+     * `Math.max(value, 1)` because log(0) is -Infinity, and a region with no
+     * servings recorded is possible. The zero-range guard covers a single
+     * region, or several with identical totals.
+     */
+    const logMin = Math.log(Math.max(ordered[0], 1));
+    const logMax = Math.log(Math.max(ordered[ordered.length - 1], 1));
+    const logRange = logMax - logMin;
+    const logBin = (value: number) => {
+      if (logRange <= 0) return 4;
+      const t = (Math.log(Math.max(value, 1)) - logMin) / logRange;
+      return Math.ceil(t * 4) || 1;
+    };
+
+    // Each map decides for itself, so a comparison can put two side by side.
+    for (const target of mapEl.querySelectorAll<HTMLElement>('[data-binning]')) {
+      const binners = { linear: linearBin, quartile: quartileBin, log: logBin };
+      // Log is the default: it fixed the collapse without ever letting a
+      // darker square mean anything but "more". See the notes on each above.
+      const bin = binners[target.dataset.binning as keyof typeof binners] ?? logBin;
+      for (const [code, value] of byState) {
+        // querySelectorAll, not querySelector: a state can appear more than
+        // once inside a single map only if the markup is wrong, but scoping
+        // the lookup to this map is what keeps two maps independent.
+        for (const shape of target.querySelectorAll<HTMLElement>(`[data-state="${code}"]`)) {
+          shape.dataset.bin = String(bin(value));
+        }
+      }
     }
 
     mapEl.hidden = false;
@@ -802,7 +897,14 @@ if (useDummy) {
       // rotation.
       const details = section.querySelector<HTMLDetailsElement>('[data-region-details]');
       if (details) {
-        details.open = window.matchMedia('(min-width: 40rem)').matches;
+        // Collapsed everywhere, at every width. Nothing here sets `open`: the
+        // element's own default is closed, so the state is now a property of
+        // the markup rather than something JavaScript decides on arrival.
+        //
+        // This replaced opening it above 40rem. Two maps' worth of evidence
+        // that the shorter band is the better one: the figures and the
+        // cartogram are the summary, and the list is the detail behind it —
+        // which is the same on a desktop as on a phone, only less painful.
 
         // Closing from the bottom of a 32-row list removes everything between
         // the summary and the viewport, so the reader is left looking at
