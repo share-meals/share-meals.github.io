@@ -391,43 +391,21 @@ const pilotSteps = [
       margin-top: 8pt !important;
     }
 
-    /* ---------------------------------------------------------------------
-       SPACING, TIGHTER THAN THE SHARED SHEET.
+    /* THE SPACING OVERRIDES THAT USED TO LIVE HERE ARE NOW THE SHARED
+       DEFAULTS, and this page reads them from one-pager.css instead.
 
-       This page runs denser than /app's: five bands, one of them carrying a
-       full-width figure, where /app has six shallower ones. It came in two
-       pixels under a 960px budget on the first fit, which is not a fit — the
-       note in scripts/build-pdf.mjs is about exactly this, and a margin inside
-       the noise between how macOS and Linux rasterise the same webfont will
-       pass here and spill onto a second page on CI.
+       This sheet needed them first: it came in two pixels under a 960px budget
+       on its first fit, which is not a fit — the note in scripts/build-pdf.mjs
+       is about exactly that, and a margin inside the noise between how macOS
+       and Linux rasterise the same webfont passes locally and spills onto a
+       second page on CI. Sixty points came out of the gaps rather than the
+       copy, which had already been cut twice and was starting to lose the
+       argument instead of the slack.
 
-       The remaining sixty points come out of the gaps rather than the copy.
-       The sentences had already been cut twice by this point, and shaving a
-       third time would have started removing the argument instead of the
-       slack. Every number here is a reduction of a shared default, so raising
-       one back is a local edit rather than a decision about the other sheet.
-       ------------------------------------------------------------------- */
-    main section {
-      margin-bottom: 4pt;
-    }
-
-    .panels {
-      margin-top: 7pt !important;
-    }
-
-    .flow-figure {
-      margin-top: 7pt !important;
-    }
-
-    .print-band-inverse {
-      padding: 5pt 9pt !important;
-    }
-
-    /* The lead scale exists to set a paragraph apart from body copy, and 9.5pt
-       against a 9pt body still does that on paper. 10.5pt was buying a
-       distinction the sheet could no longer afford across three bands. */
-    .text-lead {
-      font-size: 9.5pt !important;
-    }
+       They were written as local overrides on the assumption /app was
+       comfortable. It was not — it had five pixels on Linux against sixty-one
+       here, and once both sheets wanted the same numbers, a "default" that
+       every sheet overrode had stopped being one. They moved wholesale; none
+       of the values changed, so this page's layout is byte-identical. */
   }
 </style>
