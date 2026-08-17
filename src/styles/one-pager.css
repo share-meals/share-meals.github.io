@@ -207,8 +207,13 @@
 
   main section {
     /* Band separation is the first thing to give when the page is tight and
-       the first thing to restore when it is not. */
-    margin-bottom: 10pt;
+       the first thing to restore when it is not.
+       4pt, not the 10pt this started at. /pantry-point proved the number first
+       as a local override, and /app then needed the same headroom badly enough
+       that keeping 10pt here meant both sheets overriding the default — at
+       which point it was not the default. Six gaps on /app, so this line alone
+       is worth about 48px to that sheet. */
+    margin-bottom: 4pt;
     /* The muted band's tint is a device for separating bands on a scrolling
        page. With the padding gone it becomes a grey box with type jammed
        against its edges, so on paper the separation is left to the headings. */
@@ -269,8 +274,12 @@
     font-size: 8.5pt !important;
   }
 
+  /* 9.5pt, down from 10.5. The lead scale exists to set a paragraph apart from
+     body copy, and 9.5 against a 9pt body still does that on paper — the extra
+     point was buying a distinction neither sheet could afford across three
+     bands. */
   .text-lead {
-    font-size: 10.5pt !important;
+    font-size: 9.5pt !important;
     line-height: 1.45 !important;
     margin-top: 0 !important;
   }
@@ -313,7 +322,7 @@
   .print-band-inverse {
     background: var(--color-brand-700) !important;
     color: #fff !important;
-    padding: 6pt 9pt !important;
+    padding: 5pt 9pt !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
@@ -355,7 +364,7 @@
   }
 
   .flow-figure {
-    margin-top: 10pt !important;
+    margin-top: 7pt !important;
     /* Colour on an otherwise black-and-white sheet. The diagram is an <img>, so
        it prints as artwork regardless; this covers the browser's "background
        graphics off" setting for anything drawn with CSS. */
@@ -376,7 +385,7 @@
      `, print` query above; only the spacing needs bringing down. */
   .panels {
     gap: 11pt 14pt !important;
-    margin-top: 10pt !important;
+    margin-top: 7pt !important;
   }
 
   .panel {
