@@ -235,15 +235,17 @@
   }
 
   /* The hero's line break and coloured second line are a screen device; on
-     paper the headline wants to be one plain line. Removing the <br> closes the
-     two halves up against each other — "sharedin seconds" — so the space the
-     break was standing in for has to be put back explicitly. */
+     paper the headline wants to be one plain line.
+     There used to be an `h1 span::before { content: ' ' }` here, because
+     dropping the <br> closed the two halves up against each other —
+     "sharedin seconds". That is now fixed at the source: each hero carries a
+     literal `&#32;` before its <br>, which survives Astro's whitespace
+     compressor. The generated content was only ever repairing the printed
+     line, and the same missing space was reaching screen readers as the
+     heading's accessible name — a defect axe cannot see, since it does not
+     judge name quality. Fixing the markup fixed both, so the hack is gone. */
   h1 br {
     display: none;
-  }
-
-  h1 span::before {
-    content: ' ';
   }
 
   h1 span {

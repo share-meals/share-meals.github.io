@@ -193,7 +193,15 @@ const restFeatures = [
 
   <Section size="hero">
     <h1 class="text-display-xl font-extrabold text-balance m-0">
-      Extra food, shared<br />
+      {/* The `&#32;` is load-bearing and must not be "tidied" into a plain
+          space. Astro's HTML compressor strips source whitespace between tags,
+          so `shared<br /><span>in seconds.` built with nothing between the two
+          halves and the accessible name came out as "sharedin seconds" — which
+          a screen reader attempts as one word. A numeric entity is text to the
+          compressor, survives it, and renders as an invisible space at the end
+          of the line. It is also what lets the print rules drop the <br>
+          without the two halves colliding. */}
+      Extra food, shared&#32;<br />
       <span class="text-[var(--color-brand-700)]">in seconds.</span>
     </h1>
 
@@ -207,7 +215,7 @@ const restFeatures = [
         already reading. */}
     <p class="mt-10 m-0 no-print">
       <Button href={pdfHref} variant="secondary">
-        Download the one-pager (PDF)
+        Download the app one-pager (PDF)
       </Button>
     </p>
   </Section>

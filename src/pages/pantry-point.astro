@@ -176,7 +176,10 @@ const pilotSteps = [
 
   <Section size="hero">
     <h1 class="text-display-xl font-extrabold text-balance m-0">
-      A whole pantry,<br />
+      {/* The `&#32;` is load-bearing — see the note on the same line in
+          app.astro. Astro's compressor strips source whitespace between tags,
+          so without it the accessible name runs together at the line break. */}
+      A whole pantry,&#32;<br />
       <span class="text-[var(--color-brand-700)]">in a vending machine.</span>
     </h1>
 
@@ -190,7 +193,7 @@ const pilotSteps = [
         already reading. */}
     <p class="mt-10 m-0 no-print">
       <Button href={pdfHref} variant="secondary">
-        Download the one-pager (PDF)
+        Download the Pantry Point one-pager (PDF)
       </Button>
     </p>
   </Section>
