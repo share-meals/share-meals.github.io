@@ -27,14 +27,18 @@ import ImpactStats from '~/components/ImpactStats.astro';
  * entirely if the numbers cannot be fetched — see ImpactStats.astro. Nothing
  * on this page should be written to depend on it being there.
  *
- * The one call to action points at /app, and it sits in the second band rather
- * than the hero on purpose. Positioning rule 1 above is the reason: an app
- * button directly under the tagline makes the app the headline, which is the
- * one thing this page is not supposed to do. In the second band it arrives
- * after the sentence that introduces the software, as the answer to it.
+ * The calls to action point at /app and /pantry-point, and they sit in the
+ * second band rather than the hero on purpose. Positioning rule 1 above is the
+ * reason: a product button directly under the tagline makes the product the
+ * headline, which is the one thing this page is not supposed to do. In the
+ * second band they arrive after the sentence that introduces the work, as the
+ * answer to it.
  *
- * That is still the only button. Anywhere else on this page there is nothing
- * to point at yet, and a button that goes nowhere is worse than no button.
+ * There were two buttons only once there were two pages worth pointing at. The
+ * standing rule is that a button going nowhere is worse than no button, so
+ * anything else this page might advertise stays off it until it is real. See
+ * the note on the buttons themselves for what their arrival did to the
+ * sentence above them.
  */
 ---
 
@@ -72,10 +76,37 @@ import ImpactStats from '~/components/ImpactStats.astro';
     </p>
 
     {/* Link text has to stand on its own — read out of context in a list of
-        links, "learn more" says nothing about where it goes. */}
-    <p class="mt-10 m-0">
-      <Button href="/app" variant="inverse">See the Share Meals app</Button>
-    </p>
+        links, "learn more" says nothing about where it goes.
+
+        TWO BUTTONS NOW, WHERE THE NOTE ABOVE SAYS ONE.
+
+        The rule that produced the single button was "a button that goes
+        nowhere is worse than no button", and the reason there was one was that
+        /app was the only page to point at. /pantry-point is a real page now,
+        so the condition that made this a single-button band has expired rather
+        than been overruled. The button stays out of the hero for the original
+        reason, which has not changed: a product button directly under the
+        tagline makes the product the headline, and positioning rule 1 says it
+        never is.
+
+        Equal weight is deliberate. Ranking them here would be the home page
+        making a claim about which programme matters more, and it has no
+        business doing that — each page argues its own case, including
+        /pantry-point's, which is explicit that its mechanism is history.
+
+        TODO(content): the sentence above these buttons splits our work in two —
+        "software that shows people the food already around them, and programs
+        that put food where software alone won't reach". Pantry Point is
+        genuinely neither half: it does not surface food that already exists,
+        and it is not the non-tech direct service the second half was written
+        for. The buttons are honest and the destination pages explain
+        themselves, so this is not blocking, but that sentence was written when
+        there was one product and it now has to carry two. Worth a rewrite by
+        whoever owns the positioning. */}
+    <ul class="mt-10 m-0 flex flex-wrap gap-4 p-0 list-none">
+      <li><Button href="/app" variant="inverse">See the Share Meals app</Button></li>
+      <li><Button href="/pantry-point" variant="inverse">See Pantry Point</Button></li>
+    </ul>
   </Section>
 
   <ImpactStats />
