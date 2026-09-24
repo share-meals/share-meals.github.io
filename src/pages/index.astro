@@ -44,7 +44,7 @@ import ImpactStats from '~/components/ImpactStats.astro';
 
 <BaseLayout
   title="Share Meals — food is a human right"
-  description="Share Meals is a nonprofit dedicated to food security. Some of that work is software. Some of it is showing up with food."
+  description="Share Meals is a nonprofit dedicated to food security. Some of that work is technology. Some of it is showing up with food."
   bareTitle
 >
   <Section size="hero">
@@ -55,7 +55,7 @@ import ImpactStats from '~/components/ImpactStats.astro';
 
     <p class="text-lead mt-8 max-w-2xl text-[var(--color-text-muted)]">
       Share Meals is a nonprofit dedicated to food security. Some of that work
-      is software. Some of it is showing up with food.
+      is technology. Some of it is showing up with food.
     </p>
   </Section>
 
@@ -63,13 +63,13 @@ import ImpactStats from '~/components/ImpactStats.astro';
     <h2 class="text-display font-extrabold text-balance m-0">
       Believing it is the easy part.
     </h2>
-    <p class="text-lead mt-6 max-w-2xl">
+    <p class="text-lead mt-6">
       A right that exists on paper is not a meal in anyone's hands. Closing that
       distance is the whole of our work: software that shows people the food
       already around them, and programs that put food where software alone
       won't reach.
     </p>
-    <p class="text-lead mt-6 max-w-2xl">
+    <p class="text-lead mt-6">
       We began with college students, and campuses are still where most of our
       work happens. They are not where it stops. A right that only holds on
       campus was never a right.
@@ -103,11 +103,88 @@ import ImpactStats from '~/components/ImpactStats.astro';
         themselves, so this is not blocking, but that sentence was written when
         there was one product and it now has to carry two. Worth a rewrite by
         whoever owns the positioning. */}
-    <ul class="mt-10 m-0 flex flex-wrap gap-4 p-0 list-none">
-      <li><Button href="/app" variant="inverse">See the Share Meals app</Button></li>
-      <li><Button href="/pantry-point" variant="inverse">See Pantry Point</Button></li>
-    </ul>
+    <div class="mt-12 grid gap-10">
+      <div class="programme-card">
+        <svg class="programme-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="12" y="4" width="24" height="40" rx="4" stroke="currentColor" stroke-width="1"/>
+          <line x1="12" y1="10" x2="36" y2="10" stroke="currentColor" stroke-width="0.75"/>
+          <line x1="12" y1="36" x2="36" y2="36" stroke="currentColor" stroke-width="0.75"/>
+          <circle cx="24" cy="40" r="1.25" stroke="currentColor" stroke-width="0.75"/>
+          <circle cx="24" cy="21" r="5" stroke="currentColor" stroke-width="1"/>
+          <line x1="27.5" y1="24.5" x2="31" y2="28" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+        </svg>
+        <div>
+          <h3 class="programme-name text-lead">The Share Meals app</h3>
+          <p class="programme-desc text-lead">
+            A free app that connects people to food already nearby — on
+            campus and beyond.
+          </p>
+          <Button href="/app" variant="inverse" class="programme-btn">Read more</Button>
+        </div>
+      </div>
+
+      <div class="programme-card">
+        <svg class="programme-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="10" y="4" width="28" height="40" rx="2" stroke="currentColor" stroke-width="1"/>
+          <rect x="14" y="8" width="14" height="24" rx="1" stroke="currentColor" stroke-width="1"/>
+          <line x1="14" y1="16" x2="28" y2="16" stroke="currentColor" stroke-width="0.75"/>
+          <line x1="14" y1="24" x2="28" y2="24" stroke="currentColor" stroke-width="0.75"/>
+          <rect x="32" y="14" width="3" height="6" rx="1" stroke="currentColor" stroke-width="1"/>
+          <rect x="14" y="36" width="10" height="4" rx="1" stroke="currentColor" stroke-width="0.75"/>
+        </svg>
+        <div>
+          <h3 class="programme-name text-lead">Pantry Point</h3>
+          <p class="programme-desc text-lead">
+            A 24/7 vending machine that works like a food pantry — no
+            staff, small footprint, no stigma.
+          </p>
+          <Button href="/pantry-point" variant="inverse" class="programme-btn">Read more</Button>
+        </div>
+      </div>
+    </div>
   </Section>
 
   <ImpactStats />
+
+  <Section>
+    <h2 class="text-display font-extrabold text-balance m-0">
+      Bring Share Meals to your campus.
+    </h2>
+    <p class="text-lead mt-6">
+      We work with colleges and universities to set up the app, place a Pantry
+      Point, or both. If your campus could use this, reach out.
+    </p>
+    <a href="mailto:nucleus@sharemeals.org" class="cta-email text-lead mt-4 inline-block">nucleus@sharemeals.org</a>
+  </Section>
 </BaseLayout>
+
+<style>
+  .programme-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    color: var(--color-text-inverse);
+  }
+  .programme-icon {
+    width: 120px;
+    height: 120px;
+    flex-shrink: 0;
+  }
+  .programme-name {
+    margin: 0;
+    font-weight: 800;
+  }
+  .programme-desc {
+    margin: 0.25rem 0 0;
+  }
+  .programme-card :global(.programme-btn) {
+    margin-top: 0.75rem;
+    padding: 0.375rem 1.25rem !important;
+    font-size: 0.875rem !important;
+  }
+  .cta-email {
+    color: var(--color-brand-700);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+</style>
