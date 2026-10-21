@@ -1,55 +1,150 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 340" width="1040" height="340">
   <!--
-    PLACEHOLDER for the /app "How it works" diagram.
+    The /app "How it works" diagram. See README.md in this directory.
 
-    This is not art. It is a schematic of the composition the page is built
-    around, drawn so that whoever replaces it knows what shape has to fit.
-    Replace this whole file; see README.md in this directory.
+    THE SHAPE: a hub, not a pipeline. Two people on the left both post, and both arrows run RIGHT into the phone. Phoebe (right) reads
+    that same phone from the other side, so both of her arrows run LEFT into
+    it. Everything points at the app.
 
-    THE SHAPE: a hub, not a pipeline. Erika and Serjio both post, and both
-    arrows run RIGHT into the phone. Phoebe reads the same phone from the other
-    side, so both of her arrows run LEFT into it. Everything points at the app.
+    Each arrow carries a badge for what it stands for: on the left, food
+    (Serjio's — a slice of pizza) above a meal swipe (Erika's), drawn as a
+    ticket rather than a card so it does not read as payment; on the right,
+    Phoebe's two ways in — walking over to a pin on the map, above messaging
+    Erika. The captions beneath run in the same order, top to bottom: keep
+    the two in step if either changes. The phone shows
+    what the third caption says: one live map, with both posts on it and a
+    notification arriving.
 
-    NO CAPTIONS IN THE ART. The four sentences live in HTML underneath, so they
-    stay selectable and translatable and stay legible on a narrow screen where
-    this drawing has scaled down. Art with baked-in text will be unreadable at
-    320px.
+    NO WORDS IN THE ART. The captions are HTML underneath, which is why the
+    <img> is alt="". Adding lettering here changes that — see the README.
+
+    SIZE. Strokes are heavy and nothing is smaller than about 10 units on
+    purpose: on the printed sheet this whole drawing is 86pt tall, a third of
+    its screen size, and anything finer disappears.
+
+    Colours are the brand ramp: 700 for every line, 100 and 50 for fills, white
+    for the badges and phone so it reads on the ink-50 band and on paper.
   -->
-  <rect x="1" y="1" width="1038" height="338" rx="8"
-        fill="#f0f9f3" stroke="#106535" stroke-width="1.6" stroke-dasharray="7 5"/>
+  <defs>
+    <clipPath id="logo-disc">
+      <circle cx="512" cy="512" r="512"/>
+    </clipPath>
+    <clipPath id="screen">
+      <rect x="464" y="72" width="112" height="214" rx="10"/>
+    </clipPath>
+  </defs>
 
-  <g fill="none" stroke="#106535" stroke-width="1.6" opacity=".5">
-    <!-- Erika, top left -->
-    <circle cx="96" cy="86" r="21"/>
-    <path d="M62 140a34 34 0 0 1 68 0" stroke-linecap="round"/>
-    <!-- Serjio, bottom left -->
-    <circle cx="96" cy="230" r="21"/>
-    <path d="M62 284a34 34 0 0 1 68 0" stroke-linecap="round"/>
-    <!-- Phoebe, right -->
-    <circle cx="944" cy="158" r="21"/>
-    <path d="M910 212a34 34 0 0 1 68 0" stroke-linecap="round"/>
-    <!-- the phone at the centre -->
-    <rect x="470" y="60" width="100" height="220" rx="16"/>
-    <path d="M498 78h44"/>
-    <path d="M520 150a16 16 0 1 1 .1 0zM520 166v40" stroke-linecap="round"/>
+  <g fill="none" stroke="#106535" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <!-- THE PEOPLE. Three distinct people rather than three copies of one
+         glyph: short hair, long hair, a ponytail and glasses. Faces are plain
+         white and featureless on purpose — the hair and collars tell them
+         apart, so nothing here is a guess at anyone's skin or expression. -->
+
+    <!-- Serjio, top left (the pizza badge): short hair, V-neck -->
+    <path d="M54 156v-10a28 28 0 0 1 28-28h28a28 28 0 0 1 28 28v10z" fill="#dcf1e3"/>
+    <path d="M84 118l12 12 12-12"/>
+    <circle cx="96" cy="90" r="22" fill="#ffffff"/>
+    <path d="M74 90a22 22 0 0 1 44 0q-6-9-22-9t-22 9z" fill="#106535"/>
+
+    <!-- Erika, bottom left (the meal swipe badge): long hair -->
+    <path d="M70 236a26 26 0 0 1 52 0v28h-52z" fill="#106535"/>
+    <path d="M54 296v-10a28 28 0 0 1 28-28h28a28 28 0 0 1 28 28v10z" fill="#dcf1e3"/>
+    <path d="M84 258a12 10 0 0 0 24 0"/>
+    <circle cx="96" cy="230" r="22" fill="#ffffff"/>
+    <path d="M74 230a22 22 0 0 1 44 0q-16-2-24-14q-6 12-20 14z" fill="#106535"/>
+
+    <!-- Phoebe, right: a ponytail and glasses. Not a bun — a bun with
+         glasses reads as a grandparent, and Phoebe is a student. -->
+    <path d="M958 144q26 2 22 38q-8-12-18-18z" fill="#106535"/>
+    <path d="M902 226v-10a28 28 0 0 1 28-28h28a28 28 0 0 1 28 28v10z" fill="#dcf1e3"/>
+    <path d="M932 188a12 10 0 0 0 24 0"/>
+    <circle cx="944" cy="160" r="22" fill="#ffffff"/>
+    <path d="M922 160a22 22 0 0 1 44 0q-6-10-26-12q-10 4-18 12z" fill="#106535"/>
+    <g stroke-width="3">
+      <circle cx="936" cy="166" r="6"/>
+      <circle cx="952" cy="166" r="6"/>
+      <path d="M942 166h4"/>
+    </g>
+
+    <!-- the arrows: two in from the left, two in from the right -->
+    <path d="M164 122H428"/>
+    <path d="M164 262H428"/>
+    <path d="M884 172C800 172 760 122 612 122"/>
+    <path d="M884 192C800 192 760 262 612 262"/>
   </g>
 
-  <!-- the four arrows, all converging on the phone -->
-  <g stroke="#106535" stroke-width="3" opacity=".55" stroke-linecap="round">
-    <path d="M170 112h268"/>
-    <path d="M170 256h268"/>
-    <path d="M870 112H602"/>
-    <path d="M870 256H602"/>
-  </g>
-  <g fill="#106535" opacity=".55">
-    <path d="M438 102l24 10-24 10z"/>
-    <path d="M438 246l24 10-24 10z"/>
-    <path d="M602 102l-24 10 24 10z"/>
-    <path d="M602 246l-24 10 24 10z"/>
+  <g fill="#106535">
+    <path d="M426 110l20 12-20 12z"/>
+    <path d="M426 250l20 12-20 12z"/>
+    <path d="M614 110l-20 12 20 12z"/>
+    <path d="M614 250l-20 12 20 12z"/>
   </g>
 
-  <g font-family="system-ui, sans-serif" font-size="15" fill="#106535" opacity=".75"
-     text-anchor="middle">
-    <text x="520" y="316">placeholder — replace public/figures/how-it-works.svg</text>
+  <!-- the phone: one live map, both posts pinned, a notification arriving -->
+  <rect x="450" y="40" width="140" height="262" rx="22" fill="#ffffff" stroke="#106535" stroke-width="5"/>
+  <path d="M502 56h36" stroke="#106535" stroke-width="4" stroke-linecap="round"/>
+  <g clip-path="url(#screen)">
+    <rect x="464" y="72" width="112" height="214" fill="#dcf1e3"/>
+    <g stroke="#ffffff" stroke-width="9" fill="none">
+      <path d="M464 168H576"/>
+      <path d="M464 238H576"/>
+      <path d="M512 72V286"/>
+      <path d="M454 300L580 130"/>
+    </g>
+  </g>
+  <!-- the notification, along the bottom of the screen -->
+  <rect x="472" y="240" width="96" height="36" rx="8" fill="#ffffff" stroke="#106535" stroke-width="3"/>
+  <!-- the notification's app icon is our logomark (public/logomark.svg),
+       flattened to the green disc and the white fork and spoon: at this
+       size the darker shadow shapes only muddy it. Small on purpose — it
+       is where an app's icon would really sit, not a stamp on the drawing. -->
+  <g transform="translate(479 247) scale(0.02148)" clip-path="url(#logo-disc)">
+    <circle cx="512" cy="512" r="512" fill="#106535"/>
+    <g fill="#ffffff">
+      <path d="m 733.2,50 -9.5,189.6 c 276.6,99.1 59.7,563.2 -41,563.2 -100.7,0 -318.1,-464.1 -41,-563.2 L 630,13.7 v 0 c 36.1,8.6 70.4,20.7 103.2,36.3 z"/>
+      <path d="m 320.5,240.6 c 0,0 7.6,10.2 7.6,123.7 v 203.6 c 0,14 16.6,25.8 30.6,25.8 14,0 30.6,-11.6 30.6,-25.6 V 240.6 h 14.9 c 18,75.1 36,368.1 36,368.1 V 662 c 0,102.9 -92.4,111.6 -96.9,171.9 l 5.2,163.3 c -24.9,-8.3 -49.1,-18.5 -72.1,-30.6 l 4.3,-132.7 c -4.5,-60.4 -96.9,-69 -96.9,-171.9 v -53.3 c 0,0 18.3,-293.5 36,-368.1 h 14.9 v 327.6 c 0,14 16.6,25.6 30.6,25.6 14,0 30.6,-11.9 30.6,-25.8 V 364.3 c 0,-113.5 7.6,-123.7 7.6,-123.7 z"/>
+    </g>
+  </g>
+  <path d="M506 252h48M506 264h32" stroke="#106535" stroke-width="4" stroke-linecap="round"/>
+  <!-- the two posts, as pins -->
+  <g fill="#106535">
+    <path d="M492 104c-9 0-16 7-16 16 0 12 16 26 16 26s16-14 16-26c0-9-7-16-16-16z"/>
+    <path d="M548 150c-9 0-16 7-16 16 0 12 16 26 16 26s16-14 16-26c0-9-7-16-16-16z"/>
+  </g>
+  <g fill="#ffffff">
+    <circle cx="492" cy="120" r="6"/>
+    <circle cx="548" cy="166" r="6"/>
+  </g>
+
+  <!-- the badges, one per caption -->
+  <g fill="#ffffff" stroke="#106535" stroke-width="3">
+    <circle cx="296" cy="122" r="30"/>
+    <circle cx="296" cy="262" r="30"/>
+    <circle cx="772" cy="142" r="30"/>
+    <circle cx="772" cy="222" r="30"/>
+  </g>
+  <g fill="none" stroke="#106535" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+    <!-- top left: a slice of pizza, crust up -->
+    <path d="M279 112q17-8 34 0l-17 28z" fill="#dcf1e3"/>
+    <path d="M278 110q18-9 36 0" stroke-width="7"/>
+    <!-- bottom left: a meal swipe, drawn as a ticket so it does not read as
+         a credit card — notched ends and a tear line, no magnetic stripe -->
+    <path d="M281 250h30a4 4 0 0 1 4 4v3a5 5 0 0 0 0 10v3a4 4 0 0 1-4 4h-30a4 4 0 0 1-4-4v-3a5 5 0 0 0 0-10v-3a4 4 0 0 1 4-4z" fill="#dcf1e3"/>
+    <path d="M303 255v14" stroke-dasharray="3 4"/>
+    <!-- Phoebe, top right: on her way to a pin -->
+    <path d="M772 124c-8 0-14 6-14 14 0 11 14 22 14 22s14-11 14-22c0-8-6-14-14-14z" fill="#dcf1e3"/>
+    <circle cx="772" cy="138" r="4.5"/>
+    <!-- Phoebe, bottom right: a message to Erika -->
+    <path d="M756 210h32a4 4 0 0 1 4 4v14a4 4 0 0 1-4 4h-20l-9 8v-8h-3a4 4 0 0 1-4-4v-14a4 4 0 0 1 4-4z" fill="#dcf1e3"/>
+  </g>
+  <g fill="#106535">
+    <!-- the message's three dots -->
+    <circle cx="763" cy="221" r="2.5"/>
+    <circle cx="772" cy="221" r="2.5"/>
+    <circle cx="781" cy="221" r="2.5"/>
+    <!-- the pizza's toppings -->
+    <circle cx="289" cy="119" r="3.5"/>
+    <circle cx="303" cy="121" r="3.5"/>
+    <circle cx="296" cy="130" r="3"/>
   </g>
 </svg>
