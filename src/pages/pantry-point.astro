@@ -60,9 +60,12 @@ import '~/styles/one-pager.css';
  * TODO(content): whether any Pantry Point is running anywhere today. This page
  * is deliberately silent on it — there is no "currently at N campuses" line —
  * because that is a fact nobody has confirmed, and a stale number is worse than
- * no number. Note that "How it works" now describes the mechanism in the
- * present tense, so if none is running, that band reads as a description of
- * the model rather than of a deployment — make sure that is still true.
+ * no number.
+ *
+ * CONFIRMED 2026-10-21 by Share Meals: the survey-and-scan mechanism in "How
+ * it works" is how Pantry Point works today; granola bars and rice are
+ * stocked alongside the sandwiches, fruit, and oatmeal packets; and snack,
+ * beverage, and cold food machines all remain compatible.
  */
 
 /** Kept in one place: the hero link and the PDF filename both reference it. */
@@ -130,8 +133,8 @@ const restFeatures = [
     // compatibility with snack, beverage and cold food machines, and the
     // university's choice among them. An earlier version added "rather than
     // taking a fixed unit" and folded in stocking and placement, none of which
-    // the flyer says here. TODO(content): the flyer is from 2019; confirm the
-    // compatibility still holds.
+    // the flyer says here. Confirmed still true on 2026-10-21 — see the
+    // CONFIRMED note at the top of this file.
     title: 'It works with standard vending machines',
     body: [
       'Snack, beverage, and cold food machines are all compatible, so a university can choose the kind that best fits how it wants to serve its students.',
