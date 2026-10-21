@@ -5,12 +5,11 @@ Two illustrations, one per printable sheet:
 | File | Band | Page | Ratio |
 | --- | --- | --- | --- |
 | `how-it-works.svg` | "How it works" | `/app` | 1040:340 |
-| `pantry-point-pilot.svg` | "How the pilot ran" | `/pantry-point` | 1200:240 |
+| `pantry-point-pilot.svg` | "How it works" | `/pantry-point` | 1200:240 |
 
-**`how-it-works.svg` is finished; `pantry-point-pilot.svg` is still a
-placeholder.** The placeholder is a schematic of its composition, not art — a
-dashed outline and a "placeholder" label, so it cannot be mistaken for finished
-work or shipped by accident.
+**Both are finished, and drawn in one hand** — brand-700 lines, brand-100 and
+50 fills, white circular badges, and people told apart by hair and collars
+with plain faces. A replacement for one should keep matching the other.
 
 ## Replacing one
 
@@ -49,17 +48,19 @@ reads on that band, and that it survives printing on white.
 
 ## `how-it-works.svg` — a hub
 
-Not a left-to-right pipeline. Serjio and Erika both post, and both arrows run
-*right* into the phone. Phoebe reads that same phone from the other side, so
+Not a left-to-right pipeline. Langston and Emily both post, and both arrows run
+*right* into the phone. Lucille reads that same phone from the other side, so
 both of her arrows run *left* into it. Everything points at the app. That
 convergence is what made the original 2019 flyer read as a story rather than
 three paragraphs, and it is the thing worth preserving.
 
-## `pantry-point-pilot.svg` — a funnel into a pipeline
+## `pantry-point-pilot.svg` — a pipeline
 
 Deliberately the opposite shape, which is why these two cannot share one
-drawing. Two routes to credits come in from the left — a survey, or a purchase
-— and they **merge**. From the merge it is a single line: phone, machine, food.
+drawing. One line, left to right: a student answers a survey, the credits land
+on their phone, the phone is scanned at the machine, and food comes out. There
+is one route to credits, not two — the page no longer describes students buying
+credits, so the drawing must not show it.
 
 The canvas is 5:1, and much flatter than `/app`'s on purpose. On the printed
 sheet this drawing is capped by *height* — the page has about an inch for it and
@@ -67,10 +68,8 @@ far more width than it needs — so a taller canvas does not buy a bigger pictur
 it buys a narrower one floating in white space with the caption columns running
 past it on both sides. Flatter is the only axis it can grow on.
 
-The merge is the whole point of the picture. Both routes ended at the same
-machine, drawing on the same account, which is what made it impossible to tell
-from the outside who had paid — the argument the page leads with. Art that keeps
-the two routes separate all the way to the machine draws the opposite claim.
+Its three captions sit under its three stages, as three columns on screen and
+on paper; a fourth stage in the art means a fourth caption and a column change.
 
 ## The PDF budget
 
