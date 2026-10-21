@@ -21,6 +21,17 @@ export default defineConfig({
   site,
   trailingSlash: 'ignore',
   integrations: [sitemap()],
+  // Pages from the old Gatsby site that still have somewhere sensible to go.
+  // Every other old URL (initiatives, trailblazers, join-our-team, the Hunger
+  // Action Series and the 2017–18 articles) 404s on purpose: that content is
+  // gone, and landing on an unrelated page would hide that. GitHub Pages has
+  // no server-side redirects, so Astro emits these as meta-refresh pages.
+  redirects: {
+    '/donate': '/',
+    '/contact': '/',
+    '/press': '/app',
+    '/smart-pantry/one-pager': '/pantry-point',
+  },
   vite: {
     plugins: [tailwindcss()],
   },

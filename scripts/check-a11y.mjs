@@ -80,9 +80,16 @@ async function routes(dir = DIST, acc = []) {
     const full = join(dir, entry.name);
     if (entry.isDirectory()) await routes(full, acc);
     else if (entry.name === 'index.html') {
+      // Redirect stubs from `redirects` in astro.config.mjs are not pages: a
+      // meta refresh navigates away mid-audit, and the page it lands on is
+      // already checked in its own right.
+      if (/http-equiv="refresh"/i.test(await readFile(full, 'utf8'))) continue;
       const rel = relative(DIST, full).replace(/index\.html$/, '');
       acc.push('/' + rel);
     }
+    // The 404 page is a real page every lost visitor sees, but it is built
+    // as /404.html rather than a directory index, so it needs naming here.
+    else if (dir === DIST && entry.name === '404.html') acc.push('/404.html');
   }
   return acc;
 }

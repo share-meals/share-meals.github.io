@@ -1,0 +1,49 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import Section from '~/components/Section.astro';
+import Button from '~/components/Button.astro';
+
+/**
+ * NOT FOUND — served by GitHub Pages for any path that does not exist.
+ *
+ * Most visitors who land here followed a link to the old site: its
+ * initiatives, Trailblazers, Hunger Action Series and article pages were not
+ * carried over and are deliberately not redirected (see astro.config.mjs).
+ * So the page says plainly that the page is gone, rather than implying a
+ * typo, and offers the three places the site actually has.
+ *
+ * Every link is an absolute path: this page is served at whatever URL was
+ * requested, so a relative link would resolve against that.
+ */
+const email = 'nucleus@sharemeals.org';
+---
+
+<BaseLayout
+  title="Page not found"
+  description="This page doesn't exist on sharemeals.org, or no longer does."
+>
+  <Section size="hero">
+    <h1 class="text-display-xl font-extrabold text-balance m-0">
+      This page isn't here.
+    </h1>
+    <p class="text-lead mt-8 max-w-2xl">
+      It may have been on an older version of this site. If you were looking
+      for something specific, email us at{' '}
+      <a href={`mailto:${email}`} class="notfound-email">{email}</a> and we'll
+      point you to it.
+    </p>
+    <div class="mt-10 flex flex-wrap gap-4">
+      <Button href="/">Home</Button>
+      <Button href="/app" variant="secondary">The Share Meals app</Button>
+      <Button href="/pantry-point" variant="secondary">Pantry Point</Button>
+    </div>
+  </Section>
+</BaseLayout>
+
+<style>
+  .notfound-email {
+    color: var(--color-brand-700);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+</style>
