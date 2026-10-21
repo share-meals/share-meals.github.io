@@ -149,9 +149,19 @@
   /* Visible, unambiguous focus ring. Required for the keyboard path to be
      usable at all, and easy to lose later to a stray `outline: none`. */
   :focus-visible {
-    outline: 3px solid var(--color-brand-700);
+    outline: 3px solid var(--color-focus-ring, var(--color-brand-700));
     outline-offset: 2px;
     border-radius: 2px;
+  }
+
+  /* The default ring is brand-700, which is also the inverse surface — on a
+     green band it vanishes completely, and so does every focus indicator in
+     it (2.4.7). Anything that paints that surface sets this class, and the
+     ring flips to white: the text-inverse on inverse pairing, 7.16:1. A
+     custom property rather than a descendant selector, so it inherits into
+     every control in the band without a rule per component. */
+  .on-inverse {
+    --color-focus-ring: var(--color-text-inverse);
   }
 
   /* Honor a user's reduced-motion preference. The design is static by

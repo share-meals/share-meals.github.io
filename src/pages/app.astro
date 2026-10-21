@@ -439,6 +439,15 @@ const restFeatures = [
       }
     </ul>
 
+    {/* The only route to /app/support from inside the site, by decision — it
+        is not in the header or the footer. It lives here because this band is
+        the one addressed to people who use the app. Screen only, like the
+        store links: the sheet has no room for it and a link is no use on
+        paper. */}
+    <p class="text-lead mt-8 m-0 no-print">
+      Need help with the app? <a href="/app/support" class="support-link">Get app support</a>.
+    </p>
+
     {/* The store links are useless on paper — nobody retypes those — so the
         sheet names the destinations instead and lets the reader search. The
         web address is the exception, printed verbatim: it is short enough to
@@ -562,5 +571,14 @@ const restFeatures = [
     .print-stores {
       font-size: 9.5pt !important;
     }
+  }
+
+  /* White on brand-700: the text-inverse-on-inverse pairing, 7.16:1. The
+     underline is what marks it as a link, not the colour (1.4.1). Its focus
+     ring comes from the band — see `.on-inverse` in global.css. */
+  .support-link {
+    color: var(--color-text-inverse);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
   }
 </style>

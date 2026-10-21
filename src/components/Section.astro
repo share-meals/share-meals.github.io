@@ -34,7 +34,8 @@ const {
 const tones = {
   default: 'bg-[var(--color-surface)] text-[var(--color-text)]',
   muted: 'bg-[var(--color-surface-muted)] text-[var(--color-text)]',
-  inverse: 'bg-[var(--color-surface-inverse)] text-[var(--color-text-inverse)]',
+  // `on-inverse` turns the focus ring white — see global.css.
+  inverse: 'bg-[var(--color-surface-inverse)] text-[var(--color-text-inverse)] on-inverse',
 };
 
 const sizes = {
