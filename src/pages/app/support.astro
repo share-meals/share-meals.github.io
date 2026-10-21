@@ -8,8 +8,8 @@ import Button from '~/components/Button.astro';
  *
  * The support URL on the App Store listing, and the one to give Google Play.
  * Apple requires it to lead to real contact information, and its reviewers
- * may follow it, so the email address is the first thing on the page rather
- * than something to scroll for.
+ * may follow it, so the email address is in the opening band rather than
+ * something to scroll for — directly after what to put in the message.
  *
  * WHAT IS NOT HERE, ON PURPOSE.
  *
@@ -28,26 +28,25 @@ const supportEmail = 'nucleus@sharemeals.org';
   <Section size="hero">
     <h1 class="text-display-xl font-extrabold text-balance m-0">App support</h1>
 
+    {/* The details come BEFORE the address, not after it. Most people click
+        an email address the moment they see it, so anything below it is read
+        too late to end up in the message. Apple's reviewers still get the
+        contact details in the first screen, just after the list. */}
     <p class="text-lead mt-8 max-w-2xl">
       Need help with the Share Meals app? Email us and we'll get back to you.
-    </p>
-    <a href={`mailto:${supportEmail}`} class="support-email text-lead mt-4 inline-block">{supportEmail}</a>
-  </Section>
-
-  <Section tone="muted">
-    <h2 class="text-display font-extrabold text-balance m-0">What to include</h2>
-    <p class="text-lead mt-6 max-w-2xl">
       A few details help us sort out the problem faster:
     </p>
     <ul class="text-lead mt-4 max-w-2xl list-disc pl-6">
       <li>Your college or university</li>
       <li>Whether you use the app on an iPhone, an Android phone or in a web browser</li>
+      <li>If you use it in a web browser, the address of the page where it happened</li>
       <li>What you were trying to do, and what happened instead</li>
       <li>A screenshot, if you can take one</li>
     </ul>
+    <a href={`mailto:${supportEmail}`} class="support-email text-lead mt-6 inline-block">{supportEmail}</a>
   </Section>
 
-  <Section>
+  <Section tone="muted">
     <h2 class="text-display font-extrabold text-balance m-0">New to the app?</h2>
     <p class="text-lead mt-6 max-w-2xl">
       Find out what the app does, and how to get it on your phone or use it in
