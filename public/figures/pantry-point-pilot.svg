@@ -1,95 +1,162 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 240" width="1200" height="240">
   <!--
-    PLACEHOLDER for the /pantry-point "How the pilot ran" diagram.
+    The /pantry-point "How it works" diagram. See README.md in this
+    directory.
 
-    This is not art. It is a schematic of the composition the band is built
-    around, drawn so that whoever replaces it knows what shape has to fit.
-    Replace this whole file; see README.md in this directory.
+    THE SHAPE: a pipeline, the opposite of the hub on /app and the reason the
+    two cannot share one drawing. Four things on one line, left to right:
+    the student, her phone, the machine, the food. No badges on the arrows
+    between them — the survey and the scan are told in the captions, and the
+    drawing stays with the things themselves. The only badges are the three
+    kinds of food that come out.
 
-    THE SHAPE: a funnel into a pipeline, which is the opposite of the hub on
-    /app and the reason these two illustrations cannot share one drawing. Two
-    routes to credits come in from the left — a survey, or a purchase — and
-    they MERGE. From the merge it is a single line: phone, machine, food. The
-    merge is the whole point of the picture. Both routes ended at the same
-    machine drawing on the same account, which is what made it impossible to
-    tell from the outside who had paid.
+    The three captions beneath follow the picture left to right: survey,
+    scan at the machine, what came out. Keep the two in step.
 
-    WHY THE CANVAS IS THIS FLAT. 5:1, and the drawing is stretched to use it.
-    On the printed sheet this is capped by HEIGHT — the page has about an inch
-    of room for it and far more width than it needs — so a taller canvas does
-    not buy a bigger picture, it buys a narrower one floating in white space
-    with the caption columns running past it on both sides. Flatter is the only
-    axis on which this drawing can grow. Replacement art should stay near this
-    ratio for the same reason, not merely to satisfy the `aspect-ratio` rule.
+    The outputs are fruit, a ready-to-eat sandwich and a sealed cup (the packaged dry goods: oatmeal packets, granola bars, rice) — the stock the
+    last caption names.
 
-    NO CAPTIONS IN THE ART. The sentences live in HTML underneath, so they stay
-    selectable and translatable and stay legible on a narrow screen where this
-    drawing has scaled down. Art with baked-in text will be unreadable at 320px,
-    and is capped at about an inch and a quarter tall on the printed sheet.
+    NO WORDS IN THE ART. The captions are HTML underneath, which is why the
+    <img> is alt="". Adding lettering here changes that — see the README.
+
+    SIZE. 5:1, and nothing finer than about 10 units: on the printed sheet the
+    whole drawing is 78pt tall, under half its screen size.
+
+    Same hand as how-it-works.svg: brand-700 lines, brand-100 and 50 fills,
+    white badges, people told apart by hair and collars with plain faces.
   -->
-  <rect x="1" y="1" width="1198" height="238" rx="8"
-        fill="#f0f9f3" stroke="#106535" stroke-width="1.6" stroke-dasharray="7 5"/>
+  <defs>
+    <!-- The sandwich, in its output badge. A slice of sandwich bread — rounded shoulders, not a
+         single arc, which simplified it past recognition — cut corner to
+         corner, the lower half pulled a little away from the upper so the
+         cut reads. Earlier tries — a flat wedge, an emoji-style wedge — read
+         as a set square, a mountain and a slice of cake. Centred on 0,0 and
+         about 30 units across; stroke and fill come from where it is used. -->
+    <g id="sandwich" transform="translate(-1 -1.5)">
+      <path d="M-13 15V-2c-5-3-4-13 4-14c2-3 16-3 18 0c8 1 9 11 4 14z"/>
+      <path d="M-13 15L13-2V15z" transform="translate(3 4)"/>
+    </g>
+    <!-- The cup, in its output badge. Shaped like an instant noodle cup — a
+         tapered pot under a lid that overhangs it, with a label band — but
+         with nothing inside showing. It stands for the packaged shelf-stable
+         stock (oatmeal packets, granola bars, rice) without picturing any
+         one of them: a jar, nuts and a bowl of oats were all tried and none read clearly at this size.
+         Centred on 0,0, about 34 units tall. -->
+    <g id="cup">
+      <path d="M-13-13h26l-4 30h-18z"/>
+      <path d="M-11.8-4h23.6l-1.07 8h-21.46z" fill="#ffffff"/>
+      <rect x="-16" y="-17" width="32" height="5" rx="1.5" fill="#ffffff"/>
+    </g>
+  </defs>
+  <!-- LAID OUT ON THE CAPTION COLUMNS. The three captions sit beneath as
+       three equal columns, so the drawing is placed on the same three: the
+       student and her phone over the first caption (the survey, the
+       credits), the machine centred over the second (the scan), the food
+       over the third. At full screen width the canvas and the caption grid
+       are the same width, so 1200 units split into columns 376 wide with a
+       35-unit gutter — centres at about 188, 600 and 1011. On paper the
+       drawing is capped by height and centred, so this only lines up on
+       screen. -->
+  <g fill="none" stroke="#106535" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <!-- the student: a bob with a fringe -->
+    <g transform="translate(40 0)">
+    <path d="M40 106a20 20 0 0 1 40 0v16h-40z" fill="#106535"/>
+    <path d="M26 160v-8a22 22 0 0 1 22-22h24a22 22 0 0 1 22 22v8z" fill="#dcf1e3"/>
+    <path d="M50 130a10 9 0 0 0 20 0"/>
+    <circle cx="60" cy="106" r="18" fill="#ffffff"/>
+    <path d="M42 104a18 18 0 0 1 36 0q-18-5-36 0z" fill="#106535"/>
+    </g>
 
-  <g fill="none" stroke="#106535" stroke-width="1.6" opacity=".5">
-    <!-- the student who took the survey -->
-    <circle cx="58" cy="58" r="15"/>
-    <path d="M34 92a24 24 0 0 1 48 0" stroke-linecap="round"/>
-    <!-- the survey itself -->
-    <rect x="130" y="26" width="54" height="66" rx="4"/>
-    <path d="M142 44h30M142 58h30M142 72h18" stroke-linecap="round"/>
-
-    <!-- the student who bought credits -->
-    <circle cx="58" cy="182" r="15"/>
-    <path d="M34 216a24 24 0 0 1 48 0" stroke-linecap="round"/>
-    <!-- the payment -->
-    <rect x="130" y="160" width="54" height="36" rx="4"/>
-    <path d="M130 172h54"/>
-
-    <!-- the phone, where the two routes have already merged -->
-    <rect x="500" y="50" width="76" height="140" rx="12"/>
-    <path d="M522 66h32" stroke-linecap="round"/>
-    <!-- a scan code, drawn as four blocks rather than a real one -->
-    <path d="M514 104h18v18h-18zM540 104h18v18h-18zM514 130h18v18h-18zM540 130h18v18h-18z"/>
-
-    <!-- the machine -->
-    <rect x="790" y="30" width="140" height="180" rx="8"/>
-    <path d="M888 30v180"/>
-    <path d="M806 54h68M806 84h68M806 114h68M806 144h68" stroke-linecap="round"/>
-    <rect x="898" y="54" width="22" height="26" rx="3"/>
-    <rect x="806" y="170" width="68" height="30" rx="4"/>
-
-    <!-- what came out -->
-    <rect x="1080" y="20" width="62" height="52" rx="5"/>
-    <circle cx="1111" cy="120" r="26"/>
-    <rect x="1080" y="168" width="62" height="52" rx="5"/>
+    <!-- one line, left to right -->
+    <path d="M144 120H228"/>
+    <path d="M338 120H503"/>
+    <!-- machine to the three kinds of food: the line runs straight on to the
+         middle badge, and the top and bottom branches peel off it on rounded
+         corners rather than a square bracket -->
+    <path d="M681 120H988"/>
+    <path d="M933 120h14a14 14 0 0 0 14-14V60a14 14 0 0 1 14-14h13"/>
+    <path d="M933 120h14a14 14 0 0 1 14 14v46a14 14 0 0 0 14 14h13"/>
   </g>
 
-  <!-- The two routes converge, then run as one line to the right. -->
-  <g stroke="#106535" stroke-width="3" opacity=".55" fill="none" stroke-linecap="round">
-    <!-- student to survey, student to payment -->
-    <path d="M88 58h20"/>
-    <path d="M88 182h20"/>
-    <!-- both routes bend into the phone: this is the merge -->
-    <path d="M190 58h80a14 14 0 0 1 14 14v34a14 14 0 0 0 14 14h180"/>
-    <path d="M190 182h80a14 14 0 0 0 14-14v-34a14 14 0 0 1 14-14h180"/>
-    <!-- one line from here on -->
-    <path d="M576 120h176"/>
-    <path d="M930 120h100"/>
-    <path d="M1030 46v148"/>
-    <path d="M1030 46h28M1030 120h28M1030 194h28"/>
-  </g>
-  <g fill="#106535" opacity=".55">
-    <path d="M108 51l16 7-16 7z"/>
-    <path d="M108 175l16 7-16 7z"/>
-    <path d="M478 113l16 7-16 7z"/>
-    <path d="M752 113l16 7-16 7z"/>
-    <path d="M1058 39l16 7-16 7z"/>
-    <path d="M1058 113l16 7-16 7z"/>
-    <path d="M1058 187l16 7-16 7z"/>
+  <g fill="#106535">
+    <path d="M228 108l20 12-20 12z"/>
+    <path d="M503 108l20 12-20 12z"/>
+    <path d="M988 34l20 12-20 12z"/>
+    <path d="M988 108l20 12-20 12z"/>
+    <path d="M988 182l20 12-20 12z"/>
   </g>
 
-  <g font-family="system-ui, sans-serif" font-size="13" fill="#106535" opacity=".75"
-     text-anchor="middle">
-    <text x="600" y="232">placeholder — replace public/figures/pantry-point-pilot.svg</text>
+  <!-- the phone: the account the credits landed in, shown as a scan code -->
+  <g transform="translate(-248 0)">
+    <rect x="500" y="46" width="76" height="148" rx="14" fill="#ffffff" stroke="#106535" stroke-width="5"/>
+    <path d="M526 60h24" stroke="#106535" stroke-width="4" stroke-linecap="round"/>
+    <rect x="510" y="72" width="56" height="108" rx="6" fill="#dcf1e3"/>
+    <rect x="514" y="96" width="48" height="48" rx="4" fill="#ffffff"/>
+    <g fill="none" stroke="#106535" stroke-width="3">
+      <rect x="519" y="101" width="13" height="13" rx="1.5"/>
+      <rect x="544" y="101" width="13" height="13" rx="1.5"/>
+      <rect x="519" y="126" width="13" height="13" rx="1.5"/>
+    </g>
+    <g fill="#106535">
+      <rect x="523.5" y="105.5" width="4" height="4"/>
+      <rect x="548.5" y="105.5" width="4" height="4"/>
+      <rect x="523.5" y="130.5" width="4" height="4"/>
+      <rect x="544" y="126" width="5" height="5"/>
+      <rect x="552" y="126" width="5" height="5"/>
+      <rect x="544" y="134" width="5" height="5"/>
+      <rect x="548" y="130" width="5" height="5"/>
+    </g>
   </g>
+
+  <!-- the machine: a glass front with stocked shelves, a scanner and keypad,
+       and the tray the food drops into -->
+  <g transform="translate(-263 0)">
+    <rect x="790" y="20" width="144" height="200" rx="8" fill="#ffffff" stroke="#106535" stroke-width="5"/>
+    <rect x="802" y="32" width="86" height="140" rx="4" fill="#f0f9f3" stroke="#106535" stroke-width="3"/>
+    <g stroke="#106535" stroke-width="3" stroke-linecap="round">
+      <path d="M802 78h86M802 124h86M802 170h86"/>
+    </g>
+    <g fill="#dcf1e3" stroke="#106535" stroke-width="3">
+      <!-- The stock, kept abstract on purpose: plain packages of different
+           sizes on each shelf rather than small copies of the output
+           badges, so the machine reads as stocked without repeating them. -->
+      <rect x="810" y="58" width="16" height="18" rx="3"/>
+      <rect x="832" y="53" width="13" height="23" rx="3"/>
+      <rect x="851" y="62" width="29" height="14" rx="3"/>
+      <rect x="809" y="106" width="25" height="16" rx="3"/>
+      <rect x="840" y="100" width="16" height="22" rx="3"/>
+      <rect x="862" y="108" width="18" height="14" rx="3"/>
+      <rect x="810" y="148" width="14" height="20" rx="3"/>
+      <rect x="830" y="154" width="22" height="14" rx="3"/>
+      <rect x="858" y="146" width="22" height="22" rx="11"/>
+    </g>
+    <!-- scanner and keypad -->
+    <rect x="898" y="34" width="26" height="26" rx="4" fill="#dcf1e3" stroke="#106535" stroke-width="3"/>
+    <g fill="#106535">
+      <circle cx="904" cy="76" r="3"/><circle cx="918" cy="76" r="3"/>
+      <circle cx="904" cy="89" r="3"/><circle cx="918" cy="89" r="3"/>
+      <circle cx="904" cy="102" r="3"/><circle cx="918" cy="102" r="3"/>
+    </g>
+    <!-- the tray -->
+    <rect x="802" y="184" width="86" height="24" rx="4" fill="#dcf1e3" stroke="#106535" stroke-width="3"/>
+  </g>
+
+  <!-- the badges -->
+  <g fill="#ffffff" stroke="#106535" stroke-width="3">
+    <circle cx="1036" cy="46" r="26"/>
+    <circle cx="1036" cy="120" r="26"/>
+    <circle cx="1036" cy="194" r="26"/>
+  </g>
+  <g fill="none" stroke="#106535" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+    <g transform="translate(-74 0)">
+      <!-- fruit: an apple -->
+      <path d="M1110 38c-4-4-15-3-15 8 0 9 7 16 11 16 2 0 3-1 4-1s2 1 4 1c4 0 11-7 11-16 0-11-11-12-15-8z" fill="#dcf1e3"/>
+      <path d="M1110 38v-6"/>
+      <!-- a ready-to-eat sandwich: see #sandwich in <defs> -->
+      <use href="#sandwich" transform="translate(1110 120)" fill="#dcf1e3"/>
+      <!-- shelf-stable food in a cup: see #cup in <defs> -->
+      <use href="#cup" transform="translate(1110 194)" fill="#dcf1e3"/>
+    </g>
+  </g>
+  <path d="M1036 34q5-6 10-3q-5 5-10 3z" fill="#106535"/>
 </svg>

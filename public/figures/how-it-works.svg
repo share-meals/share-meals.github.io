@@ -2,15 +2,15 @@
   <!--
     The /app "How it works" diagram. See README.md in this directory.
 
-    THE SHAPE: a hub, not a pipeline. Two people on the left both post, and both arrows run RIGHT into the phone. Phoebe (right) reads
+    THE SHAPE: a hub, not a pipeline. Two people on the left both post, and both arrows run RIGHT into the phone. Lucille (right) reads
     that same phone from the other side, so both of her arrows run LEFT into
     it. Everything points at the app.
 
     Each arrow carries a badge for what it stands for: on the left, food
-    (Serjio's — a slice of pizza) above a meal swipe (Erika's), drawn as a
+    (Langston's — a slice of pizza) above a meal swipe (Emily's), drawn as a
     ticket rather than a card so it does not read as payment; on the right,
-    Phoebe's two ways in — walking over to a pin on the map, above messaging
-    Erika. The captions beneath run in the same order, top to bottom: keep
+    Lucille's two ways in — walking over to a pin on the map, above messaging
+    Emily. The captions beneath run in the same order, top to bottom: keep
     the two in step if either changes. The phone shows
     what the third caption says: one live map, with both posts on it and a
     notification arriving.
@@ -40,21 +40,21 @@
          white and featureless on purpose — the hair and collars tell them
          apart, so nothing here is a guess at anyone's skin or expression. -->
 
-    <!-- Serjio, top left (the pizza badge): short hair, V-neck -->
+    <!-- Langston, top left (the pizza badge): short hair, V-neck -->
     <path d="M54 156v-10a28 28 0 0 1 28-28h28a28 28 0 0 1 28 28v10z" fill="#dcf1e3"/>
     <path d="M84 118l12 12 12-12"/>
     <circle cx="96" cy="90" r="22" fill="#ffffff"/>
     <path d="M74 90a22 22 0 0 1 44 0q-6-9-22-9t-22 9z" fill="#106535"/>
 
-    <!-- Erika, bottom left (the meal swipe badge): long hair -->
+    <!-- Emily, bottom left (the meal swipe badge): long hair -->
     <path d="M70 236a26 26 0 0 1 52 0v28h-52z" fill="#106535"/>
     <path d="M54 296v-10a28 28 0 0 1 28-28h28a28 28 0 0 1 28 28v10z" fill="#dcf1e3"/>
     <path d="M84 258a12 10 0 0 0 24 0"/>
     <circle cx="96" cy="230" r="22" fill="#ffffff"/>
     <path d="M74 230a22 22 0 0 1 44 0q-16-2-24-14q-6 12-20 14z" fill="#106535"/>
 
-    <!-- Phoebe, right: a ponytail and glasses. Not a bun — a bun with
-         glasses reads as a grandparent, and Phoebe is a student. -->
+    <!-- Lucille, right: a ponytail and glasses. Not a bun — a bun with
+         glasses reads as a grandparent, and Lucille is a student. -->
     <path d="M958 144q26 2 22 38q-8-12-18-18z" fill="#106535"/>
     <path d="M902 226v-10a28 28 0 0 1 28-28h28a28 28 0 0 1 28 28v10z" fill="#dcf1e3"/>
     <path d="M932 188a12 10 0 0 0 24 0"/>
@@ -131,10 +131,10 @@
          a credit card — notched ends and a tear line, no magnetic stripe -->
     <path d="M281 250h30a4 4 0 0 1 4 4v3a5 5 0 0 0 0 10v3a4 4 0 0 1-4 4h-30a4 4 0 0 1-4-4v-3a5 5 0 0 0 0-10v-3a4 4 0 0 1 4-4z" fill="#dcf1e3"/>
     <path d="M303 255v14" stroke-dasharray="3 4"/>
-    <!-- Phoebe, top right: on her way to a pin -->
+    <!-- Lucille, top right: on her way to a pin -->
     <path d="M772 124c-8 0-14 6-14 14 0 11 14 22 14 22s14-11 14-22c0-8-6-14-14-14z" fill="#dcf1e3"/>
     <circle cx="772" cy="138" r="4.5"/>
-    <!-- Phoebe, bottom right: a message to Erika -->
+    <!-- Lucille, bottom right: a message to Emily -->
     <path d="M756 210h32a4 4 0 0 1 4 4v14a4 4 0 0 1-4 4h-20l-9 8v-8h-3a4 4 0 0 1-4-4v-14a4 4 0 0 1 4-4z" fill="#dcf1e3"/>
   </g>
   <g fill="#106535">
