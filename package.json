@@ -15,6 +15,7 @@
     "check": "yarn check:contrast && astro check",
     "check:a11y": "node scripts/check-a11y.mjs",
     "build:pdf": "node scripts/build-pdf.mjs",
+    "build:og": "node scripts/build-og.mjs",
     "check:all": "yarn check && astro build && yarn check:a11y && yarn build:pdf"
   },
   "dependencies": {

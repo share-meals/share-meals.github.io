@@ -22,14 +22,15 @@ Deploy action in the GitHub UI.
 
 ## Editing content
 
-Content is markdown in `src/content/`. Adding a press mention or a post means
-adding a `.md` file — no template editing.
+Content is markdown in `src/content/`. Adding a post means adding a `.md` file
+— no template editing.
 
 | Collection | Location | What it holds |
 |---|---|---|
-| `press` | `src/content/press/` | Coverage in outlets |
 | `news` | `src/content/news/` | Posts and announcements |
-| `initiatives` | `src/content/initiatives/` | Programs |
+
+There are no posts yet, so the news route builds no pages. The first `.md`
+file added there is published at `/news/<filename>/`.
 
 Frontmatter fields are defined and enforced in `src/content.config.ts`. A
 missing or malformed field fails the build with a message naming the file and
@@ -73,6 +74,13 @@ see it work.
 It rebuilds the flyer from `designs/sma-one-pager.svg`, the original Illustrator
 sheet. That file is kept for reference only; nothing in the build reads it.
 
+### The social preview card
+
+`public/og.png` is the image link previews show for every page. It is the
+tagline on the brand green, rendered by `yarn build:og` and committed — unlike
+the PDFs it has no page behind it to drift from. Re-run it only if the tagline,
+the typeface, or the green changes.
+
 ### The impact numbers
 
 The band of figures at the foot of the home page is fetched in the browser from
@@ -113,9 +121,9 @@ carries the reasoning; read it before changing any wording there.
 
 ## Conventions worth knowing before editing
 
-**Colors and type come from tokens** in `src/styles/global.css`. Only
-`#106535` green is final; accent, neutrals, and the typeface are open design
-decisions with placeholder values. Components reference semantic slots
+**Colors and type come from tokens** in `src/styles/global.css`. The
+`#106535` green and the Onest typeface are final; accent and neutrals are open
+design decisions with placeholder values. Components reference semantic slots
 (`--color-text`, `--color-surface`) rather than raw ramp steps, so values can
 change without touching component code.
 
@@ -135,8 +143,12 @@ causes trouble with Vite and some Astro integrations.
 
 This is an *organization site*, served at the root of `share-meals.github.io`.
 Because there is no base path, internal links are plain absolute paths
-(`href="/press"`) and need no helper.
+(`href="/app"`) and need no helper.
 
-The apex `sharemeals.org` still points at the old Netlify site. At cutover:
-change `site` in `astro.config.mjs` to `https://sharemeals.org`, add a `CNAME`
-file to `public/`, and point DNS at GitHub Pages. Nothing else changes.
+The apex `sharemeals.org` still points at the old Netlify site. `site` in
+`astro.config.mjs` already names it, so at cutover: add a `CNAME` file to
+`public/` and point DNS at GitHub Pages.
+
+**Old URLs.** A handful of the old site's pages redirect to their new
+equivalents (`redirects` in `astro.config.mjs`). Everything else from the old
+site 404s on purpose, onto `src/pages/404.astro`.
