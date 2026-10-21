@@ -57,15 +57,16 @@ import '~/styles/one-pager.css';
  * rule. It described the reader's situation as an identity, and the sentence
  * does not need it.
  *
- * TODO(content): whether any Pantry Point is running anywhere today. This page
- * is deliberately silent on it — there is no "currently at N campuses" line —
- * because that is a fact nobody has confirmed, and a stale number is worse than
- * no number.
+ * CURRENT SITES. A Pantry Point is running at UMBC (confirmed 2026-10-21).
+ * The page deliberately does not name it or carry any "currently at N
+ * campuses" line — that was a decision by Share Meals, not a gap, so do not
+ * add one without asking.
  *
  * CONFIRMED 2026-10-21 by Share Meals: the survey-and-scan mechanism in "How
  * it works" is how Pantry Point works today; granola bars and rice are
  * stocked alongside the sandwiches, fruit, and oatmeal packets; and snack,
- * beverage, and cold food machines all remain compatible.
+ * beverage, and cold food machines all remain compatible. nucleus@sharemeals.org
+ * is the right inbox for campus enquiries.
  */
 
 /** Kept in one place: the hero link and the PDF filename both reference it. */
@@ -103,11 +104,12 @@ const leadFeatures = [
     // was part of "Solved pain points" — floor space
     title: 'It fits where a food pantry cannot',
     body: [
-      // TODO(content): both figures are carried over from the 2019 flyer and
-      // are unverified. The machine footprint is checkable against a real unit;
-      // the hundred square feet is a claim about somebody else's pantry and
-      // should be sourced or softened before this goes in front of a university.
-      'A machine takes about six and a half square feet. A staffed pantry needs at least a hundred, plus a door, a store room, and somewhere to wait — which is why this fits in a building that has no room for a pantry at all.',
+      // No exact figures, on purpose. The 2019 flyer's were "6.5 sq ft" for the
+      // machine — low for a standard machine, which runs about 8 to 10 — and
+      // "at least 100" for a staffed pantry, which nobody could source and one
+      // closet-sized pantry would disprove. "Less than ten" holds for standard
+      // machines. A measured figure from a real unit would beat this.
+      'A machine needs less than ten square feet. Even a small staffed pantry needs a room of its own, plus storage and somewhere to wait — which is why this fits in a building that has no room for a pantry at all.',
     ],
   },
   {
@@ -325,9 +327,7 @@ const restFeatures = [
       Tell us how your vending contracts and your dining program are set up, and
       we will tell you what running this would take.
     </p>
-    {/* TODO(content): same open question as /app — confirm nucleus@ is still
-        the right inbox for campus enquiries. Carried over from the printed
-        one-pager and not verified. */}
+    {/* nucleus@ is the campus enquiries inbox — confirmed 2026-10-21. */}
     <p class="text-lead mt-6 m-0">
       <a
         href="mailto:nucleus@sharemeals.org"
