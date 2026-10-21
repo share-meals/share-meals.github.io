@@ -7,9 +7,10 @@ Two illustrations, one per printable sheet:
 | `how-it-works.svg` | "How it works" | `/app` | 1040:340 |
 | `pantry-point-pilot.svg` | "How the pilot ran" | `/pantry-point` | 1200:240 |
 
-**Both files in here are placeholders.** They are schematics of their
-compositions, not art — dashed outlines and a "placeholder" label, so neither
-can be mistaken for finished work or shipped by accident.
+**`how-it-works.svg` is finished; `pantry-point-pilot.svg` is still a
+placeholder.** The placeholder is a schematic of its composition, not art — a
+dashed outline and a "placeholder" label, so it cannot be mistaken for finished
+work or shipped by accident.
 
 ## Replacing one
 
@@ -48,7 +49,7 @@ reads on that band, and that it survives printing on white.
 
 ## `how-it-works.svg` — a hub
 
-Not a left-to-right pipeline. Erika and Serjio both post, and both arrows run
+Not a left-to-right pipeline. Serjio and Erika both post, and both arrows run
 *right* into the phone. Phoebe reads that same phone from the other side, so
 both of her arrows run *left* into it. Everything points at the app. That
 convergence is what made the original 2019 flyer read as a story rather than
