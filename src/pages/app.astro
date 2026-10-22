@@ -122,6 +122,25 @@ const stores: {
   },
 ];
 
+/** The printed QR code for each store link, and the caption under it. Keyed by
+ *  URL so a store whose URL changes fails loudly here rather than printing a
+ *  code that points somewhere else. */
+const qrSrc: Record<string, string> = {
+  'https://apps.apple.com/us/app/share-meals/id1227449725': '/qr/app-store.svg',
+  'https://play.google.com/store/apps/details?id=org.sharemeals.app': '/qr/google-play.svg',
+  'https://app.sharemeals.org': '/qr/web.svg',
+};
+const qrCaption: Record<string, string> = {
+  'https://apps.apple.com/us/app/share-meals/id1227449725': 'App Store',
+  'https://play.google.com/store/apps/details?id=org.sharemeals.app': 'Google Play',
+  'https://app.sharemeals.org': 'app.sharemeals.org',
+};
+for (const store of stores) {
+  if (!qrSrc[store.href]) {
+    throw new Error(`No QR code for ${store.href} — run scripts/build-qr.py`);
+  }
+}
+
 /**
  * THE PANELS — five, not the flyer's six, in two tiers.
  *
@@ -455,16 +474,28 @@ const restFeatures = [
       Need help with the app? <a href="/app/support" class="support-link">Get app support</a>.
     </p>
 
-    {/* The store links are useless on paper — nobody retypes those — so the
-        sheet names the destinations instead and lets the reader search. The
-        web address is the exception, printed verbatim: it is short enough to
-        type, and it is the only route that needs no phone at all.
+    {/* On paper the store buttons become a QR code each — a reader holding
+        the sheet can scan but cannot click, and nobody retypes a store URL.
+        Each is still a real link, because Chromium keeps links in the PDF and
+        most people read the sheet as a download, not a printout.
 
-        Terse because it has to hold one line. The fuller sentence this
-        replaced wrapped to two and put the sheet onto a second page. */}
-    <p class="print-only print-stores m-0">
-      App Store &middot; Google Play &middot; app.sharemeals.org
-    </p>
+        The codes are static files from `scripts/build-qr.py`, pointing at the
+        same three URLs as `stores` above; change one and regenerate. The
+        image is `alt=""` because the caption beside it names the destination
+        and is the link text. */}
+    <p class="print-only print-qr-hint m-0">Scan with your phone camera.</p>
+    <ul class="print-only print-qr p-0 m-0 list-none">
+      {
+        stores.map((store) => (
+          <li>
+            <a href={store.href}>
+              <img src={qrSrc[store.href]} alt="" width="37" height="37" />
+              <span>{qrCaption[store.href]}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
   </Section>
 
   <Section tone="muted" size="tight">
@@ -558,7 +589,7 @@ const restFeatures = [
     .stores-band > div {
       display: flex;
       flex-wrap: wrap;
-      align-items: baseline;
+      align-items: center;
       column-gap: 14pt;
       row-gap: 3pt;
     }
@@ -573,7 +604,35 @@ const restFeatures = [
       display: none;
     }
 
-    .print-stores {
+    /* Three codes in a row beside the heading. White tiles, because a QR code
+       needs a light field to scan and the band is green. 40pt is about 14mm,
+       still above the size phone cameras read reliably at arm's length. */
+    .stores-band .print-qr {
+      display: flex !important;
+      gap: 14pt;
+      margin-left: auto;
+    }
+
+    .print-qr a {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3pt;
+      text-decoration: none;
+    }
+
+    .print-qr img {
+      width: 40pt;
+      height: 40pt;
+      background: #fff;
+      padding: 2pt;
+    }
+
+    .print-qr span {
+      font-size: 8pt !important;
+    }
+
+    .print-qr-hint {
       font-size: 9.5pt !important;
     }
   }
