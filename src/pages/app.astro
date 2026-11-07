@@ -3,6 +3,7 @@ import BaseLayout from '~/layouts/BaseLayout.astro';
 import Section from '~/components/Section.astro';
 import Button from '~/components/Button.astro';
 import PrintMasthead from '~/components/PrintMasthead.astro';
+import VideoEmbed from '~/components/VideoEmbed.astro';
 /* The sheet stylesheet — the page box, the print type scale, the panel grid,
  * the band treatments. Shared with /pantry-point; only what is specific to this
  * page's art and headline is left in the block at the bottom of this file. */
@@ -363,6 +364,16 @@ const restFeatures = [
         </p>
       </figcaption>
     </figure>
+
+    {/* Web only. This route is also the source of the one-page PDF, and a
+        player means nothing on paper. */}
+    <div class="no-print mt-16 mx-auto max-w-3xl">
+      <VideoEmbed
+        id="eR9mjsff1To"
+        title="Share Meals' fight on college hunger"
+        duration="5 minutes 44 seconds"
+      />
+    </div>
   </Section>
 
   <Section>
