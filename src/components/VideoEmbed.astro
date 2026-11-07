@@ -1,0 +1,150 @@
+---
+/**
+ * A YouTube video that loads nothing from YouTube until someone asks it to.
+ *
+ * WHY A POSTER AND NOT AN IFRAME. An embedded player puts third-party scripts
+ * and requests on the page for every visitor, including the ones who never
+ * press play. So the page shows a self-hosted still from `public/video/`, and
+ * only a click creates the player, on YouTube's no-cookie domain.
+ *
+ * KNOWN GAP. YouTube's player itself has accessibility faults that only YouTube
+ * can fix: an unnamed channel-avatar button and two invalid ARIA attributes.
+ * The a11y gate never presses play, so it never sees them. That is a blind spot,
+ * not a pass. Embedding the player directly makes the gate fail on them.
+ *
+ * The markup starts as a real link to the video, so with no JavaScript the
+ * poster still goes somewhere. The script upgrades it to a <button>, because
+ * once it plays in place it is no longer a link. Focus moves into the player
+ * on click, or keyboard users would be left on an element that no longer exists.
+ *
+ * `cc_load_policy=1` turns captions on by default, since the player would
+ * otherwise leave them off. AA requires accurate captions (1.2.2) and, where
+ * the picture shows something the audio doesn't say, audio description (1.2.5).
+ * Neither lives in this repo and the gate cannot see them, so check them on
+ * YouTube for any video added here.
+ */
+interface Props {
+  /** The YouTube video id. A poster must exist at public/video/<id>.jpg. */
+  id: string;
+  /**
+   * The video's title. Shown as an <h3> above the poster, and names the button
+   * and the player for screen readers. An h3 because every place this sits is
+   * under a section's h2; move the level if that ever stops being true.
+   */
+  title: string;
+  /** The running time, spoken as part of the play button's name. */
+  duration: string;
+  class?: string;
+}
+
+const { id, title, duration, class: className = '' } = Astro.props;
+---
+
+<div class={`video ${className}`}>
+  <h3 class="video-title text-lead">{title}</h3>
+  <video-embed class="video-frame" data-id={id} data-title={title}>
+    <a href={`https://www.youtube.com/watch?v=${id}`} class="video-poster">
+      <img src={`/video/${id}.jpg`} alt="" width="960" height="540" loading="lazy" />
+      <span class="video-play">
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+          <path d="M4 2.5v11l9-5.5z" fill="currentColor"></path>
+        </svg>
+        Play video<span class="sr-only">: {title}, {duration}</span>
+      </span>
+    </a>
+  </video-embed>
+</div>
+
+<script>
+  class VideoEmbed extends HTMLElement {
+    connectedCallback() {
+      const link = this.querySelector('a');
+      if (!link) return;
+
+      const button = document.createElement('button');
+      button.type = 'button';
+      // Carries the class and Astro's scoping attribute, so the styles below
+      // still apply to the swapped-in element.
+      for (const { name, value } of [...link.attributes]) {
+        if (name !== 'href') button.setAttribute(name, value);
+      }
+      button.append(...link.childNodes);
+      link.replaceWith(button);
+
+      button.addEventListener('click', () => {
+        const player = document.createElement('iframe');
+        player.title = this.dataset.title ?? 'Video';
+        player.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+        player.referrerPolicy = 'strict-origin-when-cross-origin';
+        player.src =
+          `https://www.youtube-nocookie.com/embed/${this.dataset.id}` +
+          '?autoplay=1&rel=0&cc_load_policy=1&cc_lang_pref=en';
+        button.replaceWith(player);
+        player.focus();
+      });
+    }
+  }
+
+  customElements.define('video-embed', VideoEmbed);
+</script>
+
+<style>
+  /* Title and player sit on a subgrid of whatever grid holds the videos, so
+     side by side the posters line up even when one title wraps to two lines and
+     the other doesn't. Outside a grid this does nothing and they just stack.
+     The row gap is set here so the title stays close to its own video rather
+     than taking the gap between videos. */
+  .video {
+    min-width: 0;
+    display: grid;
+    grid-row: span 2;
+    grid-template-rows: subgrid;
+    row-gap: 1rem;
+    align-content: start;
+  }
+  .video-title {
+    margin: 0;
+    font-weight: 800;
+    text-wrap: balance;
+  }
+  .video-frame {
+    display: block;
+  }
+  .video-frame :global(iframe) {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: 0;
+  }
+  .video-poster {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+  }
+  .video-poster img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  /* white on brand-700, 7.16:1. A bar under the picture rather than a badge on
+     it: a badge's contrast depends on the image behind it, and it covered the
+     wordmark on the logo poster. */
+  .video-play {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    background: var(--color-brand-700);
+    color: var(--color-text-inverse);
+    font-weight: 600;
+    line-height: 1.25;
+  }
+  .video-poster:hover .video-play {
+    background: var(--color-brand-800);
+  }
+</style>

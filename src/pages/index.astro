@@ -3,6 +3,7 @@ import BaseLayout from '~/layouts/BaseLayout.astro';
 import Section from '~/components/Section.astro';
 import Button from '~/components/Button.astro';
 import ImpactStats from '~/components/ImpactStats.astro';
+import VideoEmbed from '~/components/VideoEmbed.astro';
 
 /**
  * HOME PAGE.
@@ -149,6 +150,27 @@ import ImpactStats from '~/components/ImpactStats.astro';
   </Section>
 
   <ImpactStats />
+
+  {/* Below the programme cards on purpose: at full width a video pushes
+      whatever follows it down a whole screen, and the cards are what this page
+      has to get across first. */}
+  <Section tone="muted">
+    <h2 class="text-display font-extrabold text-balance m-0">In our own words.</h2>
+    {/* No wrapper around each video: VideoEmbed puts its title and poster on a
+        subgrid of this grid, which only works as a direct child. */}
+    <div class="mt-12 grid gap-12 md:grid-cols-2">
+      <VideoEmbed
+        id="DVVx32wQoas"
+        title="A World without Hunger"
+        duration="4 minutes 46 seconds"
+      />
+      <VideoEmbed
+        id="k1b8oV7DI6s"
+        title="How Hunger gave us Purpose, Jon Chin, TEDxMU"
+        duration="13 minutes 33 seconds"
+      />
+    </div>
+  </Section>
 
   <Section>
     <h2 class="text-display font-extrabold text-balance m-0">
